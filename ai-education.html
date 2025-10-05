@@ -6,7 +6,8 @@
     <title>AI + Ed Lab - Philip Pan</title>
     <!-- Version: 2024-01-15-v24 - Fixed all projects variable references -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Quill富文本编辑器 -->
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
@@ -203,6 +204,11 @@
             min-height: 320px;
             scroll-margin-top: calc(var(--navbar-height) + 16px);
         }
+
+        /* Category backgrounds per requirement */
+        .project-card[data-category="Stories"] { background-color: #FDE7EF; }
+        .project-card[data-category="Projects"] { background-color: #E6FAEC; }
+        .project-card[data-category="Tools"] { background-color: #E8F1FF; }
 
         /* 1:1复制参考文件的d.school风格卡片样式 */
         :root {
@@ -2075,52 +2081,7 @@
         </div>
     </section>
 
-    <!-- Hidden Admin Trigger (右下角隐藏区域) -->
-    <div id="adminTrigger" style="position: fixed; bottom: 20px; right: 20px; width: 20px; height: 20px; background: transparent; cursor: pointer; z-index: 10001;" title="连续点击5次进入管理模式"></div>
-
-    <!-- Admin Management Panel (隐藏的管理面板) -->
-    <div id="adminPanel" class="hidden-panel" style="display: none;">
-        <div class="editor-section">
-            <!-- 管理面板头部 -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding: 20px; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-                <h2 style="color: #333; margin: 0;">🔧 项目管理系统</h2>
-                <button onclick="exitAdminMode()" style="background: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">退出编辑</button>
-            </div>
-
-            <!-- 项目管理区域 -->
-            <div class="editor-section" style="display: grid; grid-template-columns: 1fr 2fr; gap: 30px;">
-                <!-- 左侧：Stories列表 -->
-                <div>
-                    <h3 style="color: #333; margin-bottom: 20px;">项目列表</h3>
-                    <div id="projectList" style="background: #ffffff; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-                        <!-- 项目列表将在这里动态生成 -->
-                    </div>
-                    <button onclick="addNewProject()" style="background: #28a745; color: white; border: none; padding: 12px 24px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;">+ 添加新项目</button>
-                </div>
-
-                <!-- 右侧：Story编辑器 -->
-                <div>
-                    <h3 style="color: #333; margin-bottom: 20px;">项目编辑器</h3>
-                    <div id="projectEditor" style="background: #ffffff; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-                        <p style="color: #333; text-align: center; padding: 40px;">请选择一个项目进行编辑</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 数据管理区域 -->
-            <div class="editor-section" style="padding: 20px; background: #ffffff; border-radius: 8px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
-                <h3 style="color: #333; margin-bottom: 20px;">数据管理</h3>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <button onclick="exportData()" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">📤 导出数据</button>
-                    <button onclick="importData()" style="background: #17a2b8; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">📥 导入数据</button>
-                    <button onclick="resetToDefault()" style="background: #ffc107; color: black; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">🔄 恢复默认</button>
-                    <button onclick="checkLocalStorage()" style="background: #6f42c1; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">🔍 检查存储</button>
-                    <button onclick="syncFromLocalStorage()" style="background: #e83e8c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">🔄 强制同步</button>
-                    <input type="file" id="importFile" accept=".json" style="display: none;" onchange="handleFileImport(event)">
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- 管理面板已移除：内容改为从本地 JSON 自动加载 -->
 
     <!-- Project Detail Modal -->
     <div class="modal fade" id="projectModal" tabindex="-1">
@@ -2148,53 +2109,12 @@
     <script>
         // Language switching
         let currentLang = 'en';
-        
-        // Admin Management System
-        let adminClickCount = 0;
-        let adminClickTimeout;
-        let currentEditingProject = null;
 
         // 隐藏激活区域点击事件
-        function initAdminSystem() {
-            console.log('initAdminSystem called');
-            const adminTrigger = document.getElementById('adminTrigger');
-            console.log('adminTrigger element:', adminTrigger);
-            if (adminTrigger) {
-                adminTrigger.addEventListener('click', function(e) {
-                    console.log('Admin trigger clicked, count:', adminClickCount + 1);
-                    e.preventDefault();
-                    e.stopPropagation();
-                    adminClickCount++;
-                    clearTimeout(adminClickTimeout);
-                    
-                    if (adminClickCount >= 5) {
-                        console.log('Opening admin panel');
-                        showAdminPanel();
-                        adminClickCount = 0;
-                    } else {
-                        console.log('Click count:', adminClickCount, 'need 5 total');
-                        adminClickTimeout = setTimeout(() => {
-                            adminClickCount = 0;
-                        }, 2000);
-                    }
-                });
-            } else {
-                console.error('adminTrigger element not found!');
-            }
-        }
+        // 管理面板逻辑已禁用
 
         // 显示管理面板
-        function showAdminPanel() {
-            document.getElementById('adminPanel').style.display = 'block';
-            loadProjectList();
-        }
-
-        // 退出管理模式
-        function exitAdminMode() {
-            document.getElementById('adminPanel').style.display = 'none';
-            adminClickCount = 0;
-            currentEditingProject = null;
-        }
+        // 管理面板相关函数已移除
 
         // 加载项目列表
         function loadProjectList() {
@@ -2741,13 +2661,8 @@
             // Initialize mouse trail
             initMouseTrail();
             
-            // 初始化Stories数据
-            initStoriesData();
-            
-            console.log('准备初始化Stories，当前Stories数量:', data.Stories.length);
-            
-            // Initialize projects (现在只处理Stories)
-            initProjects();
+            // 从本地 JSON 加载项目
+            loadProjectsFromJSON();
             
             // Initialize scroll animations
             initScrollAnimations();
@@ -2755,16 +2670,7 @@
             // Initialize interactive elements
             initInteractiveElements();
             
-            // Initialize admin system
-            initAdminSystem();
-            
-            // 键盘快捷键激活管理面板 (Ctrl + Shift + A)
-            document.addEventListener('keydown', function(e) {
-                if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-                    e.preventDefault();
-                    showAdminPanel();
-                }
-            });
+            // 管理面板快捷键已禁用
             
             // Language toggle
             const langItems = document.querySelectorAll('[data-lang]');
@@ -2886,9 +2792,73 @@
             // Initialize interactive elements
             initInteractiveElements();
             
-            // Initialize projects
-            initProjects();
+            // 重新渲染（JSON 驱动）
+            // loadProjectsFromJSON();
         });
+
+        // 从 /data/projects.json 加载数据，填充到现有 data 结构，然后调用原有渲染与弹窗逻辑
+        function loadProjectsFromJSON() {
+            fetch('./data/projects.json')
+              .then(res => res.json())
+              .then(async (payload) => {
+                const list = Array.isArray(payload.projects) ? payload.projects : [];
+
+                // 分类映射到现有内部标识（用于既有样式与逻辑）
+                const mapCategory = (cat) => {
+                  if (cat === 'Stories') return 'ai-collaboration';
+                  if (cat === 'Projects') return 'gamification';
+                  if (cat === 'Tools') return 'traditional';
+                  return 'ai-collaboration';
+                };
+
+                const stories = [];
+                const projects = [];
+                const tools = [];
+                const allMapped = [];
+
+                list.forEach((item, idx) => {
+                  const mapped = {
+                    id: item.id || (idx + 1),
+                    title: { zh: item.title || '', 'zh-tw': item.title || '', en: item.title || '' },
+                    description: { zh: item.description || '', 'zh-tw': item.description || '', en: item.description || '' },
+                    category: mapCategory(item.category),
+                    tag: item.category || 'Stories',
+                    color: item.color || '',
+                    image: item.image || '',
+                    details: { 
+                      storyContent: '',
+                      background: { zh: '', 'zh-tw': '', en: '' },
+                      concept: { zh: '', 'zh-tw': '', en: '' },
+                      solutions: { zh: '', 'zh-tw': '', en: '' },
+                      results: { zh: '', 'zh-tw': '', en: '' }
+                    },
+                    _contentPath: item.content || ''
+                  };
+                  allMapped.push(mapped);
+                  if (item.category === 'Stories') stories.push(mapped);
+                  else if (item.category === 'Projects') projects.push(mapped);
+                  else if (item.category === 'Tools') tools.push(mapped);
+                  else stories.push(mapped);
+                });
+
+                // 预取详情内容（若存在），以保证点击弹窗时已有 storyContent
+                await Promise.all(allMapped.map(async (m) => {
+                  if (m._contentPath) {
+                    try {
+                      const r = await fetch(m._contentPath);
+                      if (r.ok) m.details.storyContent = await r.text();
+                    } catch (_) { /* 忽略预取失败 */ }
+                  }
+                }));
+
+                // 覆盖全局数据并走原有渲染与交互逻辑
+                data.Stories = stories;
+                data.Projects = projects;
+                data.Tools = tools;
+                initProjects();
+              })
+              .catch(err => console.error('无法加载项目数据:', err));
+        }
 
         // Scroll animations
         function initScrollAnimations() {
