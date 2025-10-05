@@ -27,26 +27,3 @@
   transform: scale(1.15);
   filter: invert(35%) sepia(90%) saturate(500%) hue-rotate(200deg) brightness(100%) contrast(90%);
 }
-
-/* Project cards (fallback styles) */
-.project-card {
-  border-radius: 12px;
-  padding: 20px;
-  background: #fff;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-  transition: transform 0.3s ease;
-}
-
-.project-card:hover {
-  transform: translateY(-5px);
-}
-
-.project-card .tag {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 8px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #000;
-  margin-bottom: 10px;
-}
