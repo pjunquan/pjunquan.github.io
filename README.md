@@ -1,80 +1,100 @@
-# 俊权的个人网站 | Philip Pan's Personal Website
+# 俊权的个人网站 | Philip (Junquan) Pan
 
-欢迎来到我的个人网站！这是一个展示我的专业背景、技能和AI教育实验室的交互式网站。
+欢迎来到我的个人网站（GitHub Pages）！该站点展示了我的背景、作品与 AI + 教育实验室，并提供中/繁/英三语切换与丰富的交互体验。
 
-## 🌟 网站特色
+**在线访问**：
+https://pjunquan.github.io/
 
-- **多语言支持**: 简体中文、繁体中文、英文
-- **响应式设计**: 适配各种设备屏幕
-- **交互式体验**: 粒子动画背景、鼠标尾迹效果
-- **AI教育实验室**: 展示AI在教育领域的应用
+**代码仓库**：
+https://github.com/pjunquan/pjunquan.github.io
 
-## 🚀 技术栈
+**主要页面**：
+- 主页：`index.html`
+- AI + 教育实验室：`ai-education.html`
 
-- **前端**: HTML5, CSS3, JavaScript
-- **框架**: Bootstrap 5.3.0
-- **动画**: tsParticles, 自定义CSS动画
-- **图标**: Font Awesome 6.4.0
-- **字体**: Google Fonts (Inter)
+## 🌟 主要特性
+
+- 多语言切换：简体中文、繁体中文、English（导航栏右侧地球按钮）
+- 响应式设计：移动端与桌面端均良好显示
+- 视觉动效：
+  - 粒子背景（tsParticles）
+  - 鼠标尾迹（`js/mouse-trail.js`）
+  - 元素滚动淡入动画
+  - 头像点击高光特效
+- 英雄区社交图标（LinkedIn/GitHub/Email），位于头像下方
+- 「关于我」与「核心技能」展示
+- CTA 引导到「AI + 教育实验室」页面（`ai-education.html`）
+- AI + 教育实验室页面：
+  - d.school 风格项目卡片（Stories/Projects/Tools）
+  - 内置 Quill 富文本编辑器用于编辑 Story 内容
+  - 支持将数据保存到浏览器 localStorage（便于快速演示与本地持久化）
+
+## 🧰 技术栈
+
+- HTML5 / CSS3 / JavaScript（原生）
+- Bootstrap 5.3（布局与组件）
+- jQuery 3.6.3（基础 DOM 辅助）
+- tsParticles 2.12（粒子背景，CDN 引用）
+- Font Awesome 6.x（AI 实验室页面图标，CDN 引用）
+- Quill 富文本编辑器（AI 实验室页面，CDN 引用）
+- Simple Icons（社交图标，通过 jsDelivr CDN 引用）
 
 ## 📁 项目结构
 
 ```
-philippan007.github.io/
-├── index.html              # 主页
-├── ai-education.html       # AI教育实验室页面
-├── images/                 # 图片资源
-│   ├── frontpage/         # 首页图片
-│   ├── personal/          # 个人照片
-│   └── portfolio/         # 作品集图片
-├── js/                    # JavaScript文件
+pjunquan.github.io/
+├── index.html                 # 主页（多语言、粒子背景、社交图标、关于我等）
+├── ai-education.html          # AI + 教育实验室页（项目卡片 + 编辑器）
+├── style.css                  # 自定义样式（含社交图标样式等）
+├── js/
 │   ├── jquery-3.6.3.min.js
-│   └── mouse-trail.js     # 鼠标尾迹效果
-└── README.md              # 项目说明
+│   └── mouse-trail.js         # 鼠标尾迹效果
+├── images/
+│   ├── frontpage/             # 首页头像等图片（如 1.jpg）
+│   ├── personal/              # 个人照片
+│   └── portfolio/             # 作品集图片
+├── deploy.sh                  # 部署脚本（可选）
+└── README.md
 ```
 
-## 🎯 关于我
+## 🧭 使用说明（本地预览）
 
-我是一名学习设计师，专注于通过AI创造教育体验。我的专业领域包括：
+- 直接双击 `index.html` 在浏览器打开，或使用本地服务器：
+  - Python：`python3 -m http.server 8000`，然后访问 `http://localhost:8000/`
+- 由于外部依赖通过 CDN 加载，请确保联网以显示粒子背景、图标等资源。
 
-- **数据分析**: Python, R, SQL
-- **语言学习**: 二语习得和跨文化交流设计
-- **教学设计**: 系统化学习设计原则
-- **内容开发**: 交互式多媒体学习内容和数字平台
+## 🚀 部署到 GitHub Pages
 
-## 🌐 访问网站
+1. 确保仓库设置（Settings -> Pages）：
+   - Source 选择 `Deploy from a branch`
+   - Branch 选择 `main`，目录 `/ (root)`
+2. 提交并推送代码到 `main`：
+   - `git add . && git commit -m "update site" && git push`
+3. 稍等 1–2 分钟，访问：https://pjunquan.github.io/
+4. 若未更新：在 Actions 查看 “Pages build and deployment” 任务是否成功。
 
-网站已通过GitHub Pages部署，您可以通过以下链接访问：
+## ✏️ 内容修改指南
 
-**https://itsssphil.github.io/philippan007.github.io/**
+- 首页文案（中/繁/英）：
+  - 在 `index.html` 中，包含 `data-en` / `data-zh` / `data-zh-tw` 的元素会随语言切换更新。
+  - 修改对应属性值即可同步三语内容。
+- 头像与社交：
+  - 头像：`images/frontpage/1.jpg`
+  - 社交图标与链接：`index.html` 中 `.hero-avatar` 下的 `.social-icons` 区块
+- 样式调整：
+  - 在 `style.css` 中维护 `.social-icons` / `.social-icon` 等样式
+- AI + 教育实验室：
+  - `ai-education.html` 页面包含 Stories/Projects/Tools 卡片展示与富文本编辑器（Quill）
+  - 支持将编辑后的内容保存到浏览器 localStorage；如需长期保存，可在页面中点击导出数据并纳入版本管理。
 
-## 📧 联系方式
+## 📬 联系方式
 
-如果您对我的工作感兴趣或希望合作，欢迎通过以下方式联系我：
-
-- 通过网站中的联系表单
-- 查看我的AI教育实验室了解更多项目
-
-## 🔧 本地开发
-
-如果您想本地运行此网站：
-
-1. 克隆此仓库
-2. 在浏览器中打开 `index.html`
-3. 或使用本地服务器（如Live Server）
-
-## 📝 更新日志
-
-- **v1.0.0** (2024-01-15): 初始版本发布
-  - 完成个人主页设计
-  - 添加AI教育实验室页面
-  - 实现多语言切换功能
-  - 添加交互式动画效果
+- GitHub：https://github.com/pjunquan
+- Email：junquanpan2016@gmail.com
+- 主页：https://pjunquan.github.io/
 
 ## 📄 许可证
 
 此项目仅供个人展示使用。
 
----
-
-*感谢访问我的个人网站！*
+—— 感谢访问我的个人网站！
