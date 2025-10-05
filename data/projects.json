@@ -7,8 +7,7 @@
       "color": "#FDE7EF",
       "image": "./images/projects/story-generator.jpg",
       "description": "用AI辅助创作英语故事",
-      "content": "./data/story-content.html",
-      "link": "stories.html"
+      "content": "./data/story-content.html"
     },
     {
       "id": "builder",
@@ -17,8 +16,7 @@
       "color": "#E6FAEC",
       "image": "./images/projects/ai-builder.jpg",
       "description": "以图形方式展示课程结构与概念关联，自动生成教学流程，支持导出协作。",
-      "content": "./data/builder-content.html",
-      "link": "builder.html"
+      "content": "./data/builder-content.html"
     },
     {
       "id": "tools",
@@ -27,8 +25,7 @@
       "color": "#E8F1FF",
       "image": "./images/projects/prompt-tool.png",
       "description": "可视化编辑教学研究用 Prompt：组件化、模板化、快速复用。",
-      "content": "./data/tools-content.html",
-      "link": "tools.html"
+      "content": "./data/tools-content.html"
     }
   ]
 }
