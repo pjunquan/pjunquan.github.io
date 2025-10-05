@@ -1,0 +1,25 @@
+{
+  "projects": [
+    {
+      "title": "AI故事生成器",
+      "category": "Stories",
+      "color": "#F6C1D5",
+      "description": "用AI帮助学习者创造属于自己的英语故事。",
+      "link": "stories.html"
+    },
+    {
+      "title": "AI课程可视化工具",
+      "category": "Projects",
+      "color": "#A7F3D0",
+      "description": "一个帮助教师理解算法原理的交互式可视化平台。",
+      "link": "builder.html"
+    },
+    {
+      "title": "Prompt设计工具",
+      "category": "Tools",
+      "color": "#BFDBFE",
+      "description": "用于教学研究的提示词可视化编辑器。",
+      "link": "tools.html"
+    }
+  ]
+}
