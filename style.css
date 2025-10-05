@@ -1,0 +1,29 @@
+/* Avatar and social icons alignment */
+.hero-avatar {
+  text-align: center; /* 保证头像与图标水平居中对齐 */
+}
+
+.profile-image {
+  display: block;      /* 头像居中 */
+  margin: 0 auto;      /* 头像居中 */
+}
+
+/* Social icons */
+.social-icons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.social-icon {
+  width: 30px;
+  height: 30px;
+  filter: invert(0%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0%) contrast(100%);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.social-icon:hover {
+  transform: scale(1.15);
+  filter: invert(35%) sepia(90%) saturate(500%) hue-rotate(200deg) brightness(100%) contrast(90%);
+}
