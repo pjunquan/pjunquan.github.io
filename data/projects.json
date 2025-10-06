@@ -2,11 +2,11 @@
   "projects": [
     {
       "id": "story",
-      "title": "AI故事生成器",
+      "title": "Learn Your Way",
       "category": "Stories",
       "color": "#FDE7EF",
-      "image": "./images/projects/story-generator.jpg",
-      "description": "用AI辅助创作英语故事",
+      "image": "./images/projects/learn-your-way.png",
+      "description": "Where scalability meets personalization",
       "content": "./data/story-content.html"
     },
     {

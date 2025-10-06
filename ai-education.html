@@ -305,6 +305,12 @@
             color: var(--sub);
             line-height: 1.4;
             font-size: 0.95rem;
+            /* Force single-line, no truncation */
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: unset;
+            width: auto;
+            display: block;
         }
 
 
@@ -495,6 +501,12 @@
         }
 
         /* Stories 卡片样式（整合 demo 结构） */
+        /* === 2025-10-06 Update ===
+         * 1. Rounded top corners for preview image
+         * 2. Added dividing line below header buttons
+         * 3. Prevent image overlap with buttons
+         * 4. Enabled vertical scroll for preview card
+         * ========================= */
         .story-card {
             position: relative;
             background: transparent; /* 改为透明，让三段式结构各自控制背景 */
@@ -507,6 +519,8 @@
             flex-direction: column;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             max-height: 85vh;
+            overflow-y: auto; /* 允许卡片内容纵向滚动 */
+            scroll-behavior: smooth;
             transform-origin: center center;
         }
 
@@ -565,21 +579,37 @@
             margin: 0;
             z-index: 10010;
             box-shadow: none;
-            overflow: hidden;
+            overflow-x: hidden; /* 只隐藏横向 */
+            overflow-y: auto;   /* ✅ 允许纵向滚动 */
             background: transparent; /* 扩展阅读模式下也保持透明 */
         }
 
         /* 三段式结构样式 */
         .story-header {
-            background: #ffffff;
+            background: #fff;
             border-top-left-radius: var(--card-radius);
             border-top-right-radius: var(--card-radius);
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
-            padding: 2rem 1rem 1rem 1rem; /* 增加顶部padding给按钮留空间 */
-            position: relative;
-            z-index: 10;
-            min-height: 4rem; /* 确保Header有足够高度 */
+            border-bottom: 1px solid transparent; /* 分界线保留但不可见 */
+            padding: 0;
+            padding-top: 0 !important;
+            position: sticky; /* 让分界线固定在可滚动容器顶部 */
+            top: 0;
+            z-index: 20;
+            min-height: 48px; /* ✅ 按钮行具有可见高度 */
+        }
+
+        /* 固定分界线：始终在按钮下方、内容上方 */
+        .story-header::after {
+            content: "";
+            position: absolute;
+            bottom: -1px; /* 紧贴内容区顶部 */
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: transparent; /* 线存在但完全透明，保留层级与布局 */
+            z-index: 15;
         }
 
         .story-body {
@@ -588,8 +618,11 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
-            scrollbar-width: thin; /* Firefox */
+            position: relative;
+            overflow-y: visible;       /* ✅ 内容跟随外层 .story-card 滚动 */
+            scroll-behavior: smooth;
+            padding-top: 12px;         /* 与分界线留出视觉间距 */
+            scrollbar-width: thin;     /* Firefox */
         }
 
         .story-footer {
@@ -602,21 +635,41 @@
             z-index: 10;
         }
 
+        /* === 自适应图片方案 C（2025-10 更新）=== */
+        /* 图片容器：根据视口自动调节高度，保持比例 */
         .story-image {
             width: 100%;
-            height: 320px;
+            height: auto;
+            max-height: max(45vh, 80vw); /* 普通预览：高度上限 */
             background-position: center;
-            background-size: cover;
             background-repeat: no-repeat;
-            flex-shrink: 0;
-            border-radius: 0; /* 完全直角 */
+            background-size: cover;
+            display: flex;
+            align-items: flex-start; /* 挨着按钮 */
+            justify-content: center;
+            background-color: #fff;
+            margin-top: 6px;
+            border-top-left-radius: var(--card-radius);
+            border-top-right-radius: var(--card-radius);
+            overflow: hidden; /* 确保圆角可见 */
+        }
+
+        /* 图片本身：等比自适应，不被拉伸或裁切 */
+        .story-image-img {
+            width: 100%;
+            height: auto;
+            max-height: max(45vh, 80vw);
+            object-fit: contain;
+            display: block;
         }
 
         .story-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            position: relative;  /* 确保层级受控 */
+            z-index: 10;         /* 位于分界线之下 */
+            overflow-y: visible;
             scrollbar-width: thin; /* Firefox */
             height: 100%;
         }
@@ -672,11 +725,11 @@
 
         .card-controls {
             position: absolute;
-            top: 1rem; /* 调整到Header顶部padding位置 */
+            top: 0.8rem; /* 按钮下移，留出分界线空间 */
             right: 1rem;
             display: flex;
             gap: 10px;
-            z-index: 5;
+            z-index: 30; /* 保证悬浮在图片之上 */
         }
 
         .card-controls button {
@@ -737,11 +790,19 @@
         }
 
 
+        /* 扩大阅读模式：更高但仍保持视口限制 */
         .story-card.expanded .story-image {
-            width: 100%; /* 图片宽度设为100%，随容器自适应放大 */
-            height: 40vh;
+            width: 100%;
+            height: min(80vh, 90vw); /* 高度自动随窗口变化 */
             min-height: 300px;
-            object-fit: cover; /* 保证图片不被拉伸变形 */
+            align-items: flex-start; /* 扩展阅读同样顶部对齐 */
+        }
+
+        .story-card.expanded .story-image-img {
+            width: 100%;
+            height: auto;
+            max-height: min(80vh, 90vw);
+            object-fit: contain;
         }
 
         .story-card.expanded .story-title {
@@ -1102,12 +1163,16 @@
             line-height: 1.4;
             font-size: 0.9rem;
             flex: 0 0 auto;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            line-clamp: 1;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            max-height: 1.4em;
+            /* Force single-line, no truncation or ellipsis */
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: unset;
+            width: auto;
+            display: block; /* override any -webkit-box */
+            -webkit-line-clamp: unset;
+            line-clamp: unset;
+            -webkit-box-orient: unset;
+            max-height: none;
         }
 
 
@@ -2107,6 +2172,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tsparticles@2.12.0/tsparticles.bundle.min.js"></script>
     <script>
+        /* Debug logging silencer: keeps UI unchanged while cleaning console noise */
+        (function(){
+            var DEBUG = false;
+            if(!DEBUG && typeof console !== 'undefined'){
+                try {
+                    ['log','warn','error'].forEach(function(k){
+                        if (console && typeof console[k] === 'function') {
+                            console[k] = function(){};
+                        }
+                    });
+                } catch(e) {}
+            }
+        })();
         // Language switching
         let currentLang = 'en';
 
@@ -3340,16 +3418,16 @@
             overlay.id = 'storyOverlay';
             overlay.style.cssText = `
                 position: fixed;
-                top: 0;
+                top: var(--navbar-height);
                 left: 0;
                 width: 100vw;
-                height: 100vh;
+                height: calc(100vh - var(--navbar-height));
                 background: rgba(0, 0, 0, 0.5);
-                z-index: 10000;
+                z-index: 10000; /* 仍低于导航栏，避免覆盖导航 */
                 display: flex;
-                align-items: center;
+                align-items: flex-start; /* 内容从 overlay 顶部开始排列 */
                 justify-content: center;
-                padding: calc(var(--navbar-height) + 20px) 60px 40px 60px;
+                padding: 12px 60px 40px 60px; /* 顶部留少量透气空间 */
                 box-sizing: border-box;
             `;
             
@@ -3645,7 +3723,9 @@
                     
                     <!-- Body: 内容区，图片+文字在统一白色背景上，完全直角 -->
                     <div class="story-body">
-                        <div class="story-image" style="background-image: url('${project.image}');"></div>
+            <div class="story-image">
+                <img class="story-image-img" src="${project.image}" alt="${title}">
+            </div>
                         <h2 class="story-title">${title}</h2>
                         <div id="storyContent" class="story-content-text">
                             ${details.storyContent || fallbackContent}
