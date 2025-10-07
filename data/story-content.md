@@ -1,3 +1,5 @@
+by Junquan PAN
+
 <h1 align="center">Introduction</h1>
 
 For decades, educators and technologists have dreamed of reconciling two seemingly opposite goals in education: **personalization** and **scalability**.
