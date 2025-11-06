@@ -49,3 +49,9 @@ html, body {
   margin: 0 auto;
   border-radius: 12px;
 }
+
+/* Ensure hero description text aligns on both sides */
+.hero-description p {
+  text-align: justify;
+  text-justify: inter-ideograph;
+}
