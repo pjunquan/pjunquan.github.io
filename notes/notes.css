@@ -39,7 +39,7 @@
 .slide-content td { border-top: 0; }
 .slide-table h3 { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.65; }
 .slide-heading h3 { width: 45%; text-align: center; }
-.slide-table .lecture-text { padding-left: 32px; }
+.slide-table .lecture-text { padding-left: 32px; vertical-align: middle; }
 .lecture-text p { font-size: 15px; line-height: 1.85; letter-spacing: 0; }
 .lecture-text p + p { margin-top: 15px; }
 .slide-image-link { display: block; border: 1px solid var(--line); background: #fff; }
