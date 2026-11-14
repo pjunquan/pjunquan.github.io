@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Stanford CS329Z · Lecture 2 · LLMs for Builders — Junquan Pan</title>
+  <link rel="icon" href="/favicon.ico?v=62a3cb760445" sizes="16x16 32x32 48x48 64x64">
+  <link rel="icon" type="image/png" href="/favicon.png?v=d8ef948958ac" sizes="64x64">
+  <meta name="description" content="Michael Ryan explains language models for agent builders: sampling, Transformer and linear-attention architectures, training, inference, structured output, and context engineering.">
+  <link rel="canonical" href="https://pjunquan.github.io/notes/cs329z/lecture-2/">
+  <script>
+    try { const theme = localStorage.getItem('junquan-demo-theme'); document.documentElement.dataset.theme = theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (_) {}
+  </script>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/notes/notes.css?v=9a4e1a35cde3">
+  <script src="/notes/notes.js?v=aca44b0832b6" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main" data-note-copy="skip">跳至正文</a>
+  <div class="site notes-site reader-site">
+    <header class="header">
+      <nav aria-label="主导航" id="navigation">
+        <a href="/#about" data-note-copy="about">关于</a>
+        <a href="/#work" data-note-copy="work">作品</a>
+        <a href="/#learnings" data-note-copy="learnings" aria-current="page">学习</a>
+      </nav>
+      <div class="preferences">
+        <button class="language-control" id="language-toggle" aria-label="Switch to English"><span id="zh-label" class="selected-language">中</span><span class="language-divider" aria-hidden="true">/</span><span id="en-label">EN</span></button>
+        <button class="theme-control" id="theme-toggle" aria-label="切换至夜间模式">
+          <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+          <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 13.1A8.9 8.9 0 0 1 10.9 3.2 9 9 0 1 0 20.8 13.1Z"/></svg>
+        </button>
+      </div>
+    </header>
+    <main id="main" class="notes-main">
+
+      <a class="notes-back" href="../" data-note-copy="backCourse">← 课程笔记</a>
+      <article>
+      <header class="reader-intro" lang="en">
+        <h1>Stanford CS329Z · Lecture 2 · LLMs for Builders</h1>
+        <p>Michael Ryan explains language models for agent builders: sampling, Transformer and linear-attention architectures, training, inference, structured output, and context engineering.</p>
+        <p>The tables follow the original slide order. Read the edited English lecture text alongside each slide. Video ranges are approximate and may overlap for steps in the same animation. Classroom Q&amp;A and pages without a separate explanation are omitted; original slide numbers are preserved.</p>
+        <p class="source-links"><a href="https://cs329z.stanford.edu/" target="_blank" rel="noopener noreferrer">Course website</a> · <a href="https://web.stanford.edu/class/cs329z/slides/lecture02.pdf" target="_blank" rel="noopener noreferrer">Original slides</a> · <a href="https://www.youtube.com/watch?v=Vr1NzH8bT44" target="_blank" rel="noopener noreferrer">Full lecture and English captions</a></p>
+      </header>
+      <div class="reading-guide" id="contents">
+        <h2 data-note-copy="contents">本课目录</h2>
+        <ol class="topic-links" lang="en"><li><a href="#part-1"><span class="part-number">01</span>Language models and sampling</a></li><li><a href="#part-2"><span class="part-number">02</span>Language model architecture</a></li><li><a href="#part-3"><span class="part-number">03</span>Training</a></li><li><a href="#part-4"><span class="part-number">04</span>Inference</a></li><li><a href="#part-5"><span class="part-number">05</span>LLMs for agents</a></li></ol>
+      </div>
+      <section class="note-topic" id="part-1" aria-labelledby="part-1-heading" lang="en">
+        <div class="topic-header"><div><p class="notes-eyebrow">Part 1</p><h2 id="part-1-heading">Language models and sampling</h2></div><a href="#contents" data-note-copy="top" lang="zh-Hans">回到目录 ↑</a></div>
+        <table class="slide-table" aria-labelledby="part-1-heading">
+          <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
+          <tbody>
+            <tr class="slide-heading" id="slide-01"><th colspan="2"><h3>Slide 01 · LLMs for Builders</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-01">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-01.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-01.jpg" alt="Slide 01: LLMs for Builders. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="eager" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=5s" target="_blank" rel="noopener noreferrer">Watch 00:05–00:47</a></p>
+              </td>
+              <td class="lecture-text"><p>Michael Ryan introduces the second lecture of CS329Z. The aim is to understand enough about how language models work to make informed decisions when building applications and agents on top of them. The lecture moves from the definition of a language model to its architecture, training, inference, and practical use in an agent.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-02"><th colspan="2"><h3>Slide 02 · The LLM Stack</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-02">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-02.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-02.jpg" alt="Slide 02: The LLM Stack. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=47s" target="_blank" rel="noopener noreferrer">Watch 00:47–02:41</a></p>
+              </td>
+              <td class="lecture-text"><p>The LLM stack can be viewed as three overlapping layers. LLM engineering includes the infrastructure and methods needed to build the model itself: distributed computation, GPU kernels, architectures, scaling laws, pretraining, and post-training. LLM adaptation changes a model for a particular setting through methods such as fine-tuning, distillation, in-context learning, and low-rank adaptation. The application layer includes agents, chatbots, and retrieval-augmented generation.</p>
+              <p>The Stanford courses occupy different parts of this picture. CS336 concentrates on building language models from scratch, while CS224N covers a broader range of natural language processing and model adaptation. CS329Z sits near the top of the stack, with an emphasis on engineering agents. There is overlap between the courses, but this course also addresses agent-specific topics beyond the usual NLP curriculum.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-03"><th colspan="2"><h3>Slide 03 · Why Builders Need to Understand the Model</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-03">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-03.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-03.jpg" alt="Slide 03: Why Builders Need to Understand the Model. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=161s" target="_blank" rel="noopener noreferrer">Watch 02:41–02:58</a></p>
+              </td>
+              <td class="lecture-text"><p>Most of this course will operate at the application layer. Even so, some choices made inside the language model directly affect the systems built around it. Understanding those choices gives builders a basis for deciding how to use a model and where its limitations may become important.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-04"><th colspan="2"><h3>Slide 04 · Learning Objectives</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-04">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-04.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-04.jpg" alt="Slide 04: Learning Objectives. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=178s" target="_blank" rel="noopener noreferrer">Watch 02:58–03:37</a></p>
+              </td>
+              <td class="lecture-text"><p>The first objective is to understand the major design decisions involved in training and running modern language models. The second is to connect those decisions to the limitations an application must accommodate. For example, understanding attention and the KV cache helps explain whether a model suits a long-context application and how to use it efficiently. The rest of the course will mainly use language models, rather than build them from scratch.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-05"><th colspan="2"><h3>Slide 05 · Lecture Overview</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-05">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-05.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-05.jpg" alt="Slide 05: Lecture Overview. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=217s" target="_blank" rel="noopener noreferrer">Watch 03:37–03:50</a></p>
+              </td>
+              <td class="lecture-text"><p>The lecture has five main topics: what a language model is, how its architecture works, how it is trained, how inference is performed, and how these ideas affect the design of agents. Each topic adds another part of the explanation for the behavior of the model an agent calls.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-06"><th colspan="2"><h3>Slide 06 · What Is a Language Model?</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-06">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-06.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-06.jpg" alt="Slide 06: What Is a Language Model?. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=237s" target="_blank" rel="noopener noreferrer">Watch 03:57–04:07</a></p>
+              </td>
+              <td class="lecture-text"><p>Start with the mathematical object underneath the familiar chat interface. A language model assigns probabilities to sequences of tokens. Looking at this definition first makes the later discussion of generation, architecture, and training easier to connect.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-07"><th colspan="2"><h3>Slide 07 · The Probability of a Token Sequence</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-07">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-07.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-07.jpg" alt="Slide 07: The Probability of a Token Sequence. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=247s" target="_blank" rel="noopener noreferrer">Watch 04:07–04:40</a></p>
+              </td>
+              <td class="lecture-text"><p>The probability of a complete sequence can be factored into a product of conditional probabilities. At each position, the model estimates the probability of the current token given all the preceding tokens. Multiplying these terms from the first token to the last produces the probability of the sequence. For this introductory example, tokens can be thought of as words.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-08"><th colspan="2"><h3>Slide 08 · A Worked Sequence-Probability Example</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-08">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-08.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-08.jpg" alt="Slide 08: A Worked Sequence-Probability Example. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=280s" target="_blank" rel="noopener noreferrer">Watch 04:40–05:22</a></p>
+              </td>
+              <td class="lecture-text"><p>Consider a sentence about a class and agents. First evaluate the probability of its opening token. Then evaluate the next token conditioned on the first, the third conditioned on the first two, and so on until the final punctuation. The probability of the sentence is the product of these individual terms.</p>
+              <p>These numbers can become extremely small. In practice, working with the sum of log probabilities is more numerically stable than multiplying many small probabilities directly. The underlying object is still the same probability distribution over text sequences.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-09"><th colspan="2"><h3>Slide 09 · The Language Model as a Distribution</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-09">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-09.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-09.jpg" alt="Slide 09: The Language Model as a Distribution. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=322s" target="_blank" rel="noopener noreferrer">Watch 05:22–05:30</a></p>
+              </td>
+              <td class="lecture-text"><p>The complete sequence-probability expression is the language model. The individual next-token predictions provide a way to evaluate that distribution one position at a time. The next question is what this representation lets us do.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-10"><th colspan="2"><h3>Slide 10 · Generative and Discriminative Models</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-10">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-10.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-10.jpg" alt="Slide 10: Generative and Discriminative Models. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=330s" target="_blank" rel="noopener noreferrer">Watch 05:30–05:34</a></p>
+              </td>
+              <td class="lecture-text"><p>A useful distinction is between learning to separate classes and learning a distribution from which examples can be generated. This gives another way to understand the kind of object a language model represents.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-11"><th colspan="2"><h3>Slide 11 · Learning a Boundary or a Distribution</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-11">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-11.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-11.jpg" alt="Slide 11: Learning a Boundary or a Distribution. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=334s" target="_blank" rel="noopener noreferrer">Watch 05:34–06:08</a></p>
+              </td>
+              <td class="lecture-text"><p>A discriminative model learns to distinguish categories. For example, logistic regression or a support vector machine might learn a boundary separating images of cats from images of dogs. A generative model instead models the distribution of the data: it can assign a probability to an example and generate examples from that distribution. The distinction is about what is being modeled, rather than simply whether the output contains a class label.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-13"><th colspan="2"><h3>Slide 13 · Language Models Can Be Sampled</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-13">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-13.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-13.jpg" alt="Slide 13: Language Models Can Be Sampled. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=446s" target="_blank" rel="noopener noreferrer">Watch 07:26–07:40</a></p>
+              </td>
+              <td class="lecture-text"><p>Language models are generally treated as generative because they model a probability distribution over complete token sequences. That distribution allows us to sample text. Generation uses the next-token probabilities repeatedly to extend a sequence.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-14"><th colspan="2"><h3>Slide 14 · Language Model Sampling</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-14">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-14.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-14.jpg" alt="Slide 14: Language Model Sampling. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=460s" target="_blank" rel="noopener noreferrer">Watch 07:40–07:46</a></p>
+              </td>
+              <td class="lecture-text"><p>To generate text, begin with a prefix and ask the model what could come next. Sampling turns the model&#x27;s probability distribution into a particular continuation.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-15"><th colspan="2"><h3>Slide 15 · Possible Next Tokens</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-15">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-15.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-15.jpg" alt="Slide 15: Possible Next Tokens. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=466s" target="_blank" rel="noopener noreferrer">Watch 07:46–08:16</a></p>
+              </td>
+              <td class="lecture-text"><p>For a prefix describing what a class was about, the model considers possible continuations across its vocabulary. The candidate tokens include common continuations and less likely alternatives. The vocabulary defines the set over which the next-token probabilities are computed.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-16"><th colspan="2"><h3>Slide 16 · A Distribution over the Vocabulary</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-16">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-16.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-16.jpg" alt="Slide 16: A Distribution over the Vocabulary. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=496s" target="_blank" rel="noopener noreferrer">Watch 08:16–08:29</a></p>
+              </td>
+              <td class="lecture-text"><p>Each candidate receives a probability conditioned on the same prefix. For example, the model can evaluate a continuation using “to,” another using “as,” and so on. Together, these probabilities form the distribution used to select the next token.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-17"><th colspan="2"><h3>Slide 17 · Selecting the Most Likely Token</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-17">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-17.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-17.jpg" alt="Slide 17: Selecting the Most Likely Token. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=509s" target="_blank" rel="noopener noreferrer">Watch 08:29–08:43</a></p>
+              </td>
+              <td class="lecture-text"><p>The bars visualize the next-token probabilities. In this example, “to” has the largest probability, so choosing the most likely continuation selects that token. It is then appended to the prefix before the next prediction is made.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-18"><th colspan="2"><h3>Slide 18 · Greedy, Top-p, and Top-k Decoding</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-18">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-18.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-18.jpg" alt="Slide 18: Greedy, Top-p, and Top-k Decoding. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=523s" target="_blank" rel="noopener noreferrer">Watch 08:43–09:32</a></p>
+              </td>
+              <td class="lecture-text"><p>After appending the chosen token, run the model again on the longer prefix. The new distribution may favor “be,” but generation does not always have to take the highest-probability option; it could select “begin” instead.</p>
+              <p>Greedy decoding always takes the most likely next token. Top-p, or nucleus sampling, forms a candidate set by accumulating probability mass until it reaches a chosen threshold, then samples within that set. Top-k limits sampling to a fixed number of the highest-probability candidates. These strategies offer different ways to control how much variation is allowed in a continuation.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-19"><th colspan="2"><h3>Slide 19 · Repeating the Generation Step</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-19">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-19.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-19.jpg" alt="Slide 19: Repeating the Generation Step. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=572s" target="_blank" rel="noopener noreferrer">Watch 09:32–09:37</a></p>
+              </td>
+              <td class="lecture-text"><p>Continuing the same process produces a complete sentence. Each selected token becomes part of the prefix for the next step, so an early sampling decision changes the distributions encountered later.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-20"><th colspan="2"><h3>Slide 20 · Temperature</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-20">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-20.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-20.jpg" alt="Slide 20: Temperature. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=577s" target="_blank" rel="noopener noreferrer">Watch 09:37–10:29</a></p>
+              </td>
+              <td class="lecture-text"><p>Temperature changes how concentrated the sampling distribution is. A higher value makes the distribution flatter and allows more diverse continuations; a lower value concentrates it toward the most likely tokens. It is a setting that can be tuned for the application.</p>
+              <p>The instructor clarifies that temperature is applied to the logits before they become probabilities: divide the logits by the temperature, then normalize through softmax so the probabilities sum to one. The plotted example illustrates how this changes the relative chance of different continuations.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-21"><th colspan="2"><h3>Slide 21 · Beam Search</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-21">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-21.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-21.jpg" alt="Slide 21: Beam Search. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=629s" target="_blank" rel="noopener noreferrer">Watch 10:29–11:04</a></p>
+              </td>
+              <td class="lecture-text"><p>Generation can also consider multiple partial continuations instead of committing immediately to a single next token. Beam search keeps several candidate sequences and extends them, allowing later evidence to affect which path is retained. The cost is additional computation and memory because several states must be maintained at once.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-22"><th colspan="2"><h3>Slide 22 · Choosing a Sampling Strategy</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-22">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-22.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-22.jpg" alt="Slide 22: Choosing a Sampling Strategy. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=664s" target="_blank" rel="noopener noreferrer">Watch 11:04–11:38</a></p>
+              </td>
+              <td class="lecture-text"><p>Sampling choices involve tradeoffs among diversity, task performance, and cost. Temperature and top-p or top-k sampling help control diversity. Predictable tasks such as some math and coding problems may benefit from lower-temperature generation, while creative writing may benefit from greater variation. The available budget matters too: maintaining multiple candidate paths, as in beam search, increases time and memory requirements.</p></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="note-topic" id="part-2" aria-labelledby="part-2-heading" lang="en">
+        <div class="topic-header"><div><p class="notes-eyebrow">Part 2</p><h2 id="part-2-heading">Language model architecture</h2></div><a href="#contents" data-note-copy="top" lang="zh-Hans">回到目录 ↑</a></div>
+        <table class="slide-table" aria-labelledby="part-2-heading">
+          <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
+          <tbody>
+            <tr class="slide-heading" id="slide-24"><th colspan="2"><h3>Slide 24 · Language Model Architecture</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-24">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-24.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-24.jpg" alt="Slide 24: Language Model Architecture. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=965s" target="_blank" rel="noopener noreferrer">Watch 16:05–16:14</a></p>
+              </td>
+              <td class="lecture-text"><p>The next section opens the black box behind the next-token probabilities. It begins with a brief architectural history, then builds a decoder-only Transformer step by step.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-25"><th colspan="2"><h3>Slide 25 · A Brief History of Language Model Architectures</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-25">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-25.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-25.jpg" alt="Slide 25: A Brief History of Language Model Architectures. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=974s" target="_blank" rel="noopener noreferrer">Watch 16:14–17:05</a></p>
+              </td>
+              <td class="lecture-text"><p>Early n-gram models estimated probabilities from counts. For instance, the frequency with which one word followed another provided an estimate of its conditional probability. Neural language models, recurrent neural networks, and later the widespread use of LSTMs offered increasingly flexible ways to represent sequences.</p>
+              <p>The lecture does not develop these earlier architectures in detail. Instead, it focuses on Transformers and their variants, which underpin many modern language models. The earlier models provide useful background for understanding why the Transformer represented a change.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-26"><th colspan="2"><h3>Slide 26 · Transformers</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-26">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-26.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-26.jpg" alt="Slide 26: Transformers. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1025s" target="_blank" rel="noopener noreferrer">Watch 17:05–17:13</a></p>
+              </td>
+              <td class="lecture-text"><p>Transformers provide the main architectural foundation for the models discussed here. The lecture will examine the building blocks that turn token representations into a distribution over the next token.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-27"><th colspan="2"><h3>Slide 27 · Attention Is All You Need</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-27">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-27.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-27.jpg" alt="Slide 27: Attention Is All You Need. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1033s" target="_blank" rel="noopener noreferrer">Watch 17:13–17:54</a></p>
+              </td>
+              <td class="lecture-text"><p>The original Transformer was an encoder-decoder architecture. Its encoder transforms the input into representations that the decoder uses when producing output. Many modern language models use a decoder-only architecture, so the lecture removes the encoder from the picture and concentrates on the decoder. The key components remain useful for understanding the larger family of Transformer models.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-28"><th colspan="2"><h3>Slide 28 · Decoder Input Tokens</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-28">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-28.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-28.jpg" alt="Slide 28: Decoder Input Tokens. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1074s" target="_blank" rel="noopener noreferrer">Watch 17:54–18:12</a></p>
+              </td>
+              <td class="lecture-text"><p>Begin with a short prefix consisting of four tokens. The task is to compute a distribution for the token that follows it. Each position will have its own representation as the sequence passes through the network.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-29"><th colspan="2"><h3>Slide 29 · Token Embeddings</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-29">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-29.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-29.jpg" alt="Slide 29: Token Embeddings. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1092s" target="_blank" rel="noopener noreferrer">Watch 18:12–18:28</a></p>
+              </td>
+              <td class="lecture-text"><p>Convert each token into a vector representation. A learned embedding table can map the token&#x27;s vocabulary identifier to its embedding vector. These vectors provide the numerical input on which the rest of the model operates.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-30"><th colspan="2"><h3>Slide 30 · Positional Information</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-30">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-30.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-30.jpg" alt="Slide 30: Positional Information. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1108s" target="_blank" rel="noopener noreferrer">Watch 18:28–18:48</a></p>
+              </td>
+              <td class="lecture-text"><p>Add information about where each token occurs. The subsequent operations need a way to distinguish positions in the sequence, so positional representations are combined with the token embeddings. The diagram shows separate positional information for the first, second, third, and fourth tokens.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-31"><th colspan="2"><h3>Slide 31 · Stacking Token Representations</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-31">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-31.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-31.jpg" alt="Slide 31: Stacking Token Representations. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1128s" target="_blank" rel="noopener noreferrer">Watch 18:48–18:54</a></p>
+              </td>
+              <td class="lecture-text"><p>For a compact representation of the computation, stack the token vectors into a matrix. One dimension corresponds to the token positions and the other to the vector features. The following diagrams use this matrix to show the operations on the whole sequence together.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-32"><th colspan="2"><h3>Slide 32 · Understanding Attention</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-32">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-32.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-32.jpg" alt="Slide 32: Understanding Attention. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1136s" target="_blank" rel="noopener noreferrer">Watch 18:56–19:16</a></p>
+              </td>
+              <td class="lecture-text"><p>Attention is the central mechanism in the next part of the lecture. Understanding how it transforms the token representations will also make the later discussions of context length, memory, and inference easier to follow.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-33"><th colspan="2"><h3>Slide 33 · The Attention Layer</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-33">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-33.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-33.jpg" alt="Slide 33: The Attention Layer. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1156s" target="_blank" rel="noopener noreferrer">Watch 19:16–19:18</a></p>
+              </td>
+              <td class="lecture-text"><p>The attention layer starts from the token representations prepared in the preceding steps. The diagram will now expand the operations inside that layer.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-34"><th colspan="2"><h3>Slide 34 · Layer Normalization</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-34">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-34.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-34.jpg" alt="Slide 34: Layer Normalization. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1158s" target="_blank" rel="noopener noreferrer">Watch 19:18–19:34</a></p>
+              </td>
+              <td class="lecture-text"><p>The inputs first pass through layer normalization. This normalizes the representations using their mean and variance before the attention projections are applied. The diagram continues to track one vector for each token position.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-35"><th colspan="2"><h3>Slide 35 · Queries, Keys, and Values</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-35">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-35.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-35.jpg" alt="Slide 35: Queries, Keys, and Values. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1174s" target="_blank" rel="noopener noreferrer">Watch 19:34–20:42</a></p>
+              </td>
+              <td class="lecture-text"><p>Multiply the input representations by three learned weight matrices to obtain queries, keys, and values. The diagrams distinguish the learned weights, shown as blocks, from the activations produced by the multiplications, shown as arrays of dots.</p>
+              <p>The shapes matter. In the example, one dimension has length four because there are four input tokens. Another dimension is the feature size used for the query, key, or value representation. Transposing the key matrix makes it possible to combine every query with the keys in the next multiplication.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-36"><th colspan="2"><h3>Slide 36 · Computing Attention Scores</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-36">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-36.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-36.jpg" alt="Slide 36: Computing Attention Scores. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1242s" target="_blank" rel="noopener noreferrer">Watch 20:42–21:00</a></p>
+              </td>
+              <td class="lecture-text"><p>Multiplying the query matrix by the transposed key matrix produces attention scores. The result has one row and one column per token position, so it is an n-by-n matrix for a sequence of length n. This is where the pairwise interaction between positions becomes visible in the computation.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-37"><th colspan="2"><h3>Slide 37 · The Causal Attention Mask</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-37">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-37.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-37.jpg" alt="Slide 37: The Causal Attention Mask. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1260s" target="_blank" rel="noopener noreferrer">Watch 21:00–21:37</a></p>
+              </td>
+              <td class="lecture-text"><p>The decoder must not use future tokens when predicting the next token. During training, the complete text is available, but during generation those future tokens do not yet exist. A causal mask prevents a position from attending to positions that come after it.</p>
+              <p>In the example, a later token can use the earlier token&#x27;s information, while the earlier token cannot use information from the later one. Applying the mask preserves the left-to-right prediction setting required for generation.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-38"><th colspan="2"><h3>Slide 38 · Scaling the Scores</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-38">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-38.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-38.jpg" alt="Slide 38: Scaling the Scores. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1297s" target="_blank" rel="noopener noreferrer">Watch 21:37–21:45</a></p>
+              </td>
+              <td class="lecture-text"><p>The attention scores are scaled using the key dimension, as shown by the square-root factor in the slide&#x27;s equation. This controls the magnitude of the values before they pass through softmax and helps keep the computation stable.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-39"><th colspan="2"><h3>Slide 39 · Normalizing Attention Weights</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-39">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-39.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-39.jpg" alt="Slide 39: Normalizing Attention Weights. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1305s" target="_blank" rel="noopener noreferrer">Watch 21:45–21:53</a></p>
+              </td>
+              <td class="lecture-text"><p>Apply softmax to the masked, scaled scores. This turns each row into normalized weights that sum to one. Those weights determine how the value representations will be combined for each token position.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-40"><th colspan="2"><h3>Slide 40 · Combining the Values</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-40">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-40.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-40.jpg" alt="Slide 40: Combining the Values. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1313s" target="_blank" rel="noopener noreferrer">Watch 21:53–22:02</a></p>
+              </td>
+              <td class="lecture-text"><p>Multiply the normalized attention weights by the value matrix. This produces a new representation for each position by mixing value information according to the attention weights.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-41"><th colspan="2"><h3>Slide 41 · Projecting Back to the Model Dimension</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-41">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-41.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-41.jpg" alt="Slide 41: Projecting Back to the Model Dimension. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1322s" target="_blank" rel="noopener noreferrer">Watch 22:02–22:11</a></p>
+              </td>
+              <td class="lecture-text"><p>Apply an output projection to return the attention result to the model&#x27;s representation size. Matching the dimensions makes it possible to combine this output with the input representation through a residual connection.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-42"><th colspan="2"><h3>Slide 42 · The Residual Connection</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-42">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-42.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-42.jpg" alt="Slide 42: The Residual Connection. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1331s" target="_blank" rel="noopener noreferrer">Watch 22:11–22:17</a></p>
+              </td>
+              <td class="lecture-text"><p>Add a residual connection around the attention computation. This provides a path that helps gradients flow through the network and supports stable training. The attention result is combined with the representation that entered the layer.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-43"><th colspan="2"><h3>Slide 43 · The Completed Attention Layer</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-43">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-43.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-43.jpg" alt="Slide 43: The Completed Attention Layer. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1337s" target="_blank" rel="noopener noreferrer">Watch 22:17–22:29</a></p>
+              </td>
+              <td class="lecture-text"><p>These operations complete the attention layer: normalization and learned projections, masked attention scores, softmax, value mixing, an output projection, and a residual connection. The next extension is to compute several attention representations in parallel.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-44"><th colspan="2"><h3>Slide 44 · Multi-Head Attention</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-44">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-44.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-44.jpg" alt="Slide 44: Multi-Head Attention. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1591s" target="_blank" rel="noopener noreferrer">Watch 26:31–26:44</a></p>
+              </td>
+              <td class="lecture-text"><p>Multi-head attention repeats the attention computation using multiple sets of learned projection weights. The diagram stacks these computations to represent several heads operating on the same sequence.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-45"><th colspan="2"><h3>Slide 45 · Parallel Attention Heads</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-45">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-45.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-45.jpg" alt="Slide 45: Parallel Attention Heads. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1598s" target="_blank" rel="noopener noreferrer">Watch 26:38–26:46</a></p>
+              </td>
+              <td class="lecture-text"><p>Each head produces its own attention output. Running several heads gives the model more than one representation of the relationships within the sequence, rather than relying on a single attention computation.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-46"><th colspan="2"><h3>Slide 46 · Concatenating the Heads</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-46">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-46.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-46.jpg" alt="Slide 46: Concatenating the Heads. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1604s" target="_blank" rel="noopener noreferrer">Watch 26:44–26:51</a></p>
+              </td>
+              <td class="lecture-text"><p>Place the outputs of the attention heads next to one another. This concatenation creates a wider representation that contains the results from all of the heads.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-47"><th colspan="2"><h3>Slide 47 · Projecting the Combined Output</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-47">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-47.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-47.jpg" alt="Slide 47: Projecting the Combined Output. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1611s" target="_blank" rel="noopener noreferrer">Watch 26:51–26:59</a></p>
+              </td>
+              <td class="lecture-text"><p>Use a larger output projection to map the concatenated head outputs back to the original model dimension. Even though several heads have been combined, the layer&#x27;s final representation has the size expected by the rest of the network.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-48"><th colspan="2"><h3>Slide 48 · Why Use Multiple Heads?</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-48">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-48.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-48.jpg" alt="Slide 48: Why Use Multiple Heads?. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1619s" target="_blank" rel="noopener noreferrer">Watch 26:59–27:13</a></p>
+              </td>
+              <td class="lecture-text"><p>The multiple heads allow different representations of the same sequence to be computed together. This multi-head construction is the form used in the Transformer block, extending the single-head computation introduced earlier.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-50"><th colspan="2"><h3>Slide 50 · Multi-Head Causal Self-Attention</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-50">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-50.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-50.jpg" alt="Slide 50: Multi-Head Causal Self-Attention. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1633s" target="_blank" rel="noopener noreferrer">Watch 27:13–27:21</a></p>
+              </td>
+              <td class="lecture-text"><p>The detailed attention computation can now be represented as one component: multi-head causal self-attention. Collapsing it into a block makes the remaining decoder architecture easier to see.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-51"><th colspan="2"><h3>Slide 51 · Normalization before the Feed-Forward Layer</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-51">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-51.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-51.jpg" alt="Slide 51: Normalization before the Feed-Forward Layer. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1641s" target="_blank" rel="noopener noreferrer">Watch 27:21–27:23</a></p>
+              </td>
+              <td class="lecture-text"><p>Apply another layer normalization to the attention output. This prepares the representation for the next component in the Transformer block.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-52"><th colspan="2"><h3>Slide 52 · A Second Residual Path</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-52">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-52.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-52.jpg" alt="Slide 52: A Second Residual Path. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1643s" target="_blank" rel="noopener noreferrer">Watch 27:23–27:27</a></p>
+              </td>
+              <td class="lecture-text"><p>The diagram sets up a residual path around the next computation. As with attention, this allows the new transformation to be combined with the representation entering it.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-53"><th colspan="2"><h3>Slide 53 · The Feed-Forward Component</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-53">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-53.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-53.jpg" alt="Slide 53: The Feed-Forward Component. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1647s" target="_blank" rel="noopener noreferrer">Watch 27:27–27:32</a></p>
+              </td>
+              <td class="lecture-text"><p>The next component is a conventional feed-forward network. It transforms the representations using learned matrix operations after the attention layer has combined information across positions.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-54"><th colspan="2"><h3>Slide 54 · Combining the Feed-Forward Output</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-54">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-54.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-54.jpg" alt="Slide 54: Combining the Feed-Forward Output. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1652s" target="_blank" rel="noopener noreferrer">Watch 27:32–27:35</a></p>
+              </td>
+              <td class="lecture-text"><p>Add the feed-forward result through the residual connection. Together with the earlier attention component and normalization steps, this forms the structure that will be repeated throughout the decoder.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-56"><th colspan="2"><h3>Slide 56 · Stacking Transformer Blocks</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-56">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-56.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-56.jpg" alt="Slide 56: Stacking Transformer Blocks. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1655s" target="_blank" rel="noopener noreferrer">Watch 27:35–27:45</a></p>
+              </td>
+              <td class="lecture-text"><p>The complete unit is a Transformer block. Stacking many such blocks creates a deep network, with each block receiving and transforming the representations produced by the preceding one.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-57"><th colspan="2"><h3>Slide 57 · The Language Modeling Head</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-57">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-57.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-57.jpg" alt="Slide 57: The Language Modeling Head. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1665s" target="_blank" rel="noopener noreferrer">Watch 27:45–27:54</a></p>
+              </td>
+              <td class="lecture-text"><p>The language modeling head maps the final hidden representation to a vector with one entry per vocabulary token. It changes the feature dimension from the model&#x27;s hidden size to the size needed for next-token prediction.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-58"><th colspan="2"><h3>Slide 58 · Vocabulary-Sized Outputs</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-58">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-58.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-58.jpg" alt="Slide 58: Vocabulary-Sized Outputs. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1674s" target="_blank" rel="noopener noreferrer">Watch 27:54–27:59</a></p>
+              </td>
+              <td class="lecture-text"><p>The head produces the output vectors used to predict tokens. There is an output for each position in the input sequence, with a dimension corresponding to the vocabulary.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-59"><th colspan="2"><h3>Slide 59 · From Outputs to Probabilities</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-59">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-59.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-59.jpg" alt="Slide 59: From Outputs to Probabilities. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1674s" target="_blank" rel="noopener noreferrer">Watch 27:54–27:59</a></p>
+              </td>
+              <td class="lecture-text"><p>The diagram shows softmax converting the model&#x27;s output into probabilities. These are the next-token distributions that the earlier sampling examples treated as a black box.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-60"><th colspan="2"><h3>Slide 60 · Reading the Next-Token Prediction</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-60">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-60.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-60.jpg" alt="Slide 60: Reading the Next-Token Prediction. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1679s" target="_blank" rel="noopener noreferrer">Watch 27:59–28:26</a></p>
+              </td>
+              <td class="lecture-text"><p>The matrix can be separated back into outputs for individual token positions. For generation after the supplied prefix, the relevant distribution is the one at the final position. It tells us what token is likely to come next. The sequence of embeddings, attention blocks, and the language modeling head is therefore what produces the distribution used by the sampler.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-61"><th colspan="2"><h3>Slide 61 · Attention versus Recurrence</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-61">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-61.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-61.jpg" alt="Slide 61: Attention versus Recurrence. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1717s" target="_blank" rel="noopener noreferrer">Watch 28:37–29:45</a></p>
+              </td>
+              <td class="lecture-text"><p>A major advantage of self-attention is that the positions in a known training sequence can be processed in parallel. The original Transformer comparison highlights a constant number of sequential operations per layer, which suits GPUs well. A recurrent architecture instead carries a state from one position to the next, creating a sequential dependency across the sequence.</p>
+              <p>This parallelism does not mean that attention has constant total cost. Full attention constructs pairwise interactions across positions, giving a quadratic dependence on sequence length. That becomes expensive when the context is long.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-62"><th colspan="2"><h3>Slide 62 · The Original Transformer&#x27;s Efficiency</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-62">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-62.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-62.jpg" alt="Slide 62: The Original Transformer&#x27;s Efficiency. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1785s" target="_blank" rel="noopener noreferrer">Watch 29:45–30:12</a></p>
+              </td>
+              <td class="lecture-text"><p>The original Transformer results showed improvements in both quality and training cost relative to the systems being compared. The scale of the models in that historical comparison was also much smaller than the largest language models discussed today. The table helps explain why the architecture attracted attention when it was introduced.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-63"><th colspan="2"><h3>Slide 63 · Linear Attention</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-63">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-63.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-63.jpg" alt="Slide 63: Linear Attention. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1812s" target="_blank" rel="noopener noreferrer">Watch 30:12–30:17</a></p>
+              </td>
+              <td class="lecture-text"><p>Linear attention changes the attention computation to reduce the cost associated with the sequence-length-squared interaction. The next diagrams develop the idea by modifying the attention layer already introduced.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-64"><th colspan="2"><h3>Slide 64 · Revisiting the Attention Computation</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-64">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-64.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-64.jpg" alt="Slide 64: Revisiting the Attention Computation. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1812s" target="_blank" rel="noopener noreferrer">Watch 30:12–30:20</a></p>
+              </td>
+              <td class="lecture-text"><p>Start from the familiar attention layer. The part to reconsider is the operation that constructs and normalizes interactions between all query and key positions.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-65"><th colspan="2"><h3>Slide 65 · Changing the Attention Operation</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-65">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-65.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-65.jpg" alt="Slide 65: Changing the Attention Operation. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1817s" target="_blank" rel="noopener noreferrer">Watch 30:17–30:27</a></p>
+              </td>
+              <td class="lecture-text"><p>The goal is to address the quadratic dependence on context length. The lecture uses a simplified linear-attention construction to show how changing the order of matrix operations can change what must be stored.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-66"><th colspan="2"><h3>Slide 66 · Removing Softmax in the Simplified Example</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-66">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-66.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-66.jpg" alt="Slide 66: Removing Softmax in the Simplified Example. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1827s" target="_blank" rel="noopener noreferrer">Watch 30:27–30:38</a></p>
+              </td>
+              <td class="lecture-text"><p>In this illustrative construction, remove the softmax operation. The remaining sequence of matrix multiplications can then be regrouped. This is the key algebraic change behind the next steps in the diagram.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-67"><th colspan="2"><h3>Slide 67 · Reordering the Multiplications</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-67">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-67.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-67.jpg" alt="Slide 67: Reordering the Multiplications. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1838s" target="_blank" rel="noopener noreferrer">Watch 30:38–30:49</a></p>
+              </td>
+              <td class="lecture-text"><p>Instead of first combining queries and keys into a sequence-by-sequence matrix, combine keys and values first. Changing the association of the multiplications produces an intermediate representation whose size is determined by feature dimensions rather than the number of token positions.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-68"><th colspan="2"><h3>Slide 68 · Processing the First Token</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-68">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-68.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-68.jpg" alt="Slide 68: Processing the First Token. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1849s" target="_blank" rel="noopener noreferrer">Watch 30:49–30:52</a></p>
+              </td>
+              <td class="lecture-text"><p>The recurrent view begins with a single token and its query, key, and value projections. The diagram now tracks a state that can be carried forward as additional tokens arrive.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-69"><th colspan="2"><h3>Slide 69 · A Fixed-Size State</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-69">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-69.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-69.jpg" alt="Slide 69: A Fixed-Size State. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1852s" target="_blank" rel="noopener noreferrer">Watch 30:52–31:10</a></p>
+              </td>
+              <td class="lecture-text"><p>Combining the key and value information produces the state matrix. In the toy diagram this matrix is three by three, reflecting the hidden feature size, whereas the earlier full-attention score matrix was four by four because it represented four sequence positions. The state after the first token is labeled S1.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-70"><th colspan="2"><h3>Slide 70 · Reading from the State</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-70">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-70.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-70.jpg" alt="Slide 70: Reading from the State. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1870s" target="_blank" rel="noopener noreferrer">Watch 31:10–31:12</a></p>
+              </td>
+              <td class="lecture-text"><p>Use the current query to read from the state matrix. The state contains the information accumulated so far, and the query determines the output extracted from that representation.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-71"><th colspan="2"><h3>Slide 71 · Producing the Layer Output</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-71">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-71.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-71.jpg" alt="Slide 71: Producing the Layer Output. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1872s" target="_blank" rel="noopener noreferrer">Watch 31:12–31:19</a></p>
+              </td>
+              <td class="lecture-text"><p>Apply the output projection to the state-derived representation. This produces the layer&#x27;s output while retaining the state needed to process the next token.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-72"><th colspan="2"><h3>Slide 72 · The Linear-Attention Update Rule</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-72">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-72.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-72.jpg" alt="Slide 72: The Linear-Attention Update Rule. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1879s" target="_blank" rel="noopener noreferrer">Watch 31:19–31:21</a></p>
+              </td>
+              <td class="lecture-text"><p>The next question is how the state changes when another token arrives. The following steps show the same computation as an incremental update rather than rebuilding the entire context interaction.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-73"><th colspan="2"><h3>Slide 73 · Discarding Temporary Computation</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-73">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-73.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-73.jpg" alt="Slide 73: Discarding Temporary Computation. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1881s" target="_blank" rel="noopener noreferrer">Watch 31:21–31:25</a></p>
+              </td>
+              <td class="lecture-text"><p>Clear the intermediate quantities that are no longer needed for the next step. The information that must persist is the accumulated state, rather than every intermediate activation from the previous token.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-74"><th colspan="2"><h3>Slide 74 · Saving the State</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-74">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-74.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-74.jpg" alt="Slide 74: Saving the State. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1885s" target="_blank" rel="noopener noreferrer">Watch 31:25–31:28</a></p>
+              </td>
+              <td class="lecture-text"><p>Carry the state forward to the next token. This fixed-size object summarizes the preceding computation and will be updated with the new token&#x27;s contribution.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-75"><th colspan="2"><h3>Slide 75 · Passing State to the Next Step</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-75">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-75.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-75.jpg" alt="Slide 75: Passing State to the Next Step. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1885s" target="_blank" rel="noopener noreferrer">Watch 31:25–31:28</a></p>
+              </td>
+              <td class="lecture-text"><p>The diagram moves the saved state into position for the next update. The previous token&#x27;s accumulated information remains available even though its temporary computation has been cleared.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-76"><th colspan="2"><h3>Slide 76 · Receiving the Next Token</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-76">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-76.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-76.jpg" alt="Slide 76: Receiving the Next Token. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1888s" target="_blank" rel="noopener noreferrer">Watch 31:28–31:32</a></p>
+              </td>
+              <td class="lecture-text"><p>Process the next token through the layer&#x27;s projections. Its new representations supply the information needed to update the saved state and compute the next output.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-77"><th colspan="2"><h3>Slide 77 · Computing the New State Contribution</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-77">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-77.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-77.jpg" alt="Slide 77: Computing the New State Contribution. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1892s" target="_blank" rel="noopener noreferrer">Watch 31:32–31:37</a></p>
+              </td>
+              <td class="lecture-text"><p>Form the new token&#x27;s contribution to the state. The diagram again uses a small feature-by-feature matrix, so adding a token does not require a larger state matrix.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-78"><th colspan="2"><h3>Slide 78 · Updating the Accumulated State</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-78">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-78.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-78.jpg" alt="Slide 78: Updating the Accumulated State. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1897s" target="_blank" rel="noopener noreferrer">Watch 31:37–31:40</a></p>
+              </td>
+              <td class="lecture-text"><p>Add the new contribution to the saved state to obtain S2. The updated state now incorporates the information accumulated through the second token.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-79"><th colspan="2"><h3>Slide 79 · Computing the Next Output</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-79">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-79.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-79.jpg" alt="Slide 79: Computing the Next Output. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1900s" target="_blank" rel="noopener noreferrer">Watch 31:40–31:43</a></p>
+              </td>
+              <td class="lecture-text"><p>Read from the updated state and project the result to produce the next layer output. The update and readout repeat as the sequence grows.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-80"><th colspan="2"><h3>Slide 80 · Clearing Temporary Values Again</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-80">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-80.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-80.jpg" alt="Slide 80: Clearing Temporary Values Again. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1903s" target="_blank" rel="noopener noreferrer">Watch 31:43–31:46</a></p>
+              </td>
+              <td class="lecture-text"><p>After producing the output, discard temporary values and retain the updated state. This repeats the same memory-management pattern used after the first token.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-81"><th colspan="2"><h3>Slide 81 · Continuing through the Sequence</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-81">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-81.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-81.jpg" alt="Slide 81: Continuing through the Sequence. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1906s" target="_blank" rel="noopener noreferrer">Watch 31:46–31:50</a></p>
+              </td>
+              <td class="lecture-text"><p>The same update rule applies to subsequent tokens. Each step adds new information to the state and produces an output without retaining a separate history of all earlier intermediate computations.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-82"><th colspan="2"><h3>Slide 82 · Constant-Size Recurrent Memory</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-82">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-82.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-82.jpg" alt="Slide 82: Constant-Size Recurrent Memory. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1910s" target="_blank" rel="noopener noreferrer">Watch 31:50–32:06</a></p>
+              </td>
+              <td class="lecture-text"><p>The state remains the same size as more tokens are processed. This is the attractive memory property of the construction: it keeps updating a fixed matrix rather than growing a stored representation with the number of preceding tokens.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-83"><th colspan="2"><h3>Slide 83 · Speed and Memory Benefits</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-83">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-83.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-83.jpg" alt="Slide 83: Speed and Memory Benefits. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1926s" target="_blank" rel="noopener noreferrer">Watch 32:06–32:28</a></p>
+              </td>
+              <td class="lecture-text"><p>Linear attention can reduce both computation and memory requirements. The recurrent state is determined by feature dimensions, and only that state needs to be carried between tokens. This removes the need to maintain the full sequence-by-sequence attention interaction in the simplified comparison, which is particularly helpful as sequences become longer.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-84"><th colspan="2"><h3>Slide 84 · The Long-Context Tradeoff</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-84">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-84.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-84.jpg" alt="Slide 84: The Long-Context Tradeoff. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1948s" target="_blank" rel="noopener noreferrer">Watch 32:28–33:12</a></p>
+              </td>
+              <td class="lecture-text"><p>Compressing a long history into a fixed-size state can make it harder to recover a particular detail. In a needle-in-a-haystack task, the model may encounter a special number inside a long document and later be asked to retrieve it. Full attention can refer directly back to earlier positions; a compressed recurrent state must preserve the relevant information while processing everything that follows.</p>
+              <p>The benchmark figure illustrates degradation on longer sequences for the recurrent or compressed-state models being compared. This makes the architecture relevant to the kind of long-context task an agent must perform, rather than only to its speed.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-85"><th colspan="2"><h3>Slide 85 · A Note about Context Length</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-85">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-85.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-85.jpg" alt="Slide 85: A Note about Context Length. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=1992s" target="_blank" rel="noopener noreferrer">Watch 33:12–33:34</a></p>
+              </td>
+              <td class="lecture-text"><p>The lecture connects usable context length to positional representations and training. Merely writing down the attention computation does not guarantee that a model will use arbitrarily long sequences effectively. The model must learn to operate with the positional information and context lengths it encounters, so the length used during training matters in practice.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-86"><th colspan="2"><h3>Slide 86 · Bringing the Architectures Together</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-86">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-86.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-86.jpg" alt="Slide 86: Bringing the Architectures Together. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2020s" target="_blank" rel="noopener noreferrer">Watch 33:40–33:43</a></p>
+              </td>
+              <td class="lecture-text"><p>The architectural comparison can now be expressed in terms of computation, memory, and access to earlier information. These are the tradeoffs a builder needs to recognize when choosing a model.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-87"><th colspan="2"><h3>Slide 87 · Full Softmax Attention versus Linear Attention</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-87">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-87.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-87.jpg" alt="Slide 87: Full Softmax Attention versus Linear Attention. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2023s" target="_blank" rel="noopener noreferrer">Watch 33:43–34:12</a></p>
+              </td>
+              <td class="lecture-text"><p>Full softmax attention has quadratic context-length cost for the sequence computation, but it allows a token to refer directly to earlier token representations. Its KV cache grows with the amount of context. Linear attention has linear sequence-length scaling in the comparison and can keep a fixed-size recurrent state.</p>
+              <p>The memory advantage comes with a different access pattern: new tokens interact with the compressed state rather than all earlier tokens individually. That compression can make demanding long-context retrieval harder. The useful choice depends on the workload, not simply on which architecture is faster.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-88"><th colspan="2"><h3>Slide 88 · Hybrid Attention Architectures</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-88">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-88.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-88.jpg" alt="Slide 88: Hybrid Attention Architectures. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2052s" target="_blank" rel="noopener noreferrer">Watch 34:12–34:27</a></p>
+              </td>
+              <td class="lecture-text"><p>Practical models can combine linear-attention layers with occasional global-attention layers. Most layers benefit from the more efficient state-based computation, while the global layers periodically allow fuller interaction across the context.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-89"><th colspan="2"><h3>Slide 89 · Evaluating the Hybrid Tradeoff</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-89">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-89.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-89.jpg" alt="Slide 89: Evaluating the Hybrid Tradeoff. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2067s" target="_blank" rel="noopener noreferrer">Watch 34:27–34:52</a></p>
+              </td>
+              <td class="lecture-text"><p>The example compares the effect of adding sliding-window or global attention to a linear-attention architecture. Retrieval from the context improves when these additional interactions are available. Simpler common-sense tasks do not rely on looking back through a long context in the same way, so they can behave differently. Architecture choices therefore need to be evaluated against the intended tasks.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-90"><th colspan="2"><h3>Slide 90 · Reading a Modern Model Architecture</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-90">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-90.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-90.jpg" alt="Slide 90: Reading a Modern Model Architecture. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2092s" target="_blank" rel="noopener noreferrer">Watch 34:52–35:25</a></p>
+              </td>
+              <td class="lecture-text"><p>The Kimi K3 diagram is an example of how these components appear in a more elaborate model. It includes linear attention, feed-forward components, and multi-head attention operating on latent representations. There are additional mechanisms, such as gates, but the earlier explanation gives a vocabulary for recognizing the main pieces and their roles.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-91"><th colspan="2"><h3>Slide 91 · Why Architecture Matters for Agents</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-91">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-91.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-91.jpg" alt="Slide 91: Why Architecture Matters for Agents. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2125s" target="_blank" rel="noopener noreferrer">Watch 35:25–36:03</a></p>
+              </td>
+              <td class="lecture-text"><p>Agents can accumulate very long contexts, and inference efficiency directly affects the systems built around them. Knowing the model&#x27;s architecture helps a builder choose a model and design its surrounding harness with the model&#x27;s strengths and limitations in mind.</p>
+              <p>A workload that depends on retrieving details from a long history may place different demands on the model than one that prioritizes efficient recurrent processing. Understanding these distinctions makes it possible to compare choices and test them deliberately.</p></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="note-topic" id="part-3" aria-labelledby="part-3-heading" lang="en">
+        <div class="topic-header"><div><p class="notes-eyebrow">Part 3</p><h2 id="part-3-heading">Training</h2></div><a href="#contents" data-note-copy="top" lang="zh-Hans">回到目录 ↑</a></div>
+        <table class="slide-table" aria-labelledby="part-3-heading">
+          <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
+          <tbody>
+            <tr class="slide-heading" id="slide-92"><th colspan="2"><h3>Slide 92 · LLM Training</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-92">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-92.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-92.jpg" alt="Slide 92: LLM Training. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2163s" target="_blank" rel="noopener noreferrer">Watch 36:03–36:09</a></p>
+              </td>
+              <td class="lecture-text"><p>The next section turns from the network&#x27;s structure to how its weights are learned. It begins with the training objective, then considers the data and procedures used at different stages of model development.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-93"><th colspan="2"><h3>Slide 93 · Defining the Loss</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-93">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-93.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-93.jpg" alt="Slide 93: Defining the Loss. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2169s" target="_blank" rel="noopener noreferrer">Watch 36:09–36:25</a></p>
+              </td>
+              <td class="lecture-text"><p>Training requires a loss function that measures how far the model is from its objective. This signal is used to update the weights. For a language model, the example will compare the predicted next-token distribution with the token that actually occurs in the training text.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-94"><th colspan="2"><h3>Slide 94 · An Example Training Sequence</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-94">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-94.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-94.jpg" alt="Slide 94: An Example Training Sequence. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2185s" target="_blank" rel="noopener noreferrer">Watch 36:25–36:43</a></p>
+              </td>
+              <td class="lecture-text"><p>The training example is a short passage about how agents work and how to build AI systems. Its opening is the same prefix used in the sampling demonstration. This lets us compare the model&#x27;s predicted continuations with a concrete continuation supplied by the data.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-95"><th colspan="2"><h3>Slide 95 · Predicting from the Training Prefix</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-95">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-95.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-95.jpg" alt="Slide 95: Predicting from the Training Prefix. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2203s" target="_blank" rel="noopener noreferrer">Watch 36:43–36:48</a></p>
+              </td>
+              <td class="lecture-text"><p>Run the model on the prefix to obtain possible next tokens. The prediction mechanism is the same one used during generation, but training supplies a target against which the prediction can be evaluated.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-96"><th colspan="2"><h3>Slide 96 · Comparing Prediction with Data</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-96">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-96.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-96.jpg" alt="Slide 96: Comparing Prediction with Data. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2208s" target="_blank" rel="noopener noreferrer">Watch 36:48–36:53</a></p>
+              </td>
+              <td class="lecture-text"><p>The model assigns probability mass to several possible continuations. The training passage determines which of those tokens should be the target at this position.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-97"><th colspan="2"><h3>Slide 97 · Identifying the Ground-Truth Token</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-97">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-97.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-97.jpg" alt="Slide 97: Identifying the Ground-Truth Token. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2213s" target="_blank" rel="noopener noreferrer">Watch 36:53–37:01</a></p>
+              </td>
+              <td class="lecture-text"><p>In this example, the next token in the data is “how.” It is the correct target even though the model assigned a greater probability to another continuation. Training should encourage the distribution to place more mass on the observed token.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-98"><th colspan="2"><h3>Slide 98 · The Probability Assigned to the Target</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-98">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-98.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-98.jpg" alt="Slide 98: The Probability Assigned to the Target. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2221s" target="_blank" rel="noopener noreferrer">Watch 37:01–37:09</a></p>
+              </td>
+              <td class="lecture-text"><p>The model did assign some probability to the correct token. The loss calculation focuses on that probability: how strongly did the model predict the token that actually appeared in the training sequence?</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-99"><th colspan="2"><h3>Slide 99 · Negative Log-Likelihood</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-99">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-99.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-99.jpg" alt="Slide 99: Negative Log-Likelihood. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2229s" target="_blank" rel="noopener noreferrer">Watch 37:09–37:33</a></p>
+              </td>
+              <td class="lecture-text"><p>Take the negative logarithm of the probability assigned to the target token. A higher probability for the correct token gives a lower loss, so minimizing this objective encourages the model to predict the training data more accurately.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-100"><th colspan="2"><h3>Slide 100 · Cross-Entropy Loss</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-100">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-100.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-100.jpg" alt="Slide 100: Cross-Entropy Loss. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2253s" target="_blank" rel="noopener noreferrer">Watch 37:33–38:03</a></p>
+              </td>
+              <td class="lecture-text"><p>Cross-entropy expresses this calculation as a sum over the vocabulary. The target indicator is one for the token that actually comes next and zero for the other tokens. Multiplying by this indicator selects the log probability of the correct token. The negative of that quantity supplies the training loss used to update the model.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-101"><th colspan="2"><h3>Slide 101 · Pretraining</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-101">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-101.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-101.jpg" alt="Slide 101: Pretraining. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2286s" target="_blank" rel="noopener noreferrer">Watch 38:06–38:18</a></p>
+              </td>
+              <td class="lecture-text"><p>Pretraining develops the model from a large collection of text. After the detailed architectural discussion, the lecture looks at this stage through the data pipeline: where the text comes from and how it is prepared for training.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-102"><th colspan="2"><h3>Slide 102 · Preparing Web Data</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-102">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-102.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-102.jpg" alt="Slide 102: Preparing Web Data. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2298s" target="_blank" rel="noopener noreferrer">Watch 38:18–39:26</a></p>
+              </td>
+              <td class="lecture-text"><p>A common starting point is a crawl of the web containing raw HTML. Text-extraction tools remove the page markup and recover the written content. Language identification can select the desired languages, and rule-based filters remove documents that look low quality, such as pages with unusual symbol ratios or excessive repetition.</p>
+              <p>Model-based quality filters provide another selection step. Deduplication removes repeated copies of the same content so they do not dominate the training collection. These operations turn a large, noisy source into the final text used for pretraining, with choices about quality and repetition affecting the result.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-103"><th colspan="2"><h3>Slide 103 · DataComp-LM Filtering</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-103">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-103.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-103.jpg" alt="Slide 103: DataComp-LM Filtering. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2366s" target="_blank" rel="noopener noreferrer">Watch 39:26–40:10</a></p>
+              </td>
+              <td class="lecture-text"><p>DataComp-LM provides an example of a carefully filtered open training collection. The diagram starts with Common Crawl and shows successive reductions from language filtering, document-length and repetition checks, deduplication, and model-based filtering. In the example discussed, only about 1.4% of the processed material is retained. This illustrates how much selection can happen between collecting web pages and training a model on them.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-104"><th colspan="2"><h3>Slide 104 · Domain-Focused Data Pipelines</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-104">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-104.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-104.jpg" alt="Slide 104: Domain-Focused Data Pipelines. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2428s" target="_blank" rel="noopener noreferrer">Watch 40:28–40:49</a></p>
+              </td>
+              <td class="lecture-text"><p>The math-focused dataset uses a similar overall process, with additional filters designed for mathematical content. Raw material is converted into usable text, filtered, deduplicated, and decontaminated. The result is a distribution of training examples shaped toward the intended domain rather than an unfiltered copy of the source collection.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-105"><th colspan="2"><h3>Slide 105 · What Filtered Training Data Looks Like</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-105">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-105.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-105.jpg" alt="Slide 105: What Filtered Training Data Looks Like. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2449s" target="_blank" rel="noopener noreferrer">Watch 40:49–41:42</a></p>
+              </td>
+              <td class="lecture-text"><p>Even after extensive filtering, the retained text covers a wide range of topics and styles. The examples include a forum discussion about an anime involving hacking, an article about a culinary school, and programming documentation. The model is trained to predict the tokens in all of these kinds of documents. That variety is part of how pretraining develops broad knowledge, while also exposing the model to the quirks of real web text.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-106"><th colspan="2"><h3>Slide 106 · Combining Data Sources</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-106">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-106.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-106.jpg" alt="Slide 106: Combining Data Sources. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2502s" target="_blank" rel="noopener noreferrer">Watch 41:42–42:09</a></p>
+              </td>
+              <td class="lecture-text"><p>Web pages are only one part of a possible training corpus. The Pile example combines material from several sources, including academic writing, dialogue, and other collections. Once these sources have been collected, another design decision is how much weight each should receive in the final training mixture.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-107"><th colspan="2"><h3>Slide 107 · Optimizing the Data Mixture</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-107">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-107.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-107.jpg" alt="Slide 107: Optimizing the Data Mixture. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2529s" target="_blank" rel="noopener noreferrer">Watch 42:09–42:32</a></p>
+              </td>
+              <td class="lecture-text"><p>A useful data mixture depends on the capabilities the model is meant to acquire. One approach trains smaller proxy models, or uses another predictive proxy, to estimate how different mixtures affect the desired performance. The mixture weights can then be optimized. For example, a builder might choose different proportions of general web text and code rather than treating all sources equally.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-108"><th colspan="2"><h3>Slide 108 · Midtraining</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-108">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-108.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-108.jpg" alt="Slide 108: Midtraining. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2552s" target="_blank" rel="noopener noreferrer">Watch 42:32–42:35</a></p>
+              </td>
+              <td class="lecture-text"><p>Midtraining changes the distribution of training data as the model moves toward its intended uses. It provides a stage between broad pretraining and the more focused behavior shaped during post-training.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-109"><th colspan="2"><h3>Slide 109 · Shifting toward Target Domains</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-109">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-109.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-109.jpg" alt="Slide 109: Shifting toward Target Domains. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2555s" target="_blank" rel="noopener noreferrer">Watch 42:35–43:04</a></p>
+              </td>
+              <td class="lecture-text"><p>A midtraining or cooldown mixture can place greater weight on domains such as mathematics, code, or other material important to the intended application. The Marin example contrasts the earlier pretraining mixture with a later cooldown mixture. The sources are reweighted rather than simply continuing with the original proportions throughout training.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-110"><th colspan="2"><h3>Slide 110 · Introducing Domain Data before Fine-Tuning</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-110">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-110.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-110.jpg" alt="Slide 110: Introducing Domain Data before Fine-Tuning. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2584s" target="_blank" rel="noopener noreferrer">Watch 43:04–43:45</a></p>
+              </td>
+              <td class="lecture-text"><p>The cited results suggest that it can help to mix target-domain material into pretraining or midtraining before fine-tuning on that domain. In the example, a specialized mixture improves the eventual domain test loss. The instructor also notes that benefits can extend beyond the target domain after fine-tuning. If the intended specialization is already known, the earlier data mixture can be chosen with that later stage in mind.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-111"><th colspan="2"><h3>Slide 111 · Bridging Training Distributions</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-111">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-111.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-111.jpg" alt="Slide 111: Bridging Training Distributions. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2625s" target="_blank" rel="noopener noreferrer">Watch 43:45–44:07</a></p>
+              </td>
+              <td class="lecture-text"><p>The eventual goal may be a model that answers queries or completes agent tasks, which differs from simply predicting broad web text. Midtraining can help bridge the gap between the pretraining distribution and the target behavior. The illustration presents this as a route from a general starting point toward the desired model.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-112"><th colspan="2"><h3>Slide 112 · Post-Training</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-112">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-112.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-112.jpg" alt="Slide 112: Post-Training. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2647s" target="_blank" rel="noopener noreferrer">Watch 44:07–44:13</a></p>
+              </td>
+              <td class="lecture-text"><p>Post-training focuses more directly on the behavior expected from the finished model. The lecture discusses instruction fine-tuning, learning from preferences, and reinforcement learning using verifiable rewards.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-113"><th colspan="2"><h3>Slide 113 · Instruction Fine-Tuning</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-113">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-113.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-113.jpg" alt="Slide 113: Instruction Fine-Tuning. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2653s" target="_blank" rel="noopener noreferrer">Watch 44:13–44:52</a></p>
+              </td>
+              <td class="lecture-text"><p>Instruction fine-tuning, often part of supervised fine-tuning, trains on examples of instructions paired with desirable responses. A question might be paired with a well-written answer in the style the assistant should produce. Updating the model on these examples encourages it to behave like a useful conversational assistant.</p>
+              <p>This data is much more targeted than the varied web material used in pretraining. The purpose is to demonstrate the behavior wanted from the model, rather than only to provide another large collection of text to predict.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-114"><th colspan="2"><h3>Slide 114 · Learning from Human Preferences</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-114">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-114.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-114.jpg" alt="Slide 114: Learning from Human Preferences. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2692s" target="_blank" rel="noopener noreferrer">Watch 44:52–45:34</a></p>
+              </td>
+              <td class="lecture-text"><p>The preference-learning pipeline begins with supervised examples of good responses. The model then generates several candidate responses to prompts, and people rank or compare them. These judgments train a reward model to predict which outputs people prefer. Reinforcement learning uses that reward signal to encourage the language model to produce more preferred responses and fewer disfavored ones.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-115"><th colspan="2"><h3>Slide 115 · Limitations of Human Feedback</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-115">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-115.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-115.jpg" alt="Slide 115: Limitations of Human Feedback. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2734s" target="_blank" rel="noopener noreferrer">Watch 45:34–46:49</a></p>
+              </td>
+              <td class="lecture-text"><p>Human preferences can be inconsistent, including for the same person at different times. Someone may prefer a more elaborate style in one comparison and a more direct answer in another. Preferences also differ across people, making the phrase “human preference” less uniform than it might sound.</p>
+              <p>These signals can create undesirable incentives. For example, a model may learn to flatter users if praise receives favorable ratings. The instructor also raises concerns about how annotation work is sourced and compensated, especially when workers must review disturbing material. Both the reliability of the feedback and the conditions under which it is collected matter.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-116"><th colspan="2"><h3>Slide 116 · Reinforcement Learning with Verifiable Rewards</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-116">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-116.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-116.jpg" alt="Slide 116: Reinforcement Learning with Verifiable Rewards. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2809s" target="_blank" rel="noopener noreferrer">Watch 46:49–47:31</a></p>
+              </td>
+              <td class="lecture-text"><p>An alternative is to use an outcome that can be checked rather than predicting what a human evaluator will prefer. In math, a generated solution can be checked against a known answer. In code, the proposed solution can be run against tests. The reward is then based on whether the generated result satisfies that check. This makes math and coding especially useful settings for reinforcement learning with verifiable rewards.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-117"><th colspan="2"><h3>Slide 117 · Agent-Specific Training with SWE-Smith</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-117">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-117.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-117.jpg" alt="Slide 117: Agent-Specific Training with SWE-Smith. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2851s" target="_blank" rel="noopener noreferrer">Watch 47:31–48:27</a></p>
+              </td>
+              <td class="lecture-text"><p>The SWE-Smith example constructs coding tasks from real repositories. An existing agent first attempts to install and run a repository. Successful setups can be packaged into executable environments. Bugs are then introduced procedurally, for example by reversing changes or modifying functions, and a task description asks the agent to repair the resulting problem.</p>
+              <p>The environment&#x27;s tests provide a way to check the repair. If the agent solves the task and passes the relevant tests, the successful interaction supplies training material. This creates a large collection of synthetic tasks grounded in working code environments.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-118"><th colspan="2"><h3>Slide 118 · Learning from Verified Synthetic Tasks</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-118">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-118.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-118.jpg" alt="Slide 118: Learning from Verified Synthetic Tasks. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=2907s" target="_blank" rel="noopener noreferrer">Watch 48:27–48:58</a></p>
+              </td>
+              <td class="lecture-text"><p>The reported example substantially improves a Qwen2.5 32B model&#x27;s performance on SWE-bench Verified using this generated training material. The instructor describes the result as roughly 40%, up from a much lower starting score. The important mechanism is that solutions can be generated by a model and then checked against tests before being used for training. A synthetic task does not have to rely only on another model&#x27;s opinion of whether the answer is good.</p></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="note-topic" id="part-4" aria-labelledby="part-4-heading" lang="en">
+        <div class="topic-header"><div><p class="notes-eyebrow">Part 4</p><h2 id="part-4-heading">Inference</h2></div><a href="#contents" data-note-copy="top" lang="zh-Hans">回到目录 ↑</a></div>
+        <table class="slide-table" aria-labelledby="part-4-heading">
+          <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
+          <tbody>
+            <tr class="slide-heading" id="slide-119"><th colspan="2"><h3>Slide 119 · LLM Inference</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-119">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-119.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-119.jpg" alt="Slide 119: LLM Inference. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3159s" target="_blank" rel="noopener noreferrer">Watch 52:39–52:46</a></p>
+              </td>
+              <td class="lecture-text"><p>Inference is the process of running the trained model to produce output. The next section examines the two main phases and explains why the hardware bottleneck can differ between them.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-120"><th colspan="2"><h3>Slide 120 · Prefill and Decode</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-120">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-120.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-120.jpg" alt="Slide 120: Prefill and Decode. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3166s" target="_blank" rel="noopener noreferrer">Watch 52:46–52:55</a></p>
+              </td>
+              <td class="lecture-text"><p>The two phases are prefill, which processes the input prompt, and decode, which generates the continuation. Understanding them requires looking at both the model&#x27;s computation and how data moves through the hardware.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-121"><th colspan="2"><h3>Slide 121 · Why GPUs Suit Parallel Computation</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-121">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-121.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-121.jpg" alt="Slide 121: Why GPUs Suit Parallel Computation. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3175s" target="_blank" rel="noopener noreferrer">Watch 52:55–53:45</a></p>
+              </td>
+              <td class="lecture-text"><p>The CPU and GPU diagrams emphasize different hardware priorities. A CPU dedicates substantial resources to control and handling a wide variety of instructions. A GPU devotes more of its resources to performing large amounts of computation in parallel. Language-model workloads can benefit when many compatible operations are available to execute together.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-122"><th colspan="2"><h3>Slide 122 · The Roofline Performance Model</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-122">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-122.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-122.jpg" alt="Slide 122: The Roofline Performance Model. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3225s" target="_blank" rel="noopener noreferrer">Watch 53:45–54:58</a></p>
+              </td>
+              <td class="lecture-text"><p>The roofline model separates two possible limits on performance. The chip has a peak rate of floating-point computation, but it also has a limited rate at which data can be transferred to where the computation occurs. A workload cannot reach peak arithmetic throughput if the necessary data arrives too slowly.</p>
+              <p>When data movement is the limiting factor, the workload is memory-bandwidth bound. When enough computation is performed for the data being moved, the hardware&#x27;s compute capacity becomes the limit. This distinction helps explain why processing a prompt and generating a continuation behave differently.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-123"><th colspan="2"><h3>Slide 123 · Two Phases, Different Bottlenecks</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-123">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-123.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-123.jpg" alt="Slide 123: Two Phases, Different Bottlenecks. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3298s" target="_blank" rel="noopener noreferrer">Watch 54:58–55:06</a></p>
+              </td>
+              <td class="lecture-text"><p>Prefill and decode use the same model but present different computational workloads. The diagram separates prompt processing from the subsequent sequence of generated tokens so their costs can be considered independently.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-124"><th colspan="2"><h3>Slide 124 · Prefill Processes the Prompt Together</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-124">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-124.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-124.jpg" alt="Slide 124: Prefill Processes the Prompt Together. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3306s" target="_blank" rel="noopener noreferrer">Watch 55:06–55:38</a></p>
+              </td>
+              <td class="lecture-text"><p>All of the prompt tokens are already known. For example, if a user submits an essay for revision, the model can process that entire input sequence in a forward pass rather than waiting for each token to be generated. This creates many matrix operations that can run together, making prefill relatively compute intensive in the lecture&#x27;s comparison.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-125"><th colspan="2"><h3>Slide 125 · Decode Processes a New Token</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-125">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-125.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-125.jpg" alt="Slide 125: Decode Processes a New Token. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3338s" target="_blank" rel="noopener noreferrer">Watch 55:38–56:11</a></p>
+              </td>
+              <td class="lecture-text"><p>Once prompt processing is complete, generation proceeds to tokens that are not known in advance. The diagram illustrates decoding one token at a time, with a single new vector passing through the layer at each step. The generated token then becomes part of the input for the following step.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-126"><th colspan="2"><h3>Slide 126 · Retaining Keys and Values</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-126">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-126.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-126.jpg" alt="Slide 126: Retaining Keys and Values. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3371s" target="_blank" rel="noopener noreferrer">Watch 56:11–56:19</a></p>
+              </td>
+              <td class="lecture-text"><p>After processing a token, many temporary activations can be cleared. The key and value activations must remain available because subsequent tokens need to attend to the preceding context. Keeping them avoids recomputing the same information for every generation step.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-127"><th colspan="2"><h3>Slide 127 · Adding the Next Token&#x27;s Activations</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-127">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-127.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-127.jpg" alt="Slide 127: Adding the Next Token&#x27;s Activations. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3379s" target="_blank" rel="noopener noreferrer">Watch 56:19–56:23</a></p>
+              </td>
+              <td class="lecture-text"><p>The next token contributes a new set of activations. Its key and value representations extend the stored context that the following token will use.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-128"><th colspan="2"><h3>Slide 128 · Clearing Temporary Activations</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-128">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-128.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-128.jpg" alt="Slide 128: Clearing Temporary Activations. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3383s" target="_blank" rel="noopener noreferrer">Watch 56:23–56:25</a></p>
+              </td>
+              <td class="lecture-text"><p>Once this step has produced its output, clear the temporary computations again while retaining the accumulated keys and values. The same pattern repeats throughout decoding.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-129"><th colspan="2"><h3>Slide 129 · Extending the Stored Context</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-129">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-129.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-129.jpg" alt="Slide 129: Extending the Stored Context. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3385s" target="_blank" rel="noopener noreferrer">Watch 56:25–56:29</a></p>
+              </td>
+              <td class="lecture-text"><p>Another generated token adds its own key and value representations. The computation for the current token is incremental, but the information retained from preceding positions continues to grow.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-130"><th colspan="2"><h3>Slide 130 · Preserving the Growing History</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-130">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-130.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-130.jpg" alt="Slide 130: Preserving the Growing History. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3385s" target="_blank" rel="noopener noreferrer">Watch 56:25–56:29</a></p>
+              </td>
+              <td class="lecture-text"><p>Temporary values can be discarded after the step, while earlier keys and values remain. Clearing transient activations does not remove the history required for attention at the next position.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-131"><th colspan="2"><h3>Slide 131 · Attending to the Accumulated Keys and Values</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-131">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-131.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-131.jpg" alt="Slide 131: Attending to the Accumulated Keys and Values. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3389s" target="_blank" rel="noopener noreferrer">Watch 56:29–56:37</a></p>
+              </td>
+              <td class="lecture-text"><p>As the sequence grows, each new token uses the full set of retained key and value activations. This is the part of the decoding state that continues to expand with the context.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-132"><th colspan="2"><h3>Slide 132 · What Survives between Decode Steps</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-132">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-132.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-132.jpg" alt="Slide 132: What Survives between Decode Steps. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3389s" target="_blank" rel="noopener noreferrer">Watch 56:29–56:37</a></p>
+              </td>
+              <td class="lecture-text"><p>The completed diagram leaves the accumulated keys and values in place after the other temporary values have been cleared. These retained activations are the memory that makes subsequent attention over the preceding sequence possible.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-133"><th colspan="2"><h3>Slide 133 · The KV Cache</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-133">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-133.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-133.jpg" alt="Slide 133: The KV Cache. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3397s" target="_blank" rel="noopener noreferrer">Watch 56:37–56:51</a></p>
+              </td>
+              <td class="lecture-text"><p>The stored key and value activations are called the KV cache. For full attention, this cache grows as more tokens are added during decoding. Its size and reuse are important considerations when managing inference for long conversations and agent histories.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-134"><th colspan="2"><h3>Slide 134 · Prefill and Decode on the Roofline</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-134">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-134.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-134.jpg" alt="Slide 134: Prefill and Decode on the Roofline. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3411s" target="_blank" rel="noopener noreferrer">Watch 56:51–57:26</a></p>
+              </td>
+              <td class="lecture-text"><p>In the lecture&#x27;s simplified comparison, prefill is compute bound because many prompt positions can participate in substantial matrix computation together. Decode has less parallel work per step and is more sensitive to memory bandwidth. Moving the data efficiently therefore becomes especially important during generation. The distinction helps identify which part of the system is worth optimizing.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-135"><th colspan="2"><h3>Slide 135 · Latency Metrics</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-135">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-135.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-135.jpg" alt="Slide 135: Latency Metrics. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3446s" target="_blank" rel="noopener noreferrer">Watch 57:26–57:35</a></p>
+              </td>
+              <td class="lecture-text"><p>Time to first token captures the wait before output begins and is closely associated with prompt processing. Time per output token captures the speed of the continuing decode phase. Separating these metrics makes it possible to distinguish a slow start from slow generation after the response has begun.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-136"><th colspan="2"><h3>Slide 136 · Speculative Decoding</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-136">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-136.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-136.jpg" alt="Slide 136: Speculative Decoding. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3455s" target="_blank" rel="noopener noreferrer">Watch 57:35–58:27</a></p>
+              </td>
+              <td class="lecture-text"><p>Speculative decoding uses a smaller draft model to propose several tokens cheaply. The larger target model can then process the proposed sequence together, taking advantage of parallel computation rather than producing every proposed token in a separate large-model step.</p>
+              <p>The larger model remains the model whose output behavior matters. The draft supplies candidates to be checked, creating an opportunity to use the available compute more efficiently. This is an example of how understanding the inference bottleneck reveals a practical optimization technique.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-137"><th colspan="2"><h3>Slide 137 · When Speculation Helps</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-137">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-137.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-137.jpg" alt="Slide 137: When Speculation Helps. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3559s" target="_blank" rel="noopener noreferrer">Watch 59:19–59:54</a></p>
+              </td>
+              <td class="lecture-text"><p>The benefit depends on factors such as how many tokens are drafted and how often the larger model accepts them. The plotted comparison shows different acceptance behavior for coding and summarization workloads. More predictable continuations can make the draft model more useful, so the appropriate settings depend on the domain as well as the models.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-138"><th colspan="2"><h3>Slide 138 · Inference-Time Scaling</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-138">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-138.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-138.jpg" alt="Slide 138: Inference-Time Scaling. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3594s" target="_blank" rel="noopener noreferrer">Watch 59:54–1:00:04</a></p>
+              </td>
+              <td class="lecture-text"><p>Another way to change performance is to spend more computation while solving a particular task. This is inference-time, or test-time, scaling. The following examples increase the work done during generation rather than changing the model&#x27;s parameter count.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-139"><th colspan="2"><h3>Slide 139 · Chain-of-Thought Prompting</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-139">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-139.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-139.jpg" alt="Slide 139: Chain-of-Thought Prompting. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3604s" target="_blank" rel="noopener noreferrer">Watch 1:00:04–1:00:48</a></p>
+              </td>
+              <td class="lecture-text"><p>A prompt can encourage the model to work through intermediate steps before producing its answer. This can be done with an instruction to proceed step by step or with examples that demonstrate a reasoning process. Compared with requiring an immediate answer, this generates more tokens and uses more computation on the task. That makes it an early example of inference-time scaling.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-140"><th colspan="2"><h3>Slide 140 · Reasoning Models</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-140">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-140.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-140.jpg" alt="Slide 140: Reasoning Models. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3648s" target="_blank" rel="noopener noreferrer">Watch 1:00:48–1:01:26</a></p>
+              </td>
+              <td class="lecture-text"><p>Reasoning models are trained to spend more of their generation working through a problem, rather than relying only on a prompt that requests intermediate steps. The example shows a model examining a percentage-change calculation, noticing a mistaken cancellation assumption, and correcting it. The additional computation can improve the answer, but it also makes the response more expensive.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-141"><th colspan="2"><h3>Slide 141 · Revising an Initial Approach</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-141">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-141.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-141.jpg" alt="Slide 141: Revising an Initial Approach. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3686s" target="_blank" rel="noopener noreferrer">Watch 1:01:26–1:01:41</a></p>
+              </td>
+              <td class="lecture-text"><p>The generated reasoning can include moments in which the model recognizes that an earlier step cannot be right and changes direction. This opportunity to revisit an approach can reduce premature commitment to a mistake. It is another way in which additional inference computation can contribute to task performance.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-142"><th colspan="2"><h3>Slide 142 · The Cost–Performance Tradeoff</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-142">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-142.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-142.jpg" alt="Slide 142: The Cost–Performance Tradeoff. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3701s" target="_blank" rel="noopener noreferrer">Watch 1:01:41–1:02:24</a></p>
+              </td>
+              <td class="lecture-text"><p>The plotted reasoning levels show that spending more tokens can improve task scores. This introduces an axis of scaling that a user or application can control at inference time: a harder task can be assigned a larger reasoning budget. The relevant choice is a tradeoff between the cost of the extra work and the value of the improved result.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-143"><th colspan="2"><h3>Slide 143 · Selecting a Reasoning Level</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-143">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-143.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-143.jpg" alt="Slide 143: Selecting a Reasoning Level. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3744s" target="_blank" rel="noopener noreferrer">Watch 1:02:24–1:02:36</a></p>
+              </td>
+              <td class="lecture-text"><p>The GPT-OSS slide illustrates low, medium, and high reasoning settings expressed in the system prompt. These settings encourage different amounts of generated reasoning. The exact control belongs to the model or interface being used; the point of the example is that the inference budget can be selected for the task.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-144"><th colspan="2"><h3>Slide 144 · Training Models to Respect Reasoning Budgets</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-144">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-144.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-144.jpg" alt="Slide 144: Training Models to Respect Reasoning Budgets. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3756s" target="_blank" rel="noopener noreferrer">Watch 1:02:36–1:04:00</a></p>
+              </td>
+              <td class="lecture-text"><p>The lecture compares two approaches. In the Inkling example, the ordinary task reward is combined with a penalty on the number of generated tokens. Changing the penalty teaches the model to spend fewer tokens when a lower-effort response is requested.</p>
+              <p>In the Kimi K3 example, a correct result earns a positive reward, an incorrect result earns zero, and an incorrect result that also exceeds the budget is penalized. The training scheme combines different task types with different reasoning budgets, then distills the resulting teachers into one student model. These examples show that selectable reasoning effort can be shaped during training, rather than being only an instruction added afterward.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-145"><th colspan="2"><h3>Slide 145 · Repeated Sampling with a Verifier</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-145">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-145.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-145.jpg" alt="Slide 145: Repeated Sampling with a Verifier. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3840s" target="_blank" rel="noopener noreferrer">Watch 1:04:00–1:04:13</a></p>
+              </td>
+              <td class="lecture-text"><p>A second inference-time strategy is to generate several candidate solutions. If a reliable verifier is available, it can check the candidates and select one that solves the task. Additional samples create more opportunities to find a successful answer.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-146"><th colspan="2"><h3>Slide 146 · Scaling the Number of Attempts</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-146">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-146.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-146.jpg" alt="Slide 146: Scaling the Number of Attempts. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3853s" target="_blank" rel="noopener noreferrer">Watch 1:04:13–1:04:27</a></p>
+              </td>
+              <td class="lecture-text"><p>The plotted results show how the chance of solving a task at least once changes as more samples are generated. This form of scaling relies on being able to recognize a correct solution among the attempts. The extra inference budget is spent on multiple candidate outputs rather than only on a longer single output.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-147"><th colspan="2"><h3>Slide 147 · Self-Consistency without a Verifier</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-147">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-147.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-147.jpg" alt="Slide 147: Self-Consistency without a Verifier. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3867s" target="_blank" rel="noopener noreferrer">Watch 1:04:27–1:04:51</a></p>
+              </td>
+              <td class="lecture-text"><p>When an external verifier is unavailable, one alternative is to sample multiple reasoning paths and compare their final answers. In the example, two sampled solutions reach the same dollar amount while another differs, so the repeated answer is selected. This uses agreement among samples as the selection signal.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-148"><th colspan="2"><h3>Slide 148 · More Samples and Self-Consistency</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-148">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-148.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-148.jpg" alt="Slide 148: More Samples and Self-Consistency. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3891s" target="_blank" rel="noopener noreferrer">Watch 1:04:51–1:04:57</a></p>
+              </td>
+              <td class="lecture-text"><p>The final plot illustrates how self-consistency can benefit from additional sampled reasoning paths. It is another way to allocate more inference computation to a task when direct correctness checking is not available.</p></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <section class="note-topic" id="part-5" aria-labelledby="part-5-heading" lang="en">
+        <div class="topic-header"><div><p class="notes-eyebrow">Part 5</p><h2 id="part-5-heading">LLMs for agents</h2></div><a href="#contents" data-note-copy="top" lang="zh-Hans">回到目录 ↑</a></div>
+        <table class="slide-table" aria-labelledby="part-5-heading">
+          <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
+          <tbody>
+            <tr class="slide-heading" id="slide-149"><th colspan="2"><h3>Slide 149 · LLMs for Agents</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-149">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-149.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-149.jpg" alt="Slide 149: LLMs for Agents. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3897s" target="_blank" rel="noopener noreferrer">Watch 1:04:57–1:05:08</a></p>
+              </td>
+              <td class="lecture-text"><p>The final section connects the model-level discussion to agent engineering. The focus shifts to how the model communicates with the surrounding system and how that system constructs the information sent to the model.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-150"><th colspan="2"><h3>Slide 150 · The LLM Core inside an Agent</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-150">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-150.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-150.jpg" alt="Slide 150: The LLM Core inside an Agent. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3908s" target="_blank" rel="noopener noreferrer">Watch 1:05:08–1:05:25</a></p>
+              </td>
+              <td class="lecture-text"><p>The agent architecture from the first lecture includes planning, memory, tools, and interaction with an environment around an LLM core. Today&#x27;s discussion has explained that core. The remaining design question is how the surrounding components should structure their inputs and interpret the model&#x27;s outputs.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-151"><th colspan="2"><h3>Slide 151 · Structured Input and Output</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-151">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-151.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-151.jpg" alt="Slide 151: Structured Input and Output. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3925s" target="_blank" rel="noopener noreferrer">Watch 1:05:25–1:05:28</a></p>
+              </td>
+              <td class="lecture-text"><p>Structured input and output provide a way to connect the language model to other components. The system needs an agreed representation that both the model and the surrounding software can use.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-152"><th colspan="2"><h3>Slide 152 · A Shared Communication Contract</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-152">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-152.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-152.jpg" alt="Slide 152: A Shared Communication Contract. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3928s" target="_blank" rel="noopener noreferrer">Watch 1:05:28–1:05:40</a></p>
+              </td>
+              <td class="lecture-text"><p>Language models increasingly operate inside compound systems that call tools and other components. These parts need a shared contract for exchanging information. A response that reads well to a person is not sufficient if the next software component cannot parse and use it.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-153"><th colspan="2"><h3>Slide 153 · Constrained Decoding</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-153">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-153.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-153.jpg" alt="Slide 153: Constrained Decoding. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=3940s" target="_blank" rel="noopener noreferrer">Watch 1:05:40–1:06:45</a></p>
+              </td>
+              <td class="lecture-text"><p>Constrained decoding restricts generation to a required structure, such as a particular JSON format. The SGLang example uses a finite-state representation of the allowed output. Parts of the structure may be known in advance, while other positions allow a choice among permitted tokens.</p>
+              <p>Instead of asking the model to predict every fixed brace, quote, or field label independently, the system can use the known structure and consult the model where a choice is actually needed. At a branch, it can restrict the candidate vocabulary to the allowed alternatives. This helps enforce the output contract during generation.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-154"><th colspan="2"><h3>Slide 154 · Efficiency from Output Constraints</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-154">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-154.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-154.jpg" alt="Slide 154: Efficiency from Output Constraints. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4005s" target="_blank" rel="noopener noreferrer">Watch 1:06:45–1:07:01</a></p>
+              </td>
+              <td class="lecture-text"><p>The structure can improve speed as well as format reliability. If part of the output is already determined by the contract, the system need not perform a separate model decision for every such token. The performance plot illustrates the benefit of exploiting these constraints during decoding.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-155"><th colspan="2"><h3>Slide 155 · DSPy Signatures</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-155">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-155.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-155.jpg" alt="Slide 155: DSPy Signatures. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4021s" target="_blank" rel="noopener noreferrer">Watch 1:07:01–1:07:42</a></p>
+              </td>
+              <td class="lecture-text"><p>A DSPy signature declares the inputs and outputs of a model operation. The example takes a message and asks for separate fields containing a person&#x27;s name, email, and intent. Given a message proposing a meeting and providing contact information, the model returns those details in the requested structure. This lets application code work with defined fields instead of extracting information from arbitrary prose.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-156"><th colspan="2"><h3>Slide 156 · How the Signature Becomes an Instruction</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-156">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-156.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-156.jpg" alt="Slide 156: How the Signature Becomes an Instruction. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4062s" target="_blank" rel="noopener noreferrer">Watch 1:07:42–1:07:59</a></p>
+              </td>
+              <td class="lecture-text"><p>Behind the signature is a prompt describing the input fields, output fields, and expected response format. The framework creates those instructions and can work with structured-generation facilities to enforce the representation. The abstraction provides a convenient interface, while the underlying model still receives instructions about what it must produce.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-157"><th colspan="2"><h3>Slide 157 · Using a Classifier Head</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-157">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-157.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-157.jpg" alt="Slide 157: Using a Classifier Head. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4079s" target="_blank" rel="noopener noreferrer">Watch 1:07:59–1:08:27</a></p>
+              </td>
+              <td class="lecture-text"><p>If the desired outputs are a fixed set of labels, the model can be used as a classifier. A small head maps its representations to scores for the required categories, such as positive and negative sentiment. This is another way to use a language model within a larger system when unconstrained text generation is unnecessary.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-158"><th colspan="2"><h3>Slide 158 · Scoring a Set of Available Actions</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-158">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-158.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-158.jpg" alt="Slide 158: Scoring a Set of Available Actions. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4107s" target="_blank" rel="noopener noreferrer">Watch 1:08:27–1:09:35</a></p>
+              </td>
+              <td class="lecture-text"><p>The lecture discusses an open example related to what are called “system one” models, while explicitly avoiding claims about how a particular private implementation works. In the illustrated approach, the current state and the available actions are embedded, then compared to obtain action scores.</p>
+              <p>The state might describe a game situation, while the possible actions are moving left, moving right, or jumping. In a text-based system, the candidates might be answer choices or tools. Scoring the options gives the system a constrained decision over the actions it actually supports, rather than an arbitrary generated response.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-159"><th colspan="2"><h3>Slide 159 · Why Tool Calls Need Structure</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-159">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-159.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-159.jpg" alt="Slide 159: Why Tool Calls Need Structure. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4175s" target="_blank" rel="noopener noreferrer">Watch 1:09:35–1:10:11</a></p>
+              </td>
+              <td class="lecture-text"><p>Tool calling makes the output contract especially concrete. The model must express a call in a form that the surrounding software can recognize and execute. Different systems use different representations, including explicit tool-call formats or executable code. Whatever representation is chosen, the system must be able to identify the intended tool and its arguments; otherwise it cannot turn the model&#x27;s text into a calculator call, a search, or another action.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-160"><th colspan="2"><h3>Slide 160 · Context Engineering</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-160">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-160.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-160.jpg" alt="Slide 160: Context Engineering. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4216s" target="_blank" rel="noopener noreferrer">Watch 1:10:16–1:10:21</a></p>
+              </td>
+              <td class="lecture-text"><p>The final topic is how to construct the information available to an agent&#x27;s language model. This connects the earlier discussion of attention, context length, and inference memory to practical application design.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-161"><th colspan="2"><h3>Slide 161 · From Prompt Wording to Context Design</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-161">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-161.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-161.jpg" alt="Slide 161: From Prompt Wording to Context Design. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4221s" target="_blank" rel="noopener noreferrer">Watch 1:10:21–1:10:59</a></p>
+              </td>
+              <td class="lecture-text"><p>Prompt engineering emphasizes how an instruction is written. Context engineering adds a broader question: given all the information an agent could provide to the model, which information should be included, how should it be organized, and what should be removed? The challenge is managing the whole input rather than only finding an effective wording for a single request.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-162"><th colspan="2"><h3>Slide 162 · What Enters an Agent&#x27;s Context?</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-162">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-162.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-162.jpg" alt="Slide 162: What Enters an Agent&#x27;s Context?. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4259s" target="_blank" rel="noopener noreferrer">Watch 1:10:59–1:11:31</a></p>
+              </td>
+              <td class="lecture-text"><p>The context may contain the system prompt, previous messages, saved memories, tool results, and attached files. Each source adds information that could help the model, but also requires a decision about how it should be represented. For example, a search result or the contents of a file must be incorporated into the context in a useful form. Memory management becomes part of this same design problem.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-163"><th colspan="2"><h3>Slide 163 · Why Not Include Everything?</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-163">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-163.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-163.jpg" alt="Slide 163: Why Not Include Everything?. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4291s" target="_blank" rel="noopener noreferrer">Watch 1:11:31–1:12:13</a></p>
+              </td>
+              <td class="lecture-text"><p>A larger context is more expensive to process, particularly with full attention. There can also be a quality cost even when the model technically accepts the input length. The OOLONG example asks the model to examine many documents and aggregate information, such as comparing how many articles on a topic appeared in two different months. Solving it requires finding relevant facts and combining them across the collection.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-164"><th colspan="2"><h3>Slide 164 · Context Rot in Long Inputs</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-164">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-164.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-164.jpg" alt="Slide 164: Context Rot in Long Inputs. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4333s" target="_blank" rel="noopener noreferrer">Watch 1:12:13–1:12:45</a></p>
+              </td>
+              <td class="lecture-text"><p>The benchmark plots show performance falling as the context grows. A model that handles a small collection well can become much less reliable when many more documents are added. This is why a large advertised context window does not mean that putting every available document into the prompt is a good strategy. Selecting the useful information remains important.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-165"><th colspan="2"><h3>Slide 165 · Context Design Requires Experimentation</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-165">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-165.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-165.jpg" alt="Slide 165: Context Design Requires Experimentation. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4365s" target="_blank" rel="noopener noreferrer">Watch 1:12:45–1:12:58</a></p>
+              </td>
+              <td class="lecture-text"><p>There is no single context construction that works best for every agent. The first homework will involve making these decisions for an agent. The remaining slides offer practical considerations to test rather than a universal recipe.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-166"><th colspan="2"><h3>Slide 166 · Avoiding Tool and Context Bloat</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-166">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-166.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-166.jpg" alt="Slide 166: Avoiding Tool and Context Bloat. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4378s" target="_blank" rel="noopener noreferrer">Watch 1:12:58–1:13:40</a></p>
+              </td>
+              <td class="lecture-text"><p>A focused tool set can be effective. The lecture points to a comparison involving Codex, Claude Code, and the Pi harness, whose basic tools are read, write, edit, and bash. In the reported experiment, the smaller harness performed strongly across the tested models, with an exception noted by the instructor.</p>
+              <p>The lesson is that adding more tools and more descriptive context is not automatically an improvement. A concise set of capabilities may give the model enough flexibility while avoiding unnecessary material in its context. The benchmark is an example to inform experimentation, rather than a guarantee that one harness is always best.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-167"><th colspan="2"><h3>Slide 167 · Retrieving Relevant Material</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-167">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-167.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-167.jpg" alt="Slide 167: Retrieving Relevant Material. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4420s" target="_blank" rel="noopener noreferrer">Watch 1:13:40–1:13:59</a></p>
+              </td>
+              <td class="lecture-text"><p>Retrieval can recover the memories or documents most relevant to the current request. Instead of inserting the entire collection, use the query to search it and include the selected material in the model&#x27;s context. The next lecture will develop retrieval in more detail.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-168"><th colspan="2"><h3>Slide 168 · Adding Context Sequentially</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-168">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-168.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-168.jpg" alt="Slide 168: Adding Context Sequentially. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4439s" target="_blank" rel="noopener noreferrer">Watch 1:13:59–1:14:24</a></p>
+              </td>
+              <td class="lecture-text"><p>When extending a conversation, consider the KV cache. An application might be tempted to insert a newly relevant document at the beginning of the existing context. That changes the prefix the model has already processed. The following diagram shows why this affects the cached computation.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-169"><th colspan="2"><h3>Slide 169 · Changing the Prefix Invalidates Cached Work</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-169">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-169.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-169.jpg" alt="Slide 169: Changing the Prefix Invalidates Cached Work. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4464s" target="_blank" rel="noopener noreferrer">Watch 1:14:24–1:14:44</a></p>
+              </td>
+              <td class="lecture-text"><p>Prepending new content shifts the existing tokens and changes their positional information. The cached keys and values were computed for the earlier sequence, so they can no longer simply be reused for the changed prefix. Appending information as the conversation progresses preserves the earlier prefix and is therefore more compatible with cache reuse.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-170"><th colspan="2"><h3>Slide 170 · Evaluating Context Choices Empirically</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-170">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-170.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-170.jpg" alt="Slide 170: Evaluating Context Choices Empirically. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4484s" target="_blank" rel="noopener noreferrer">Watch 1:14:44–1:15:14</a></p>
+              </td>
+              <td class="lecture-text"><p>Treat context design as an engineering problem that can be tested. The example compares performance with and without tools, but the same approach can test formatting choices or other changes to the input. For instance, compare a Markdown representation with a YAML representation on tasks that matter for the application. Run evaluations and observe the effect instead of relying only on intuition about which prompt looks better.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-171"><th colspan="2"><h3>Slide 171 · Compaction and What Must Survive</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-171">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-171.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-171.jpg" alt="Slide 171: Compaction and What Must Survive. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4514s" target="_blank" rel="noopener noreferrer">Watch 1:15:14–1:16:01</a></p>
+              </td>
+              <td class="lecture-text"><p>Compaction becomes necessary in many agent harnesses when the accumulated context is too long. It creates another selection problem: what must be preserved in the replacement context? Keeping too much means the system may need to compact again soon, while removing the wrong information can change how the agent behaves.</p>
+              <p>The instructor recounts an example in which an agent was told to confirm before deleting email, then lost that instruction while compacting a large inbox context. The point is that important constraints must survive the reduction, not merely the factual material the agent has been reading. A compacted history needs to retain the information required to complete the task correctly.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-172"><th colspan="2"><h3>Slide 172 · Recursive Language Models</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-172">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-172.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-172.jpg" alt="Slide 172: Recursive Language Models. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4561s" target="_blank" rel="noopener noreferrer">Watch 1:16:01–1:17:11</a></p>
+              </td>
+              <td class="lecture-text"><p>Recursive language models offer a different approach to a large context. The prompt can be stored as a variable in a code environment rather than placed in full into the model&#x27;s immediate input. The model can inspect portions, split the material, and manipulate it through code.</p>
+              <p>It can also invoke another language-model call on a selected part. Those calls process pieces of the context and return the information needed by the parent computation. The recursive structure allows the system to work with a large body of material while exposing each call to only the portion relevant to its subtask.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-173"><th colspan="2"><h3>Slide 173 · The Recursive Approach on OOLONG</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-173">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-173.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-173.jpg" alt="Slide 173: The Recursive Approach on OOLONG. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4631s" target="_blank" rel="noopener noreferrer">Watch 1:17:11–1:17:25</a></p>
+              </td>
+              <td class="lecture-text"><p>The lecture reports that the recursive approach improves GPT-5 mini on the illustrated OOLONG setting, surpassing the compared larger-model baseline in that experiment. The example shows that changing how a system accesses and processes context can matter substantially, even when the underlying model is smaller.</p></td>
+            </tr>
+            <tr class="slide-heading" id="slide-175"><th colspan="2"><h3>Slide 175 · Lecture Recap</h3></th></tr>
+            <tr class="slide-content" aria-labelledby="slide-175">
+              <td class="slide-cell">
+                <a class="slide-image-link" href="slides/slide-175.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-175.jpg" alt="Slide 175: Lecture Recap. Original CS329Z Lecture 2 course slide." lang="en" width="1280" height="720" loading="lazy" decoding="async"></a>
+                <p class="video-time"><a href="https://www.youtube.com/watch?v=Vr1NzH8bT44&amp;t=4645s" target="_blank" rel="noopener noreferrer">Watch 1:17:25–1:17:47</a></p>
+              </td>
+              <td class="lecture-text"><p>The lecture began with sequence probabilities and sampling, then examined Transformer and linear-attention architectures. It followed the model through pretraining, midtraining, post-training, and agent-specific training, before turning to prefill, decode, caching, and inference-time scaling. The final section connected those foundations to structured output and context engineering. These ideas provide background for the rest of the course, which will mainly use language models to build agents.</p></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      </article>
+
+      <div class="reader-end"><a href="../" data-note-copy="backCourse">← 课程笔记</a><a href="#contents" data-note-copy="top">回到目录 ↑</a></div>
+    </main>
+    <footer class="footer"><span>© 2026 Junquan Pan</span><span data-note-copy="footer">保持好奇，慢慢积累。</span></footer>
+  </div>
+</body>
+</html>
