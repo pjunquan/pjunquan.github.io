@@ -12,7 +12,7 @@
     try { const theme = localStorage.getItem('junquan-demo-theme'); document.documentElement.dataset.theme = theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); } catch (_) {}
   </script>
   <link rel="stylesheet" href="/styles.css">
-  <link rel="stylesheet" href="/notes/notes.css?v=9a4e1a35cde3">
+  <link rel="stylesheet" href="/notes/notes.css?v=9eb2cfc4012d">
   <script src="/notes/notes.js?v=aca44b0832b6" defer></script>
 </head>
 <body>
@@ -51,98 +51,98 @@
         <table class="slide-table" aria-labelledby="part-1-heading">
           <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
           <tbody>
-            <tr class="slide-heading" id="slide-01"><th colspan="2"><h3>Slide 01 · Engineering AI Agents</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-01">
+            <tr class="slide-content" id="slide-01" aria-labelledby="slide-01-title">
               <td class="slide-cell">
+                <h3 id="slide-01-title">Slide 01 · Engineering AI Agents</h3>
                 <a class="slide-image-link" href="slides/slide-01.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-01.jpg" alt="这是斯坦福大学CS329Z课程的开篇演示幻灯片，整体背景为纯白色。幻灯片右上角是斯坦福大学标志性的红底白边校徽，校徽主体为字母“S”内嵌绿色杉树图案。画面中部依次标注课程名称“CS 329Z:Engineering AI Agents”，以醒目的红色突出显示本讲主题“Intro to Agentic Systems”，底部列明三位授课教师姓名：Diyi Yang、Michael Ryan、John Yang。这张幻灯片对应课程开篇00:00-00:34的教学时段，用于正式开启这门AI智能体工程课程的第一课。" lang="zh-Hans" width="1120" height="631" loading="eager" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=0s" target="_blank" rel="noopener noreferrer">Watch 00:00–00:34</a></p>
               </td>
               <td class="lecture-text"><p>Welcome to CS329Z, Engineering AI Agents. I’m Diyi Yang, and I am teaching this course with Michael Ryan and John Yang. In our first lecture, we will cover the course logistics, trace the history of agents, and examine what an agent is made of. We will also introduce open problems that we will return to during the quarter.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-02"><th colspan="2"><h3>Slide 02 · Welcome to CS329Z: Engineering AI Agents</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-02">
+            <tr class="slide-content" id="slide-02" aria-labelledby="slide-02-title">
               <td class="slide-cell">
+                <h3 id="slide-02-title">Slide 02 · Welcome to CS329Z: Engineering AI Agents</h3>
                 <a class="slide-image-link" href="slides/slide-02.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-02.jpg" alt="这是斯坦福CS329Z《AI智能体工程》课程的第2页欢迎幻灯片，页面顶部以黑色字体标注标题“Welcome to CS329Z: Engineering AI Agents”。标题下方的白色展示区域左上角，以醒目的红棕色字体标注“Instructors”字样，区域内横向排列三张圆形讲师头像，从左到右依次对应Diyi Yang、Michael Ryan、John Yang三位授课教师，每张头像下方都标注了对应教师的姓名，幻灯片右下角标注页码“2”。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=35s" target="_blank" rel="noopener noreferrer">Watch 00:35–01:18</a></p>
               </td>
               <td class="lecture-text"><p>Michael Ryan is a second-year Stanford PhD student working on open-source, human-centered AI. His work on DSPy focuses on programming language models. John Yang is a third-year Stanford PhD student who works on coding agents and their evaluation. His projects include SWE-bench, SWE-agent, ProgramBench, and SWE-smith.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-03"><th colspan="2"><h3>Slide 03 · Welcome to CS329Z: Engineering AI Agents</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-03">
+            <tr class="slide-content" id="slide-03" aria-labelledby="slide-03-title">
               <td class="slide-cell">
+                <h3 id="slide-03-title">Slide 03 · Welcome to CS329Z: Engineering AI Agents</h3>
                 <a class="slide-image-link" href="slides/slide-03.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-03.jpg" alt="这张是斯坦福CS329Z课程的第3号欢迎页幻灯片，页面顶部用大号字体标注标题“Welcome to CS329Z: Engineering AI Agents”。幻灯片依次列出了课程的相关信息：联系渠道分为两类，课程相关问题可在Ed平台发帖咨询，其他问题可发送邮件至cs329z-staff@lists.stanford.edu，同时还标注了课程官方网站的网址，以及Ed讨论区的访问链接，页面右下角标注有页码3。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=78s" target="_blank" rel="noopener noreferrer">Watch 01:18–01:55</a></p>
               </td>
               <td class="lecture-text"><p>Use Ed Discussion as your primary point of contact with the course team. If you need to be added, email the course mailing list so the teaching team can respond. Announcements will appear on Ed Discussion, and the course website will maintain the lectures, slides, and homework.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-04"><th colspan="2"><h3>Slide 04 · Lecture Overview</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-04">
+            <tr class="slide-content" id="slide-04" aria-labelledby="slide-04-title">
               <td class="slide-cell">
+                <h3 id="slide-04-title">Slide 04 · Lecture Overview</h3>
                 <a class="slide-image-link" href="slides/slide-04.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-04.jpg" alt="这是斯坦福CS329Z课程第一讲的内容概览幻灯片，标题为“Lecture Overview”。幻灯片以带红色圆点的条目清晰列出本次课程的全部安排及时长：课程后勤说明10分钟、智能体发展史15分钟、智能体架构讲解20分钟、复合AI系统（含RAG、工具使用、MCP相关内容）10分钟，以及智能体的核心挑战（训练、评估与安全相关内容）15分钟，明确了本节后续时段的具体讲授模块与时间分配。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=115s" target="_blank" rel="noopener noreferrer">Watch 01:55–02:26</a></p>
               </td>
               <td class="lecture-text"><p>We will begin with the course logistics and then look at the long history behind agents. The main technical topic today is agent architecture. From there, we will look at compound AI systems, retrieval-augmented generation, tool use, and MCP. We will finish with several open challenges, including risks that arise when multiple agents interact.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-05"><th colspan="2"><h3>Slide 05 · Why CS329Z: Engineering AI Agents</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-05">
+            <tr class="slide-content" id="slide-05" aria-labelledby="slide-05-title">
               <td class="slide-cell">
+                <h3 id="slide-05-title">Slide 05 · Why CS329Z: Engineering AI Agents</h3>
                 <a class="slide-image-link" href="slides/slide-05.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-05.jpg" alt="这是斯坦福CS329Z课程第5张主题为&quot;Why CS329Z: Engineering AI Agents&quot;的幻灯片，对应课程2分26秒至3分23秒的讲解内容。幻灯片点明大语言模型智能体时代同时涵盖建模与系统两大视角：其中红色高亮标注的两大核心群体分别是掌握模型训练、提示、对齐与评估方法的大语言模型领域从业者，以及熟悉搭建可靠工具、API、环境与基础设施的系统领域从业者。幻灯片同时说明课程的预期安排：既会讲解相关基础理论，也会带领学生动手实践完成智能体的构建与评估。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=146s" target="_blank" rel="noopener noreferrer">Watch 02:26–03:23</a></p>
               </td>
               <td class="lecture-text"><p>There are two perspectives on building agents. From the modeling side, the important questions include how language models are pretrained, post-trained, prompted, aligned, and evaluated. From the systems side, the work involves making reliable tools, APIs, environments, and infrastructure. An agent brings these pieces together. This course will cover the foundations and give you practice building and evaluating agents yourself.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-06"><th colspan="2"><h3>Slide 06 · A Quick Glance of CS329Z: Foundational Basics</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-06">
+            <tr class="slide-content" id="slide-06" aria-labelledby="slide-06-title">
               <td class="slide-cell">
+                <h3 id="slide-06-title">Slide 06 · A Quick Glance of CS329Z: Foundational Basics</h3>
                 <a class="slide-image-link" href="slides/slide-06.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-06.jpg" alt="这是斯坦福CS329Z课程第6号主题为“A Quick Glance of CS329Z:Foundational Basics”的介绍幻灯片，清晰划分了课程不同阶段的核心学习内容：左侧第一组6项内容为面向开发者的大语言模型、检索增强生成、工具调用与函数调用、智能体设计与框架、智能体记忆、多智能体系统，以红色字体标注为Week 1-Week 5的教学内容；右侧第二组6项内容为优化与利用、智能体系统数据、评估与基准测试、智能体安全与防护边界、代码智能体、主动式智能体，以红色字体标注为第5周之后的教学内容，整体直观呈现了该课程基础内容的阶段排布。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=203s" target="_blank" rel="noopener noreferrer">Watch 03:23–04:24</a></p>
               </td>
               <td class="lecture-text"><p>In the first half of the course, we will look at language models from a builder’s perspective. Retrieval-augmented generation and its variants will be one focus, followed by tool use and function calling. We will then move into agent design and scaffolding, training, memory, orchestration, and multi-agent systems.</p>
               <p>In the second half, we will examine optimization, harnesses, and the data agents use, including how to choose that data and assess its quality. We will also cover evaluation, benchmark design, safety, and guardrails. Coding agents and proactive agents will each receive attention.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-07"><th colspan="2"><h3>Slide 07 · A Quick Glance of CS329Z: Special Guests</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-07">
+            <tr class="slide-content" id="slide-07" aria-labelledby="slide-07-title">
               <td class="slide-cell">
+                <h3 id="slide-07-title">Slide 07 · A Quick Glance of CS329Z: Special Guests</h3>
                 <a class="slide-image-link" href="slides/slide-07.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-07.jpg" alt="这是斯坦福CS329Z课程第7号主题页，对应课程介绍里的特邀嘉宾相关内容。页面顶部标注大标题“A Quick Glance of CS329Z: Special Guests”，下方左右分置两个榜单界面：左侧是TERMINAL-BENCH 4.0的评测界面，标注该基准用于评估前沿智能体相关工作，列出了不同模型的评测数据；右侧是SWE-bench的验证版榜单界面，展示多款智能体代码模型的测试得分，所有上榜模型的分数均为75.80及以上。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=264s" target="_blank" rel="noopener noreferrer">Watch 04:24–04:55</a></p>
               </td>
               <td class="lecture-text"><p>We will hear from two teams that designed influential benchmarks. The Terminal-Bench team will discuss how it built its benchmark, and the SWE-bench team will visit as well. These sessions are an opportunity to ask the people who built the evaluations about their design choices.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-11"><th colspan="2"><h3>Slide 11 · Course Policy</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-11">
+            <tr class="slide-content" id="slide-11" aria-labelledby="slide-11-title">
               <td class="slide-cell">
+                <h3 id="slide-11-title">Slide 11 · Course Policy</h3>
                 <a class="slide-image-link" href="slides/slide-11.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-11.jpg" alt="这是斯坦福CS329Z课程第11号幻灯片，主题为课程政策。页面共列明四项核心要求，其中用醒目的红色高亮标注的内容为“你应当借助AI开展学习”。其余要求分别是：要求学生熟知斯坦福大学荣誉准则，课堂上不鼓励使用笔记本电脑，每名学生总计可获得3天无责迟交缓冲期，但同行评审作业和最终项目论文无论任何情况都不允许迟交，页面右下角标注页码11，对应课程视频04:55-05:22的讲解时段。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=295s" target="_blank" rel="noopener noreferrer">Watch 04:55–05:22</a></p>
               </td>
               <td class="lecture-text"><p>Use AI as a way to learn, and familiarize yourself with Stanford’s honor code. For the lecture itself, reserve laptops for activities such as taking notes. We discourage using them for other work during class because it makes it harder to focus.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-12"><th colspan="2"><h3>Slide 12 · Prerequisites and Compute</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-12">
+            <tr class="slide-content" id="slide-12" aria-labelledby="slide-12-title">
               <td class="slide-cell">
+                <h3 id="slide-12-title">Slide 12 · Prerequisites and Compute</h3>
                 <a class="slide-image-link" href="slides/slide-12.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-12.jpg" alt="这张图片是斯坦福大学CS329Z课程第12页幻灯片，主题为Prerequisites and Compute。该幻灯片介绍了课程的先修要求，强烈建议修过CS 224N、224V、CS 336或等效课程；要求学员掌握基础大语言模型相关知识，如训练/开发/测试集、预训练、微调、对齐、提示工程等概念，且这些内容不会在本课程中覆盖。同时说明了算力支持，Laude研究院为每位学生提供200美元的学分支持，Thinking Machines则提供250美元的Tinker学分。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=322s" target="_blank" rel="noopener noreferrer">Watch 05:22–05:56</a></p>
               </td>
               <td class="lecture-text"><p>We recommend prior training in NLP or large language models. You should already be familiar with the basics, since we will assume knowledge of topics such as pretraining, fine-tuning, and alignment. For compute, the Laude Institute is providing each student with $200 in credits, and Thinking Machines is providing $250 in Tinker credits.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-14"><th colspan="2"><h3>Slide 14 · Homework and exam performance with AI</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-14">
+            <tr class="slide-content" id="slide-14" aria-labelledby="slide-14-title">
               <td class="slide-cell">
+                <h3 id="slide-14-title">Slide 14 · Homework and exam performance with AI</h3>
                 <a class="slide-image-link" href="slides/slide-14.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-14.jpg" alt="这张图表分为上下两个部分，顶部标题为“Homework score, average without AI=100”，展示两类学生的作业得分分布：从不使用AI的学生得分集中在基准分100左侧、峰值在60至80区间，使用AI的学生作业得分分布整体右移，峰值更高，标注说明“使用AI的学生在作业中得分更高”。下方部分标题为“Exam score, average without AI=100”，对应考试得分分布：从不使用AI的学生得分峰值在100附近，使用AI的学生得分分布整体左移，标注说明“但在考试中表现更差”。图表底部标注来源为相关研究，统计样本为26811名12至18岁的中学生，揭示了AI辅助作业对应的学习成效反差现象。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=356s" target="_blank" rel="noopener noreferrer">Watch 05:56–06:40</a></p>
               </td>
               <td class="lecture-text"><p>Look at the two comparisons in this figure. The upper panel shows homework scores for students who used AI and students who did not. The students using AI did very well on the homework. The lower panel shows exam scores for the same groups. There, the distribution for the group without AI is closer to the high end, while more students in the AI group scored lower. An advantage on the assisted work can coincide with weaker performance on the exam.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-15"><th colspan="2"><h3>Slide 15 · The Hidden Cost: Skills Erode</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-15">
+            <tr class="slide-content" id="slide-15" aria-labelledby="slide-15-title">
               <td class="slide-cell">
+                <h3 id="slide-15-title">Slide 15 · The Hidden Cost: Skills Erode</h3>
                 <a class="slide-image-link" href="slides/slide-15.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-15.jpg" alt="这张幻灯片的主题为“AI辅助对编码速度与技能养成的影响”，内容对应前文提及的Anthropic相关工程师编程任务研究。图中包含两组对照箱线图：左侧图表展示使用AI的工程师平均任务耗时更短，二者统计差异的p值为0.391；右侧图表显示使用AI的工程师后续知识测验得分显著更低，二者统计差异的p值为0.020。幻灯片右侧醒目标注了核心研究结论：“我们发现使用AI辅助会让学习者的知识掌握程度出现统计学意义上的显著下降”，直观呈现了AI辅助编码时效率提升但技能掌握被削弱的隐藏代价。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=400s" target="_blank" rel="noopener noreferrer">Watch 06:40–07:23</a></p>
               </td>
               <td class="lecture-text"><p>Anthropic examined a similar issue in a study of engineers doing a coding task. The engineers using AI completed the task faster, but their follow-up quiz scores indicated weaker mastery. Think about what happens when a coding agent produces a thousand lines on your behalf. Having the code in front of you leaves a separate question about how well you understand it.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-16"><th colspan="2"><h3>Slide 16 · Use AI to learn how to learn : )</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-16">
+            <tr class="slide-content" id="slide-16" aria-labelledby="slide-16-title">
               <td class="slide-cell">
+                <h3 id="slide-16-title">Slide 16 · Use AI to learn how to learn : )</h3>
                 <a class="slide-image-link" href="slides/slide-16.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-16.jpg" alt="这是斯坦福CS329Z课程第16页的幻灯片内容，核心文字分为两行，第一行是“Use AI to learn how to learn :）”，第二行是“It’s about you and your CS329Z”，右下角标注有页码“16”。该幻灯片作为课程内容的一部分，和上下文围绕AI工具辅助学习、借助AI理解相关技术的主题相契合，呼应了课程中探讨的使用AI辅助学习并构建对相关内容理解的方向。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=443s" target="_blank" rel="noopener noreferrer">Watch 07:23–07:40</a></p>
               </td>
@@ -156,93 +156,93 @@
         <table class="slide-table" aria-labelledby="part-2-heading">
           <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
           <tbody>
-            <tr class="slide-heading" id="slide-17"><th colspan="2"><h3>Slide 17 · Lecture Overview</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-17">
+            <tr class="slide-content" id="slide-17" aria-labelledby="slide-17-title">
               <td class="slide-cell">
+                <h3 id="slide-17-title">Slide 17 · Lecture Overview</h3>
                 <a class="slide-image-link" href="slides/slide-17.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-17.jpg" alt="这是斯坦福CS329Z课程第一讲的第17页概述幻灯片，页面顶部标注标题“Lecture Overview”。页面以红色圆点逐条列出本次课程的各模块及对应时长：课程教务说明10分钟、智能体发展史15分钟、智能体架构20分钟、复合AI系统（含RAG、工具调用、MCP相关内容）10分钟、关键挑战（含训练、评估、安全相关内容）15分钟。页面底部用醒目的红色字体标注学习目标：让学习者熟悉基于大语言模型的智能体循环、智能体的核心组成部分，以及智能体训练与评估相关的待解决开放问题，和该页对应的课程讲解说明内容相呼应。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=460s" target="_blank" rel="noopener noreferrer">Watch 07:40–08:00</a></p>
               </td>
               <td class="lecture-text"><p>By the end of the lecture, you should be familiar with the loop that operates on top of a language model and the components that make up that loop. The historical examples will give us a way to understand where those components came from.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-18"><th colspan="2"><h3>Slide 18 · Agents</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-18">
+            <tr class="slide-content" id="slide-18" aria-labelledby="slide-18-title">
               <td class="slide-cell">
+                <h3 id="slide-18-title">Slide 18 · Agents</h3>
                 <a class="slide-image-link" href="slides/slide-18.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-18.jpg" alt="这是斯坦福CS329Z课程第18讲“Agents”对应的幻灯片内容，左侧呈现了与智能体相关的视觉元素，包括身着白大褂操作实验设备的类人机器人形象，以及标有Gemini、Cursor、OpenAI Codex、Claude等大语言模型的品牌标识；右侧展示了文字“Let&#x27;s knock something off your list”，还有标注“Chat”“Cowork”的功能选项、任务进展项，以及会议记录、技能文件、代码文件等上下文内容，整体用于辅助讲解智能体相关概念的入门介绍。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=480s" target="_blank" rel="noopener noreferrer">Watch 08:00–08:17</a></p>
               </td>
               <td class="lecture-text"><p>The term agent is familiar today, but the idea behind it has developed over decades. We will trace where the concept came from, how it changed as researchers built different kinds of systems, and what language models contributed to its recent growth.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-19"><th colspan="2"><h3>Slide 19 · History of Agents (before 1990)</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-19">
+            <tr class="slide-content" id="slide-19" aria-labelledby="slide-19-title">
               <td class="slide-cell">
+                <h3 id="slide-19-title">Slide 19 · History of Agents (before 1990)</h3>
                 <a class="slide-image-link" href="slides/slide-19.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-19.jpg" alt="这张图片是斯坦福大学CS329Z课程第19页幻灯片，主题为1990年之前的智能体历史。幻灯片上明确列出了两条相关核心信息：一是“agent”一词源自拉丁语“agens”，是15世纪后期意为“执行者”的词汇；二是首次有记录的“AI领域使用agent”的内容，出自1973年Hewitt、Bishop与Steiger提出的Actor模型。图片核心是1973年发表的论文《A Universal Modular ACTOR Formalism》的部分内容截图，该论文提出了适用于人工智能的模块化Actor架构，是智能体概念在早期AI领域应用的典型例证。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=497s" target="_blank" rel="noopener noreferrer">Watch 08:17–09:03</a></p>
               </td>
               <td class="lecture-text"><p>The word agent comes from a Latin root associated with acting. In AI, one early use appears in the 1973 Actor model proposed by Hewitt, Bishop, and Steiger. An actor waits for a message and performs an action in response. This is an early example of software entities acting independently in a system.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-20"><th colspan="2"><h3>Slide 20 · History of Agents (before 1990)</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-20">
+            <tr class="slide-content" id="slide-20" aria-labelledby="slide-20-title">
               <td class="slide-cell">
+                <h3 id="slide-20-title">Slide 20 · History of Agents (before 1990)</h3>
                 <a class="slide-image-link" href="slides/slide-20.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-20.jpg" alt="这是斯坦福CS329Z课程第1讲的第20张幻灯片，主题为1990年之前的智能体发展历史。幻灯片以条目形式梳理了该阶段的核心脉络：首先点明“agent”一词源自15世纪晚期的拉丁语agens，意为“行动者”；其次列出智能体相关的关键节点，包括1973年休伊特、毕晓普与施泰格首次在人工智能领域正式使用该相关概念，1980年用于智能体任务协商的合同网协议面世，1986年马文·明斯基发布《心智社会》。幻灯片还搭配了对应两份文献的配图，直观呈现相关成果的样貌。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=543s" target="_blank" rel="noopener noreferrer">Watch 09:03–09:37</a></p>
               </td>
               <td class="lecture-text"><p>The Contract Net protocol asked how several agents could divide work and negotiate over who would take a task. Marvin Minsky’s Society of Mind described a collection of smaller agents cooperating to achieve an outcome. These ideas anticipate the coordination problems we now encounter in multi-agent systems.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-21"><th colspan="2"><h3>Slide 21 · History of Agents (the 1990s)</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-21">
+            <tr class="slide-content" id="slide-21" aria-labelledby="slide-21-title">
               <td class="slide-cell">
+                <h3 id="slide-21-title">Slide 21 · History of Agents (the 1990s)</h3>
                 <a class="slide-image-link" href="slides/slide-21.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-21.jpg" alt="这是斯坦福CS329Z课程第21页的幻灯片，主题为“1990年代智能体的发展历史”，页面左侧展示了1994年帕蒂·梅斯主编的《Designing Autonomous Agents》书籍封面。中间部分呈现了伍德赖奇和詹宁斯1995年发表的《Intelligent agents: theory and practice》论文的信息，点明该论文提出智能体具备自主性、社交能力、反应性与主动性四大核心特质。右侧是罗素与诺维格所著《人工智能：一种现代的方法》的书籍封面，用亮红色字体标注了两人1995年给出的智能体定义：智能体可通过传感器感知环境，再通过执行器对环境施加动作。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=577s" target="_blank" rel="noopener noreferrer">Watch 09:37–10:18</a></p>
               </td>
               <td class="lecture-text"><p>In the 1990s, researchers built more autonomous software agents and proposed different ways to define them. Some emphasized autonomy, social ability, reactivity, and proactivity. Russell and Norvig used a definition many students will recognize: an agent perceives its environment through sensors and acts on it through actuators.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-22"><th colspan="2"><h3>Slide 22 · History of Agents: the RL Era</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-22">
+            <tr class="slide-content" id="slide-22" aria-labelledby="slide-22-title">
               <td class="slide-cell">
+                <h3 id="slide-22-title">Slide 22 · History of Agents: the RL Era</h3>
                 <a class="slide-image-link" href="slides/slide-22.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-22.jpg" alt="这张图片是斯坦福CS329Z课程第22讲的内容，主题为“History of Agents: the RL Era”，展示了强化学习时代智能体的相关知识。左侧呈现了Sutton和Barto在1998年提出的智能体-环境循环模型，该模型中状态$S_t$、智能体、环境之间存在反馈关系，智能体依据环境状态输出动作$A_t$，环境则向智能体反馈下一状态$S_{t+1}$与奖励$R_{t+1}$。图片右下部分展示了Mnih等人在2015年提出的Atari游戏上的DQN网络结构，左侧还配有AlphaGo、OpenAI相关标识及OG战队标识，对应强化学习领域的相关案例。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=618s" target="_blank" rel="noopener noreferrer">Watch 10:18–11:34</a></p>
               </td>
               <td class="lecture-text"><p>In the reinforcement learning setting, an agent acts on the basis of its state, and the environment returns feedback in the form of reward. This gives us a loop: observe, act, and experience the result. Sutton and Barto’s agent–environment diagram captures that structure.</p>
               <p>DeepMind’s Deep Q-Network applied this approach to games, and later systems such as AlphaGo and OpenAI Five achieved very strong performance in Go and Dota 2. Each of these systems was trained for a specific task. That specialization provides a point of comparison for what changed when large language models arrived.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-23"><th colspan="2"><h3>Slide 23 · History of Agents: the LLM Era</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-23">
+            <tr class="slide-content" id="slide-23" aria-labelledby="slide-23-title">
               <td class="slide-cell">
+                <h3 id="slide-23-title">Slide 23 · History of Agents: the LLM Era</h3>
                 <a class="slide-image-link" href="slides/slide-23.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-23.jpg" alt="这是斯坦福CS329Z课程第23讲幻灯片，标题为“History of Agents: the LLM Era”，内容围绕大语言模型时代的智能体展开。左侧是智能体的流程示意图，展示从输入经位置编码、词嵌入，再到多头注意力、前馈网络、池化等环节的结构，最终生成输出。右侧配有“Few-shot”的说明，解释模型除任务描述外还会看到少量任务示例且不进行梯度更新，同时以翻译任务为例，展示英文到法语的示例翻译与未完成的待翻译内容，标注其为任务描述、示例与提示。底部注明“GPT3 and in context learning”，点明该内容对应GPT3的上下文学习机制。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=694s" target="_blank" rel="noopener noreferrer">Watch 11:34–12:18</a></p>
               </td>
               <td class="lecture-text"><p>GPT-3 demonstrated a way to specify a task at inference time. For translation, you can describe the task and supply a few examples showing the desired input and output. The model uses those demonstrations as context for translating the next input. The task can be set up this way without updating the model’s weights.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-24"><th colspan="2"><h3>Slide 24 · What LLMs Made Possible: Reasoning and Tool Use</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-24">
+            <tr class="slide-content" id="slide-24" aria-labelledby="slide-24-title">
               <td class="slide-cell">
+                <h3 id="slide-24-title">Slide 24 · What LLMs Made Possible: Reasoning and Tool Use</h3>
                 <a class="slide-image-link" href="slides/slide-24.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-24.jpg" alt="这是斯坦福CS329Z课程第24号幻灯片，主题为“大语言模型实现的能力：推理与工具使用”。幻灯片左侧通过示例展示思维链提示，用一道网球数量算术题呈现输入问题和分步推导得到正确答案的模型输出。幻灯片中部突出展示WebGPT的核心定位：通过网页浏览提升语言模型的事实准确性。幻灯片右侧为MRKL系统架构，标注其2022年提出，主打模块化推理、知识与语言的融合，呈现了该系统从输入文本到输出文本，经逻辑推理调度各类外部工具完成任务的完整流程。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=738s" target="_blank" rel="noopener noreferrer">Watch 12:18–14:07</a></p>
               </td>
               <td class="lecture-text"><p>Prompting can do more than specify a new task. In the chain-of-thought example, the model is asked to work through the problem in steps. Generating those intermediate steps can help it arrive at a more accurate answer.</p>
               <p>Tools give the model another way to deal with a question it cannot answer with the information already available to it. WebGPT could use a browser to look up facts, and that approach led to further work on browser agents. MRKL illustrates how a system can route requests to outside specialists. A weather request can go to a weather API, and a coding task can go to a Python tool. With these two capabilities in place, a model can reason in steps and take actions through tools.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-25"><th colspan="2"><h3>Slide 25 · The Emergence of “Agents”</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-25">
+            <tr class="slide-content" id="slide-25" aria-labelledby="slide-25-title">
               <td class="slide-cell">
+                <h3 id="slide-25-title">Slide 25 · The Emergence of “Agents”</h3>
                 <a class="slide-image-link" href="slides/slide-25.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-25.jpg" alt="这是斯坦福CS329Z课程第25页标题为《&quot;Agents&quot;的涌现》的演示幻灯片，展示了智能体概念发展的关键时间节点：2022年10月的ReAct、2022年11月30日的ChatGPT、2023年3月14日的GPT-4、2023年3月28日的BabyAGI，以及2023年3月30日的AutoGPT。幻灯片依次搭配对应标志性内容：左侧是2022年Yao等人提出的ReAct样例交互界面，中部展示ChatGPT与GPT-4的品牌标识，右侧分别配有BabyAGI的运行逻辑流程图和AutoGPT的专属标识，直观呈现了智能体技术随时间逐步演进的脉络。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=847s" target="_blank" rel="noopener noreferrer">Watch 14:07–16:25</a></p>
               </td>
               <td class="lecture-text"><p>ReAct puts reasoning and action into a continuing loop. The model reasons about a next step, takes the action, and observes what happened. It can then use the observation in its next reasoning step. The release of ChatGPT made conversation with language models an everyday activity for many people. GPT-4 provided a stronger base for agents because it could follow longer instructions and plan more reliably.</p>
               <p>Two early open-source projects showed what developers could try with that stronger base. BabyAGI was given a goal, created a task list, worked through it, and could add tasks as work progressed. AutoGPT connected GPT-4 to tools such as search and the file system, so it could continue across several steps without the user sending a new prompt each time. Both projects had practical shortcomings, but they drew attention to a new range of possibilities for agents.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-26"><th colspan="2"><h3>Slide 26 · LLMs Getting Better: Model Capability</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-26">
+            <tr class="slide-content" id="slide-26" aria-labelledby="slide-26-title">
               <td class="slide-cell">
+                <h3 id="slide-26-title">Slide 26 · LLMs Getting Better: Model Capability</h3>
                 <a class="slide-image-link" href="slides/slide-26.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-26.jpg" alt="这是斯坦福CS329Z课程第26页的配套图表，标题为“LLMs Getting Better: Model Capability”，纵轴为准确率，横轴标注了从GPT-3到GPT-5的迭代时间节点。图表展示了不同大模型在多类基准测试上的准确率变化，其中GPT-4相比前代在MMLU测试上实现了43%的准确率提升，其余如TruthfulQA、MATH、HumanEval等基准测试的表现也同步上涨；后续GPT-5在更具难度的GPQA Diamond、MATH Level 5等新测试基准上同样取得大幅提升，对应准确率涨幅分别达75%、84%、65%，直观呈现出大语言模型基础能力随迭代持续增强的趋势。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=985s" target="_blank" rel="noopener noreferrer">Watch 16:25–17:47</a></p>
               </td>
               <td class="lecture-text"><p>Compare GPT-3, GPT-4, and GPT-5 as base models. One example of the improvement from GPT-3 to GPT-4 is MMLU, where the chart shows a gain labeled 43%. Other benchmarks in that comparison also improved. By the time of the next comparison, some earlier datasets had been solved or had reached levels at which their scores were less informative. The newer comparison therefore includes harder tests, such as GPQA and more challenging mathematics problems.</p>
               <p>Improvements in the base model matter for an agent built on it. They can support better reasoning, fewer mistakes and hallucinations, and longer tasks.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-27"><th colspan="2"><h3>Slide 27 · Agents Getting Better: Agentic Capability</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-27">
+            <tr class="slide-content" id="slide-27" aria-labelledby="slide-27-title">
               <td class="slide-cell">
+                <h3 id="slide-27-title">Slide 27 · Agents Getting Better: Agentic Capability</h3>
                 <a class="slide-image-link" href="slides/slide-27.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-27.jpg" alt="这张幻灯片的标题为“Agents Getting Better: Agentic Capability”，对应课程中关于智能体能力迭代提升的讲解主题。左侧的折线图展示了AI在12个开源Python代码仓库的问题解决任务中的SWE-bench验证准确率走势，不同颜色的折线分别代表OpenAI、Anthropic及其他机构的相关模型，清晰标注出从GPT-4、Claude 3到后续迭代版本的准确率逐步攀升的轨迹。右侧的两张子图分别从OOD性能、Terminal Bench两个维度，对比不同基础大模型的智能体能力随模型规模增长的变化趋势，直观体现基础模型迭代对智能体能力提升的正向支撑作用。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1067s" target="_blank" rel="noopener noreferrer">Watch 17:47–19:03</a></p>
               </td>
@@ -256,216 +256,216 @@
         <table class="slide-table" aria-labelledby="part-3-heading">
           <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
           <tbody>
-            <tr class="slide-heading" id="slide-28"><th colspan="2"><h3>Slide 28 · Lecture Overview</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-28">
+            <tr class="slide-content" id="slide-28" aria-labelledby="slide-28-title">
               <td class="slide-cell">
+                <h3 id="slide-28-title">Slide 28 · Lecture Overview</h3>
                 <a class="slide-image-link" href="slides/slide-28.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-28.jpg" alt="这是斯坦福CS329Z课程第1讲第三部分的Lecture Overview幻灯片，顶部标注大标题“Lecture Overview”，以带红色圆点的项目符号形式列出本次课程各模块的内容与对应时长：课程教务说明（10分钟）、智能体发展历史（15分钟）、智能体架构（20分钟）、复合AI系统：检索增强生成、工具使用、MCP（10分钟），以及核心挑战：训练、评估、安全（15分钟），清晰对应了该讲后续将要展开讲解的内容安排。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1303s" target="_blank" rel="noopener noreferrer">Watch 21:43–22:02</a></p>
               </td>
               <td class="lecture-text"><p>We have seen how agents developed and why language models accelerated that development. We can now examine a single agent closely and identify the pieces of its architecture.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-29"><th colspan="2"><h3>Slide 29 · Anatomy of an Agent</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-29">
+            <tr class="slide-content" id="slide-29" aria-labelledby="slide-29-title">
               <td class="slide-cell">
+                <h3 id="slide-29-title">Slide 29 · Anatomy of an Agent</h3>
                 <a class="slide-image-link" href="slides/slide-29.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-29.jpg" alt="这张幻灯片标题为“Anatomy of an Agent”，对应课程里对智能体架构组成的讲解内容。左侧展示了来自2022年Yao等人提出的ReAct范式的实操示例片段，记录了智能体完成将胡椒瓶放入容器任务的逐步思考与行动交互过程，示例末尾以对勾标识任务顺利完成。右侧通过一一对应的标注，将示例内容拆解为智能体的五大核心组件：大语言模型核心、规划与推理、记忆、工具、环境观测，清晰对应了示例里的各部分模块，直观呈现了智能体的架构构成。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1322s" target="_blank" rel="noopener noreferrer">Watch 22:02–23:18</a></p>
               </td>
               <td class="lecture-text"><p>Consider the ReAct example in which the agent has to put a pepper shaker in a container. The underlying language model is the core. When the agent works out that a shaker is likely to be in a cabinet, that is planning and reasoning. At the current step, its earlier interactions form a trace it can use as memory.</p>
               <p>Going to a cabinet or picking up the shaker requires an action through a tool. After each action, the agent can see something about the environment. Even this small example contains five components: the model, reasoning and planning, memory, tools, and observations from the environment.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-30"><th colspan="2"><h3>Slide 30 · Agents: Key Components</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-30">
+            <tr class="slide-content" id="slide-30" aria-labelledby="slide-30-title">
               <td class="slide-cell">
+                <h3 id="slide-30-title">Slide 30 · Agents: Key Components</h3>
                 <a class="slide-image-link" href="slides/slide-30.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-30.jpg" alt="这张是斯坦福CS329Z课程第30号幻灯片的示意图，主题为智能体的核心组件。图中明确标注LLM Core是整个智能体系统的核心模块：上方连接蓝色的“规划与推理”模块、绿色的“记忆”模块，二者的信息均输入至LLM核心；LLM Core向下对接浅蓝色的“工具”模块，该模块涵盖检索、计算器、代码执行、搜索、文件操作等功能。工具模块下方为紫色的智能体动作层，可完成工具调用、交互、响应用户等操作，输出动作作用于标注了桌面操作系统、网页浏览器等场景的外部环境，同时智能体可通过观测获取来自外部环境的反馈，形成完整的运行闭环。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1398s" target="_blank" rel="noopener noreferrer">Watch 23:18–26:39</a></p>
               </td>
               <td class="lecture-text"><p>Treat the diagram as one way to identify the components and understand how they interact. The language model forms the core, and a stronger model will generally help. We can also improve the surrounding harness. A planning module can break a long task into smaller pieces, sometimes assigning them to subagents. Memory lets an agent working for hours take earlier events into account in later steps.</p>
               <p>Tools address gaps in the model’s own capabilities. A model may solve a difficult math problem and still be unable to tell you where today’s class meets without looking it up. It can consult the Stanford website for the room, a weather source for current conditions, or a calculator for a multiplication problem. The agent then takes actions and observes their effect in the environment. Each part of that arrangement can be configured, which explains the importance of optimizing the harness.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-31"><th colspan="2"><h3>Slide 31 · Similar Definitions of Agents</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-31">
+            <tr class="slide-content" id="slide-31" aria-labelledby="slide-31-title">
               <td class="slide-cell">
+                <h3 id="slide-31-title">Slide 31 · Similar Definitions of Agents</h3>
                 <a class="slide-image-link" href="slides/slide-31.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-31.jpg" alt="这张PPT的标题为“Similar Definitions of Agents”，对应课件中“相似智能体定义”的讲解内容。图中左侧是一套智能体架构示意图：核心为标红的Agent模块，向外关联包含日历、计算器等组件的Tools模块，对接分短期与长期类型的Memory模块、Action执行模块，以及集成反思、自我批判等功能的Planning模块。图的右上方给出认知语言智能体的内部组成，右下方呈现环境与智能体通过观测、动作双向交互的闭环，该图整合了不同来源的智能体定义，用于直观展示智能体各组件的关联逻辑。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1599s" target="_blank" rel="noopener noreferrer">Watch 26:39–28:00</a></p>
               </td>
               <td class="lecture-text"><p>Researchers draw the boundaries of an agent in different ways. One description names planning, memory, tools, and action. Another distinguishes retrieval, which reads from memory, from learning, which writes to it. As you compare the diagrams, look for the common operation: a language model reasons, retains and retrieves information, and acts in an environment that provides feedback.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-32"><th colspan="2"><h3>Slide 32 · Agents: Key Components</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-32">
+            <tr class="slide-content" id="slide-32" aria-labelledby="slide-32-title">
               <td class="slide-cell">
+                <h3 id="slide-32-title">Slide 32 · Agents: Key Components</h3>
                 <a class="slide-image-link" href="slides/slide-32.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-32.jpg" alt="这张是“Agents: Key Components”的流程图，对应斯坦福CS329Z课程的Slide 32，用于讲解智能体的核心构成。图中，标注为红色框的“Planning &amp; Reasoning”模块指向“LLM Core”；“Memory”模块也指向“LLM Core”，同时“LLM Core”衔接“Tools”模块，工具涵盖检索、计算器、代码、搜索、读写内存等；随后工具连接“Agent actions”模块，包含工具调用、交互、响应用户等内容，最终“Agent actions”通过“act”作用于标注为“Environment (external world)”的模块，环境含桌面系统、网络浏览器、移动应用等内容，且环境的“observe”功能反馈给LLM Core。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1680s" target="_blank" rel="noopener noreferrer">Watch 28:00–28:18</a></p>
               </td>
               <td class="lecture-text"><p>Let’s return to the component diagram and focus on planning and reasoning. We need to explain what reasoning means for a language model and why it affects the actions an agent takes.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-33"><th colspan="2"><h3>Slide 33 · Reasoning and Planning</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-33">
+            <tr class="slide-content" id="slide-33" aria-labelledby="slide-33-title">
               <td class="slide-cell">
+                <h3 id="slide-33-title">Slide 33 · Reasoning and Planning</h3>
                 <a class="slide-image-link" href="slides/slide-33.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-33.jpg" alt="这张是斯坦福CS329Z课程第33页、主题为“推理与规划”的教学幻灯片。左侧分三点分别说明三类主体的推理相关定义：人类的推理是演绎、类比、规划这类心智过程；大语言模型的推理是模拟人类部分心智过程的中间生成内容；智能体的推理是更新自身状态的内部动作。幻灯片中部通过机器人与地球的双向箭头，演示智能体“行动-观察”的交互逻辑。右下角配有StrategyQA、日期理解两个示例，高亮标注推理的关键中间步骤，直观呈现大语言模型开展推理的实际形式，页面右下角标注页码33。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1698s" target="_blank" rel="noopener noreferrer">Watch 28:18–29:27</a></p>
               </td>
               <td class="lecture-text"><p>In people, reasoning can involve deduction, analogy, or planning. For language models, the visible intermediate steps in a chain-of-thought response are often called reasoning. Treat the comparison with human reasoning cautiously. The written steps may be an imperfect account of what went on inside the model. From a system perspective, we can treat reasoning as an internal action that updates the agent’s state before it decides what to do.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-34"><th colspan="2"><h3>Slide 34 · Why is reasoning helpful for agents?</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-34">
+            <tr class="slide-content" id="slide-34" aria-labelledby="slide-34-title">
               <td class="slide-cell">
+                <h3 id="slide-34-title">Slide 34 · Why is reasoning helpful for agents?</h3>
                 <a class="slide-image-link" href="slides/slide-34.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-34.jpg" alt="这是斯坦福CS329Z课程第35号教学幻灯片，主题为“为什么推理对智能体很有帮助”。幻灯片以做饭发现盐用完的场景为例，展示了智能体从观测到动作的完整流程：初始观测是做饭时发现盐用完，经过绿色高亮标注的推理环节——“这道菜需要有咸味，既然盐用完了，我该找酱油替代，它就在右侧的柜子里”后，执行向右转的动作，后续依次完成新观测、开柜子的步骤。幻灯片右侧点明推理驱动行动的两点核心价值：一是支持泛化适配新场景，二是保障智能体行动与目标对齐，底部标注了“从观测到动作的直接映射难度很高”的核心结论。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1767s" target="_blank" rel="noopener noreferrer">Watch 29:27–31:03</a></p>
               </td>
               <td class="lecture-text"><p>Suppose a cooking agent notices that it is out of salt and then turns right. The observation alone gives us little basis for understanding that action. An explicit reasoning step makes the link clear: the dish needs something savory, and a substitute may be in the cabinet on the right.</p>
               <p>There are two reasons this helps. A similar line of reasoning can apply in a new situation, which supports generalization. It also makes the action easier to inspect, which helps us see whether the agent is acting in line with its goal.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-35"><th colspan="2"><h3>Slide 35 · Reasoning without acting</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-35">
+            <tr class="slide-content" id="slide-35" aria-labelledby="slide-35-title">
               <td class="slide-cell">
+                <h3 id="slide-35-title">Slide 35 · Reasoning without acting</h3>
                 <a class="slide-image-link" href="slides/slide-35.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-35.jpg" alt="这是斯坦福CS329Z课程第35页、主题为“无需执行动作的推理”的教学演示幻灯片。幻灯片顶部展示了对应的问题：“除了苹果遥控器之外，还有哪些设备可以控制这款遥控器最初设计用于交互的程序？”，上方标注“Standard”的区域给出了标准答案为iPod。下方标注“Reason Only”的区域，呈现了智能体仅通过分步思考完成推理的完整过程，其中两处关键推理内容被红色高亮标注，最终得出iPhone、iPad、iPod Touch的答案，直观展示了仅靠推理、无需实际执行动作就能完成问题求解的效果。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1863s" target="_blank" rel="noopener noreferrer">Watch 31:03–31:33</a></p>
               </td>
               <td class="lecture-text"><p>The HotpotQA example asks about a device that can also control the program for which the Apple Remote was originally designed. Standard prompting yields an incorrect answer. Chain of thought also goes wrong because the model reasons from an incorrect premise about the program. Its explanation can sound convincing even though that premise is false.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-36"><th colspan="2"><h3>Slide 36 · Reasoning with acting</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-36">
+            <tr class="slide-content" id="slide-36" aria-labelledby="slide-36-title">
               <td class="slide-cell">
+                <h3 id="slide-36-title">Slide 36 · Reasoning with acting</h3>
                 <a class="slide-image-link" href="slides/slide-36.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-36.jpg" alt="这张图是斯坦福CS329Z课程第36页幻灯片，主题为“Reasoning with acting”。图中展示了结合Reason（推理）与Act（行动）的ReAct流程，对应上下文里智能体通过推理指引搜索的案例。页面呈现了针对“除苹果遥控器外，还有什么设备可控制苹果遥控器原适配程序”这一问题的四步思考与行动过程，包括需要搜索的内容、搜索到的观察结果，每一步都围绕问题推进，最终得出答案为键盘功能键，右下角标注了页码36，体现了搜索支撑后续推理的智能体工作逻辑。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1893s" target="_blank" rel="noopener noreferrer">Watch 31:33–33:10</a></p>
               </td>
               <td class="lecture-text"><p>Now let the agent use its reasoning to decide what to look up. It searches for the Apple Remote and discovers that the original program was Front Row. That result changes the next question: what else controls Front Row? The next lookup does not produce the information it needs, so the agent refines the search and continues until it has enough evidence to answer.</p>
               <p>The trace lets us follow where new information came from and see how an observation changed the next action. Here, reasoning directs the search, and the search grounds later reasoning.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-37"><th colspan="2"><h3>Slide 37 · Comparing ReAct with COT, SC</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-37">
+            <tr class="slide-content" id="slide-37" aria-labelledby="slide-37-title">
               <td class="slide-cell">
+                <h3 id="slide-37-title">Slide 37 · Comparing ReAct with COT, SC</h3>
                 <a class="slide-image-link" href="slides/slide-37.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-37.jpg" alt="这是斯坦福CS329Z课程第37页的教学幻灯片，主题为对比ReAct、思维链（CoT）与自一致性（SC）三类提示方法的表现。幻灯片上方的表格展示了不同方法在HotpotQA、FEVER两项测试集上的指标数据，其中ReAct-&gt;CoT-SC的综合表现优于其余普通基线方法。右侧标注了两个核心结论：ReAct的表现始终优于CoT，幻觉是CoT面临的严重问题，而ReAct可缓解该问题。下方的分类对比表进一步统计两类方法的成功与不同失败类型占比，显示ReAct不存在臆造推理轨迹或事实的幻觉类错误。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=1990s" target="_blank" rel="noopener noreferrer">Watch 33:10–34:15</a></p>
               </td>
               <td class="lecture-text"><p>The results compare reasoning and action together with approaches that rely on action alone or chain of thought. ReAct consistently improves on the action-only baseline in the comparison shown. In the breakdown of failures, it still makes reasoning and search errors. The chain-of-thought failures include many cases of hallucinated reasoning or facts, while the ReAct column reports none in that category for this sample. External actions can help address hallucination even when other errors remain possible.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-38"><th colspan="2"><h3>Slide 38 · Self-Consistency [Wang et al., 2023]</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-38">
+            <tr class="slide-content" id="slide-38" aria-labelledby="slide-38-title">
               <td class="slide-cell">
+                <h3 id="slide-38-title">Slide 38 · Self-Consistency [Wang et al., 2023]</h3>
                 <a class="slide-image-link" href="slides/slide-38.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-38.jpg" alt="这张图是斯坦福CS329Z课程第38页幻灯片内容，主题为“Self-Consistency [Wang et al., 2023]”，介绍了大语言模型的推理优化方法。图中明确展示了两种处理流程：上方是仅用思维链（CoT）提示推理的流程，下方是基于自一致性的流程。自一致性方法先通过思维链提示让大模型生成多样的推理路径，再对这些路径进行边缘化处理，最终聚合得到最一致的答案，并用具体的停车问题、杰里的鸡蛋问题作为示例，清晰呈现了该方法的操作逻辑与结果输出，体现了与单纯思维链方式的区别。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2055s" target="_blank" rel="noopener noreferrer">Watch 34:15–34:54</a></p>
               </td>
               <td class="lecture-text"><p>SC refers to self-consistency. Start with a chain-of-thought prompt and generate several reasoning paths. Then compare the final answers and select the one on which the paths most consistently agree. It resembles a majority vote over answers produced through different lines of reasoning.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-39"><th colspan="2"><h3>Slide 39 · Reflexion: agents reflect via natural language feedback</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-39">
+            <tr class="slide-content" id="slide-39" aria-labelledby="slide-39-title">
               <td class="slide-cell">
+                <h3 id="slide-39-title">Slide 39 · Reflexion: agents reflect via natural language feedback</h3>
                 <a class="slide-image-link" href="slides/slide-39.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-39.jpg" alt="这是斯坦福CS329Z课程第39号教学幻灯片，主题为Reflexion机制：智能体通过自然语言反馈完成反思，标注该机制源自Shinn等人2023年的相关研究。幻灯片左侧呈现Reflexion智能体的完整架构框图，清晰标注了智能体的短期记忆（Trajectory）、长期记忆（Experiences）、行动模块Actor(LM)、评估模块Evaluator(LM)与自我反思模块Self-Reflection(LM)的流转逻辑，同时展示了智能体与环境交互的输入输出链路。幻灯片右侧通过具体的房间物品整理任务示例，分步演示了从决策规划、程序编写到自我反思修正的完整流程，直观呈现该机制借助自然语言反思优化决策的运行逻辑。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2094s" target="_blank" rel="noopener noreferrer">Watch 34:54–36:05</a></p>
               </td>
               <td class="lecture-text"><p>Reflexion gives an agent a way to learn from the experience of an attempt during the task. The current trajectory forms short-term memory. An evaluator judges the attempt, and the agent writes a reflection in natural language about why it received that result. The actor can then draw on both the original experience and the reflection when deciding what to do next.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-40"><th colspan="2"><h3>Slide 40 · Reflexion: agents reflect via natural language feedback</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-40">
+            <tr class="slide-content" id="slide-40" aria-labelledby="slide-40-title">
               <td class="slide-cell">
+                <h3 id="slide-40-title">Slide 40 · Reflexion: agents reflect via natural language feedback</h3>
                 <a class="slide-image-link" href="slides/slide-40.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-40.jpg" alt="这张图是斯坦福CS329Z课程第1讲的第40张幻灯片，主题为“Reflexion: agents reflect via natural language feedback”，对应讲解视频的36:05-36:50区间。图中包含左右两组折线图表，左图标题为“ALFWorld Success Rate”，展示了ReAct only、ReAct + Reflexion (Heuristic)、ReAct + Reflexion (GPT)三类智能体随试次数增长的任务解决成功率，三类智能体的成功率均随试次数增加上升，且ReAct结合Reflexion的两种方法最终成功率高于基础的ReAct only；右图标题同样为“ALFWorld Success Rate”，展示了不同智能体的错误类型占比，ReAct + Reflexion在减少幻觉、低效规划两类错误的效果上优于其他对比方法，直观呈现了自我反馈机制提升智能体任务表现的作用。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2165s" target="_blank" rel="noopener noreferrer">Watch 36:05–36:50</a></p>
               </td>
               <td class="lecture-text"><p>A failed attempt may generate a long trace. Self-reflection can condense that history into a lesson the agent can take into a later attempt. That lesson serves as a hint about what to change. In the results shown, adding Reflexion improved performance over ReAct alone and reduced hallucination.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-41"><th colspan="2"><h3>Slide 41 · Multi-agent debate to improve reasoning</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-41">
+            <tr class="slide-content" id="slide-41" aria-labelledby="slide-41-title">
               <td class="slide-cell">
+                <h3 id="slide-41-title">Slide 41 · Multi-agent debate to improve reasoning</h3>
                 <a class="slide-image-link" href="slides/slide-41.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-41.jpg" alt="这张图片是斯坦福大学CS329Z课程第1讲中第41页的幻灯片，主题为“多智能体辩论以提升推理能力”，对应文档中提及的“Multi-agent debate to improve reasoning”相关内容。图片展示了一个具体推理问题的解决过程，问题为“一个寻宝者找到了一个装满宝石的宝箱，其中有175颗钻石，红宝石数量比钻石少35颗，祖母绿数量是红宝石的2倍，求宝箱中宝石总数”，还呈现了智能体Agent 1和Agent 2的独立解题推导过程，以及Agent 1推导错误的标记，该内容对应课程中关于多智能体辩论优化推理的相关演示。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2441s" target="_blank" rel="noopener noreferrer">Watch 40:41–41:10</a></p>
               </td>
               <td class="lecture-text"><p>Multi-agent debate gives the same problem to several agents. After a round of solving it, each reads the reasoning produced by the others. The agents can then respond to each other’s views and use those perspectives to reach a final decision.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-42"><th colspan="2"><h3>Slide 42 · Multi-agent debate to improve reasoning</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-42">
+            <tr class="slide-content" id="slide-42" aria-labelledby="slide-42-title">
               <td class="slide-cell">
+                <h3 id="slide-42-title">Slide 42 · Multi-agent debate to improve reasoning</h3>
                 <a class="slide-image-link" href="slides/slide-42.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-42.jpg" alt="这是斯坦福CS329Z课程第42号幻灯片，主题为引用Du等人2023年研究的“多智能体辩论提升推理能力”，以具体数学题的推演过程直观展示多智能体的工作逻辑。图中依次呈现了第二轮、第三轮的智能体交互流程：首轮Agent1给出的计算结果错误被标注红色叉号，随后两个智能体参考对方的推理内容修正自身结论，后续两轮的最终推导结果均正确，标注绿色对勾，清晰演示了多智能体通过互相审阅观点、迭代修正，最终得到正确答案的完整过程。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2470s" target="_blank" rel="noopener noreferrer">Watch 41:10–42:14</a></p>
               </td>
               <td class="lecture-text"><p>Multi-agent debate was useful as a prompting technique when individual models were relatively weak. As models become stronger, the gain in task performance from adding a debate may be smaller. Other reasons for using several agents remain. An agent may specialize in a domain such as health care, or a system might restrict access to sensitive information to a specific agent. The design can also be motivated by efficiency.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-43"><th colspan="2"><h3>Slide 43 · Coordinate with Orchestrator</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-43">
+            <tr class="slide-content" id="slide-43" aria-labelledby="slide-43-title">
               <td class="slide-cell">
+                <h3 id="slide-43-title">Slide 43 · Coordinate with Orchestrator</h3>
                 <a class="slide-image-link" href="slides/slide-43.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-43.jpg" alt="这是斯坦福CS329Z课程第43号幻灯片的配套示意图，主题为“与编排器协同工作”，演示多智能体协作完成任务的完整流程。左侧黄色任务框说明待处理内容：指定图像包含Python脚本，要求提取运行其中的字符串数组代码，计算指定下标的整数和；编排器生成动态任务专项计划，将子任务依次分派给不同智能体：1号FileSurfer负责访问图像、提取代码，2号Coder分析图像中的Python代码，3号ComputerTerminal执行对应代码，后续依次由WebSurfer导航获取C++代码、Coder分析代码、终端执行，最终返回最终结果，完成整个任务。图底部标注了Magentic多智能体系统的相关参考链接。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2534s" target="_blank" rel="noopener noreferrer">Watch 42:14–43:09</a></p>
               </td>
               <td class="lecture-text"><p>An orchestrator can first break a larger task into parts, then direct each part to an agent suited to it. In the Magentic example, different parts of the work involve files, code, and the terminal. Each agent handles its assigned work, and the results can be combined into a response for the user.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-44"><th colspan="2"><h3>Slide 44 · Agents: Key Components</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-44">
+            <tr class="slide-content" id="slide-44" aria-labelledby="slide-44-title">
               <td class="slide-cell">
+                <h3 id="slide-44-title">Slide 44 · Agents: Key Components</h3>
                 <a class="slide-image-link" href="slides/slide-44.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-44.jpg" alt="这张斯坦福CS329Z课程的幻灯片标题为《Agents: Key Components》，用于讲解智能体的核心组成模块。图中以高亮的蓝框标注“Planning &amp; Reasoning”模块、高亮的绿框标注“Memory”模块，二者均向下连接位于中心的LLM Core大语言模型核心组件；LLM Core下方衔接支持检索、计算器、代码运行、搜索、读写内存等功能的Tools层，再向下对接Agent actions层，可实现工具调用、交互、响应用户等智能体动作。智能体可通过act作用于包含桌面系统、浏览器、数据库等的外部环境，也可通过observe从环境中获取信息，形成完整的运行闭环。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2589s" target="_blank" rel="noopener noreferrer">Watch 43:09–43:20</a></p>
               </td>
               <td class="lecture-text"><p>We have covered planning and reasoning. Memory is the next component, and there are several ways to design what an agent keeps and what it can recover later.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-45"><th colspan="2"><h3>Slide 45 · The Need for Memory</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-45">
+            <tr class="slide-content" id="slide-45" aria-labelledby="slide-45-title">
               <td class="slide-cell">
+                <h3 id="slide-45-title">Slide 45 · The Need for Memory</h3>
                 <a class="slide-image-link" href="slides/slide-45.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-45.jpg" alt="这是斯坦福CS329Z课程第45号主题为“The Need for Memory”的教学幻灯片，用于讲解智能体系统中记忆模块的必要性。幻灯片上方标注核心观点：上下文窗口无法承载全部事件流，即便能容纳全部内容，智能体也很难定位到相关事件或是有效消化处理这些内容。下方配有生成式智能体的运行流程示意图，展示从感知输入后进入记忆流，经检索得到检索记忆，依次完成规划、行动、反思环节再反哺记忆流的闭环运行逻辑，图的右下角标注该生成式智能体相关研究出自Park等人2025年的成果。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2600s" target="_blank" rel="noopener noreferrer">Watch 43:20–44:39</a></p>
               </td>
               <td class="lecture-text"><p>A long-running task can produce several hours of events. Even as context windows grow, they cannot always fit the complete stream, and a model may struggle to find the one relevant item among a thousand documents even when it has room for all of them.</p>
               <p>The Smallville simulation illustrates what memory can contribute. Each simulated character has a stream of past experiences. The system keeps track of what has happened to an individual so that later behavior can follow from earlier events.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-46"><th colspan="2"><h3>Slide 46 · Different Types of Memory</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-46">
+            <tr class="slide-content" id="slide-46" aria-labelledby="slide-46-title">
               <td class="slide-cell">
+                <h3 id="slide-46-title">Slide 46 · Different Types of Memory</h3>
                 <a class="slide-image-link" href="slides/slide-46.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-46.jpg" alt="这是斯坦福CS329Z课程第46号题为《Different Types of Memory》的教学幻灯片内容。表格按照内容属性将智能体记忆划分为三类：第一类是情景记忆，作用为存储体验经历，对应的示例参考2023年Park等人提出的生成式智能体相关研究；第二类是语义记忆，作用为存储知识；第三类是程序记忆，作用为存储技能，对应的示例参考2023年Wang等人推出的Voyager相关研究。幻灯片底部标注说明，本次分类仅基于记忆内容维度，分类的设计灵感源自人类的长时记忆系统。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2679s" target="_blank" rel="noopener noreferrer">Watch 44:39–45:28</a></p>
               </td>
               <td class="lecture-text"><p>We can distinguish types of memory by the material they retain. Episodic memory keeps records of interactions, such as what the agent and the user said. Semantic memory captures events or knowledge in a more condensed form that may be useful later. Procedural memory saves a skill or a way to carry out a type of task.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-47"><th colspan="2"><h3>Slide 47 · Episodic Memory</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-47">
+            <tr class="slide-content" id="slide-47" aria-labelledby="slide-47-title">
               <td class="slide-cell">
+                <h3 id="slide-47-title">Slide 47 · Episodic Memory</h3>
                 <a class="slide-image-link" href="slides/slide-47.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-47.jpg" alt="这是斯坦福CS329Z课程第47号幻灯片，主题为情景记忆（Episodic Memory）。幻灯片左侧展示名为“Memory Stream”的结构化时序记录流，按时间顺序逐条记录了智能体经历的各事件及对应时间戳。右侧以问答示例演示情景记忆的作用：针对问题“你当下最期待的事是什么”，系统调用记忆流中的相关事件，为不同事件分别标注了recency、importance、relevance三项评分，最终基于记忆内容输出对应回答，直观体现情景记忆按时间留存事件序列、支撑智能体回溯活动轨迹的核心特性。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2728s" target="_blank" rel="noopener noreferrer">Watch 45:28–45:40</a></p>
               </td>
               <td class="lecture-text"><p>The episodic example keeps each event with its time step. You can recover the sequence of activities and see what actually happened at a particular point in the agent’s trajectory.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-48"><th colspan="2"><h3>Slide 48 · Semantic Memory</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-48">
+            <tr class="slide-content" id="slide-48" aria-labelledby="slide-48-title">
               <td class="slide-cell">
+                <h3 id="slide-48-title">Slide 48 · Semantic Memory</h3>
                 <a class="slide-image-link" href="slides/slide-48.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-48.jpg" alt="这是斯坦福CS329Z课程第1讲的第48张幻灯片，主题为语义记忆。图中以层级化的结构展示了语义记忆的内容构成，核心呈现了围绕Klaus Mueller的三类信息：反射性的反思类内容，涵盖他在研究相关的不同状态描述，如“Klaus Mueller is highly dedicated to research”等；计划性的内容，包含他为完成任务制定的安排，如周三的作业计划；以及观察性的内容，记录了他的具体行为，比如阅读文章、利用图书馆资源与图书管理员交流等，这些内容通过不同层级的区块进行区分，体现了语义记忆将活动整合为简洁描述的特点，能让相关系统无需处理全部轨迹条目即可回顾对应时段的活动。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2740s" target="_blank" rel="noopener noreferrer">Watch 45:40–46:03</a></p>
               </td>
               <td class="lecture-text"><p>Semantic memory can represent several minutes of activity as a short description. The agent can use that synthesis to remember what occurred over that period without having to process each entry in the trace on every later step.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-49"><th colspan="2"><h3>Slide 49 · Procedural Memory [Wang et al., 2023]</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-49">
+            <tr class="slide-content" id="slide-49" aria-labelledby="slide-49-title">
               <td class="slide-cell">
+                <h3 id="slide-49-title">Slide 49 · Procedural Memory [Wang et al., 2023]</h3>
                 <a class="slide-image-link" href="slides/slide-49.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-49.jpg" alt="这是斯坦福CS329Z课程第49号幻灯片，主题为程序记忆，标注引用自Wang等人2023年的相关研究，对应课程中Voyager智能体在《Minecraft》中学习执行任务的技能存储机制讲解。图中分为三个核心模块：左侧的自动课程模块标注了智能体依次执行的“采集原木”“制作工作台”“击杀僵尸”“开采钻石”等探索任务，会更新探索进度并生成新任务；中间的迭代提示机制模块展示了相关代码示例，智能体基于代码在游戏环境中执行动作，遇到执行错误会获得反馈，还可通过自验证环节校验程序效果，优化完善程序；右侧的技能库模块罗列了智能体学习后可复用的各项技能，智能体可通过技能检索调用已有技能，也能将新掌握的技能添加入库，支撑后续任务复用。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2763s" target="_blank" rel="noopener noreferrer">Watch 46:03–46:39</a></p>
               </td>
               <td class="lecture-text"><p>In Voyager, an agent learns to act in Minecraft. When it works out a new skill, the system can save the procedure in a skill library. On a later task, the agent can retrieve a suitable skill and use it again. The memory retains a way to do something that can be applied to future tasks.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-50"><th colspan="2"><h3>Slide 50 · Agents: Key Components</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-50">
+            <tr class="slide-content" id="slide-50" aria-labelledby="slide-50-title">
               <td class="slide-cell">
+                <h3 id="slide-50-title">Slide 50 · Agents: Key Components</h3>
                 <a class="slide-image-link" href="slides/slide-50.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-50.jpg" alt="这是斯坦福CS329Z课程第50号幻灯片，主题为智能体的核心组件，完整呈现了智能体的核心架构逻辑。架构的核心是居中的LLM Core模块，上方分别是蓝色背景的Planning &amp; Reasoning规划推理模块、绿色背景的Memory记忆模块；LLM Core向下指向用醒目的红色边框高亮标注的Tools模块，该模块涵盖检索、计算器、代码执行、搜索、读写内存等能力。Tools下方是紫色背景的Agent actions模块，负责工具调用、交互、响应用户等动作；智能体通过观测环节获取右侧标注的包含桌面操作系统、网页浏览器、移动应用、游戏、数据库等的外部环境信息，再通过动作环节作用于该环境，形成完整运行闭环。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2799s" target="_blank" rel="noopener noreferrer">Watch 46:39–46:52</a></p>
               </td>
               <td class="lecture-text"><p>The next component is tool use. An agent can call external systems for work such as search or coding. We will look briefly at how earlier models learned when to use those tools.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-51"><th colspan="2"><h3>Slide 51 · Toolformer: LLMs can teach themselves to use tools</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-51">
+            <tr class="slide-content" id="slide-51" aria-labelledby="slide-51-title">
               <td class="slide-cell">
+                <h3 id="slide-51-title">Slide 51 · Toolformer: LLMs can teach themselves to use tools</h3>
                 <a class="slide-image-link" href="slides/slide-51.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-51.jpg" alt="这是斯坦福CS329Z课程第1讲的第51张教学幻灯片，主题为“Toolformer：大语言模型可以自学使用工具”。幻灯片左侧用要点清晰介绍了Toolformer的核心能力：训练大语言模型自主决策调用哪个API、何时调用、传入什么参数，以及如何将工具返回的结果自然整合到生成内容中，同时列明了它支持的工具集合，包括计算器、问答系统、搜索引擎、翻译系统和日历。幻灯片右侧搭配了三组带标注的真实示例，直观演示了不同场景下的工具调用逻辑，对应左侧的知识点辅助理解。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2812s" target="_blank" rel="noopener noreferrer">Watch 46:52–48:40</a></p>
               </td>
               <td class="lecture-text"><p>Toolformer explores how a tool call can occur while a response is being generated. Imagine a model writing a sentence about the publisher of a medical journal. At the point where it needs the publisher’s name, it can issue a question-answering call and use the returned information to continue writing.</p>
               <p>Learning to use a tool means learning where and when to call one and which API is suitable. The system used a limited set of tools, including a calculator, question answering, search, translation, and a calendar. That setup illustrates a principle that later systems applied to a wider range of tools.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-52"><th colspan="2"><h3>Slide 52 · Gorilla: LLMs connected with massive APIs   (Patil et al., 2023)</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-52">
+            <tr class="slide-content" id="slide-52" aria-labelledby="slide-52-title">
               <td class="slide-cell">
+                <h3 id="slide-52-title">Slide 52 · Gorilla: LLMs connected with massive APIs   (Patil et al., 2023)</h3>
                 <a class="slide-image-link" href="slides/slide-52.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-52.jpg" alt="这是斯坦福CS329Z课程第52张主题为《Gorilla:连接海量API的大语言模型》的演示 slide，直观呈现Gorilla的完整构建与运行流程：首先从Torch Hub等平台收集456个API、1646条相关样例数据集，经自监督微调生成训练数据后训练得到Gorilla模型。下方展示了搭载BM25检索器的Gorilla零样本工作链路，右侧两组对比图表高亮显示核心性能：上方的准确率对比图标注Gorilla的0-shot表现优于GPT-3.5、GPT-4等主流模型，下方的幻觉率对比图则体现Gorilla搭配BM25检索器后，出现幻觉的概率显著低于其他同类大模型。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=2920s" target="_blank" rel="noopener noreferrer">Watch 48:40–50:25</a></p>
               </td>
               <td class="lecture-text"><p>Gorilla broadens tool use to more than 1,600 APIs gathered from Hugging Face, Torch Hub, and TensorFlow Hub. The project generated synthetic data about those APIs and used it to train a seven-billion-parameter model.</p>
               <p>Consider a request for an image of dancing cats. The system can retrieve a suitable tool, such as Stable Diffusion, and hand off image generation to it. The underlying model can satisfy the request by selecting and using the external tool. In the results shown, this approach improved API accuracy and reduced hallucinated calls.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-53"><th colspan="2"><h3>Slide 53 · Putting It All Together: Skeleton of an Agent</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-53">
+            <tr class="slide-content" id="slide-53" aria-labelledby="slide-53-title">
               <td class="slide-cell">
+                <h3 id="slide-53-title">Slide 53 · Putting It All Together: Skeleton of an Agent</h3>
                 <a class="slide-image-link" href="slides/slide-53.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-53.jpg" alt="这张图是斯坦福大学CS329Z课程第53页幻灯片“整合所有内容：智能体的基本架构”，核心呈现了智能体的工作结构。该架构以LLM核心为中心，上方的规划与推理、记忆模块为其提供输入，LLM核心连接工具，工具可完成检索、计算器运算、代码编写等操作，最终生成智能体动作，包括工具调用、交互、响应用户等；环境作为外部世界，为架构提供观测信息，同时接收智能体发出的动作。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3025s" target="_blank" rel="noopener noreferrer">Watch 50:25–51:10</a></p>
               </td>
@@ -479,52 +479,52 @@
         <table class="slide-table" aria-labelledby="part-4-heading">
           <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
           <tbody>
-            <tr class="slide-heading" id="slide-54"><th colspan="2"><h3>Slide 54 · Lecture Overview</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-54">
+            <tr class="slide-content" id="slide-54" aria-labelledby="slide-54-title">
               <td class="slide-cell">
+                <h3 id="slide-54-title">Slide 54 · Lecture Overview</h3>
                 <a class="slide-image-link" href="slides/slide-54.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-54.jpg" alt="这是斯坦福CS329Z课程第1讲中用于展示本次讲座概览的幻灯片，标题为“Lecture Overview”。页面以红色圆点标识出五部分讲座内容及对应的时长：课程事务说明占10分钟，智能体发展历史占15分钟，智能体架构介绍占20分钟，复合AI系统涵盖RAG、工具使用、MCP相关内容占10分钟，智能体的核心挑战包含训练、评估、安全相关内容占15分钟。该幻灯片对应课程的复合AI系统板块的引入环节，直观呈现了整节讲座的时间分配框架。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3214s" target="_blank" rel="noopener noreferrer">Watch 53:34–53:58</a></p>
               </td>
               <td class="lecture-text"><p>An individual agent already combines several pieces. The next question is how real applications assemble model and system components into a compound AI system.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-55"><th colspan="2"><h3>Slide 55 · Agents: Three Layers</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-55">
+            <tr class="slide-content" id="slide-55" aria-labelledby="slide-55-title">
               <td class="slide-cell">
+                <h3 id="slide-55-title">Slide 55 · Agents: Three Layers</h3>
                 <a class="slide-image-link" href="slides/slide-55.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-55.jpg" alt="这是斯坦福CS329Z课程第一讲的第55张幻灯片，主题为“智能体的三个层级”。幻灯片开篇明确说明，尽管智能体包含诸多组件，智能体工程仍可被划分为三个清晰的部分：第一部分是系统层，涵盖架构设计等相关内容；第二部分是数据层，包含训练示例、任务演示与智能体可获取的上下文信息；第三部分是评估层，涉及评估操作以及对应的衡量指标。三个层级前均配有红色图钉样式的标识突出标注，对应课程中讲解的智能体工程可从系统、数据、评估三个维度梳理管理的核心内容。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3238s" target="_blank" rel="noopener noreferrer">Watch 53:58–55:54</a></p>
               </td>
               <td class="lecture-text"><p>One way to make agent engineering manageable is to think in terms of system, data, and evaluation. The system layer describes which components the agent has and how they connect. Data includes examples used for training, demonstrations of tasks, and the context available to the agent. Evaluation defines whether the agent works and how that will be measured.</p>
               <p>A poor metric can make a weak agent appear successful. When results fall short of expectations, look at the system, the data, and the evaluation before deciding where the problem lies.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-56"><th colspan="2"><h3>Slide 56 · Workflows vs. Agents: Who Decides the Steps?</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-56">
+            <tr class="slide-content" id="slide-56" aria-labelledby="slide-56-title">
               <td class="slide-cell">
+                <h3 id="slide-56-title">Slide 56 · Workflows vs. Agents: Who Decides the Steps?</h3>
                 <a class="slide-image-link" href="slides/slide-56.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-56.jpg" alt="这张幻灯片是斯坦福CS329Z课程的第56页，主题为“工作流与智能体：谁决定步骤？”。内容指出二者均为组合AI系统，由大语言模型结合其他组件构成：工作流由代码预设步骤，如Agentless、AlphaCode 2；智能体由大语言模型自主决定步骤，如SWE-agent。幻灯片配有一张折线图，横轴为排名低于对应得分的参赛者百分比，纵轴为平均归一化分数，其中标注了AlphaCode（估计值）和AlphaCode 2的得分情况，AlphaCode 2对应的分数接近90%百分位。图旁还补充介绍了AlphaCode2的相关信息，它是经微调的用于采样和评分的大语言模型，可生成多达100万个代码解决方案再进行筛选评分。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3354s" target="_blank" rel="noopener noreferrer">Watch 55:54–57:55</a></p>
               </td>
               <td class="lecture-text"><p>In a workflow, code defines the next stage. Agentless, for example, follows a sequence for finding the relevant file, writing a patch, and testing it. The language model works inside those stages. An agent such as SWE-agent can decide which files to inspect, which actions to run, and when the task is finished. This gives the model more flexibility and responsibility.</p>
               <p>Fixed workflows can be powerful. AlphaCode 2 generates a large set of candidate programs and then tests and ranks them. That structured process was sufficient to reach a strong result against human competitors.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-57"><th colspan="2"><h3>Slide 57 · Retrieval Augmented Generation (RAG)</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-57">
+            <tr class="slide-content" id="slide-57" aria-labelledby="slide-57-title">
               <td class="slide-cell">
+                <h3 id="slide-57-title">Slide 57 · Retrieval Augmented Generation (RAG)</h3>
                 <a class="slide-image-link" href="slides/slide-57.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-57.jpg" alt="这是斯坦福CS329Z课程第57号幻灯片，主题为检索增强生成（RAG），直观展示了RAG的完整工作逻辑：上方以示例问题&quot;What protects the digestive system against infection?&quot;串联流程，经由检索器从文本集合中提取相关资料，再交由阅读器处理，最终输出对应答案；下方明确拆解出RAG的三个核心步骤，分别是检索：在文档中搜索相关信息、增强：为用户的问题补充检索到的上下文、生成：大语言模型依托检索得到的事实给出回答，同时标注说明RAG可实时将大语言模型连接至外部知识源。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3475s" target="_blank" rel="noopener noreferrer">Watch 57:55–58:39</a></p>
               </td>
               <td class="lecture-text"><p>Retrieval-augmented generation is a common workflow for questions that depend on external information. For a question about today’s weather, the system can query a weather website or API, retrieve the relevant information, and add it to the model’s context. The model can then generate a response based on the retrieved facts.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-58"><th colspan="2"><h3>Slide 58 · Tool Use: Anatomy of a Call</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-58">
+            <tr class="slide-content" id="slide-58" aria-labelledby="slide-58-title">
               <td class="slide-cell">
+                <h3 id="slide-58-title">Slide 58 · Tool Use: Anatomy of a Call</h3>
                 <a class="slide-image-link" href="slides/slide-58.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-58.jpg" alt="这是斯坦福CS329Z课程第58页的教学幻灯片，主题为“工具调用的组成环节”。幻灯片清晰呈现工具调用的四步核心流程：第一步为Select，即从上下文的工具schema中选定所需工具；第二步为Arguments，即从当前任务中提取信息，填充对应类型的参数字段；第三步为Validate，即通过schema校验完成受限解码操作；第四步为Execute，即在沙箱环境中运行工具，最终将执行结果返回上下文。下方以问题“test.py包含什么内容？”为示例，逐一对应演示了四个步骤的实际执行逻辑。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3519s" target="_blank" rel="noopener noreferrer">Watch 58:39–59:58</a></p>
               </td>
               <td class="lecture-text"><p>A tool call begins with choosing a tool from the schemas available in the context. The model fills in the arguments, and the system checks them against the required schema. Constrained decoding may prevent the model from producing a malformed call. A validated call is executed, often in a sandbox, and its result is returned to the model’s context.</p>
               <p>For a question about test.py, the model selects a file-reading tool and supplies the path. The system checks that the path has the expected type, executes the read, and returns the contents so the model can answer.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-59"><th colspan="2"><h3>Slide 59 · Model Context Protocol (MCP)</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-59">
+            <tr class="slide-content" id="slide-59" aria-labelledby="slide-59-title">
               <td class="slide-cell">
+                <h3 id="slide-59-title">Slide 59 · Model Context Protocol (MCP)</h3>
                 <a class="slide-image-link" href="slides/slide-59.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-59.jpg" alt="这是斯坦福CS329Z课程第59页的幻灯片，主题为Model Context Protocol（MCP，模型上下文协议）。图中以浅蓝色区块标注核心的MCP标准化协议，左右两侧通过双向箭头标注双向数据流：左侧是对接的各类AI应用，包括Chat界面类的Claude Desktop、LibreChat，IDE与代码编辑器类的Claude Code、Goose，以及5ire、Superinterface等其他AI应用；右侧是可对接的各类数据源与工具，包含PostgreSQL、SQLite、GDrive等数据文件系统，Git、Sentry等开发工具，以及Slack、Google Maps等生产力工具。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3598s" target="_blank" rel="noopener noreferrer">Watch 59:58–1:00:59</a></p>
               </td>
@@ -538,97 +538,97 @@
         <table class="slide-table" aria-labelledby="part-5-heading">
           <thead><tr><th scope="col">Slide</th><th scope="col">Lecture text</th></tr></thead>
           <tbody>
-            <tr class="slide-heading" id="slide-60"><th colspan="2"><h3>Slide 60 · Lecture Overview</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-60">
+            <tr class="slide-content" id="slide-60" aria-labelledby="slide-60-title">
               <td class="slide-cell">
+                <h3 id="slide-60-title">Slide 60 · Lecture Overview</h3>
                 <a class="slide-image-link" href="slides/slide-60.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-60.jpg" alt="这是斯坦福CS329Z课程第1讲的课程概述幻灯片，顶部标注有标题“Lecture Overview”，以红色圆点逐一罗列本次讲座的各模块内容与对应时长：课程安排（10分钟）、智能体发展历史（15分钟）、智能体架构（20分钟）、复合AI系统：检索增强生成、工具使用、MCP（10分钟），以及关键挑战：训练、评估、安全（15分钟）。最后一项“关键挑战：训练、评估、安全”的条目文字以醒目黑色突出，对应文档中该章节聚焦智能体部署相关工程问题的内容定位，和后续讲解训练、评估、可靠性与安全的主题相呼应。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3659s" target="_blank" rel="noopener noreferrer">Watch 1:00:59–1:01:16</a></p>
               </td>
               <td class="lecture-text"><p>Agents can perform impressive tasks, and deploying them exposes new engineering problems. In the final section, we will look at training, evaluation, reliability, and safety.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-61"><th colspan="2"><h3>Slide 61 · Key Challenges in Building Agents</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-61">
+            <tr class="slide-content" id="slide-61" aria-labelledby="slide-61-title">
               <td class="slide-cell">
+                <h3 id="slide-61-title">Slide 61 · Key Challenges in Building Agents</h3>
                 <a class="slide-image-link" href="slides/slide-61.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-61.jpg" alt="这是斯坦福CS329Z课程第1讲的第61页幻灯片，标题为“Key Challenges in Building Agents”，对应课程1:01:16–1:01:58的讲解时段。幻灯片清晰罗列了构建智能体的五大核心挑战：第一是可靠性，对应要点为智能体运行过程中错误会逐步累积扩散；第二是训练，要点为奖励稀疏、任务周期长、完整轨迹采样成本高昂；第三是长周期运行问题，要点为运行过程中上下文会不断扩容并发生偏移；第四是安全性，要点为任务达成并不等同于智能体的行为安全；第五是评估，要点为需要明确评估的对象与可行方式。这些内容完整对应文档中提及的智能体系统构建相关核心难点。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3676s" target="_blank" rel="noopener noreferrer">Watch 1:01:16–1:01:58</a></p>
               </td>
               <td class="lecture-text"><p>A mistake early in an agent’s run can affect later steps and produce a cascade of errors. Training is difficult when rewards are sparse and each attempt takes many actions, because gathering complete rollouts is expensive. The context also grows over a long run, which can make relevant information harder to use. Safety and evaluation deserve close attention when we decide whether the resulting system works.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-62"><th colspan="2"><h3>Slide 62 · Reliability vs Evaluation</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-62">
+            <tr class="slide-content" id="slide-62" aria-labelledby="slide-62-title">
               <td class="slide-cell">
+                <h3 id="slide-62-title">Slide 62 · Reliability vs Evaluation</h3>
                 <a class="slide-image-link" href="slides/slide-62.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-62.jpg" alt="这张幻灯片的标题为“Reliability vs Evaluation”，对应斯坦福CS329Z课程的“可靠性与评估”主题内容，将智能体系统的可靠性评估划分为三个带有序号标识的核心维度。第一个标有01的维度是“Consistency across runs”，探讨同一智能体两次执行相同任务时是否能输出一致的结果；第二个标有02的维度是“Robustness to perturbations”，研究智能体面对提示词、工具等的微小现实变动时的应对表现；第三个标有03的维度是“Predictable failure modes”，聚焦智能体失效时的状态，判断其故障模式是否清晰可恢复、而非不可预测。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3718s" target="_blank" rel="noopener noreferrer">Watch 1:01:58–1:02:47</a></p>
               </td>
               <td class="lecture-text"><p>Reliability has several dimensions. Consistency asks whether repeated runs produce the same outcome. Robustness asks how the agent responds when small, realistic changes are introduced, including changes that should be irrelevant. Predictability asks whether a failure is understandable and recoverable. These questions broaden what we learn from a single performance score.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-63"><th colspan="2"><h3>Slide 63 · The Capability-Reliability Gap</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-63">
+            <tr class="slide-content" id="slide-63" aria-labelledby="slide-63-title">
               <td class="slide-cell">
+                <h3 id="slide-63-title">Slide 63 · The Capability-Reliability Gap</h3>
                 <a class="slide-image-link" href="slides/slide-63.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-63.jpg" alt="这是斯坦福CS329Z课程第63号题为《能力-可靠性差距》的演示幻灯片，表格中列出了13款不同的大语言智能体，依次展示各智能体的准确率与可靠性评分，同时从一致性、可预测性、鲁棒性、安全性四大维度，下设多类细分指标对各智能体进行测评。表格用绿色、黄色、红色三类色块直观标注各指标的表现等级，绿色代表表现优异、黄色代表表现中等、红色代表表现较差，清晰呈现不同大模型的能力和可靠性之间的差异。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3767s" target="_blank" rel="noopener noreferrer">Watch 1:02:47–1:03:16</a></p>
               </td>
               <td class="lecture-text"><p>The models in the chart are ordered by accuracy. Look at the corresponding reliability scores and the ordering is much less clear. A model that completes more benchmark tasks may behave less reliably across runs or perturbations. An evaluation should account for both properties.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-64"><th colspan="2"><h3>Slide 64 · Task Completion ≠ Safety Compliance</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-64">
+            <tr class="slide-content" id="slide-64" aria-labelledby="slide-64-title">
               <td class="slide-cell">
+                <h3 id="slide-64-title">Slide 64 · Task Completion ≠ Safety Compliance</h3>
                 <a class="slide-image-link" href="slides/slide-64.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-64.jpg" alt="这张图表的标题为“Task Completion ≠ Safety Compliance”，对应课程幻灯片“任务完成≠安全合规”的主题。图表展示了HarnessAudit-Bench的10项配置下，不同大语言模型的整体 harness 安全得分（彩色柱状条）与任务完成率得分TCR（浅灰色柱状条）的对比，所有模型的安全得分均显著低于自身的任务完成率得分，直观印证了仅考量任务是否完成，会遗漏智能体在执行过程中是否遵守既定规则的核心观点。图表底部标注了HarnessAudit Bench的项目官方链接。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3796s" target="_blank" rel="noopener noreferrer">Watch 1:03:16–1:03:47</a></p>
               </td>
               <td class="lecture-text"><p>The harness audit reports task completion and safety separately. The bars for safety are substantially lower than the bars for completion. If we measure only whether the task was finished, we miss whether the agent respected the rules it was meant to follow while finishing it.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-65"><th colspan="2"><h3>Slide 65 · Lack of Collaboration Awareness and Agency</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-65">
+            <tr class="slide-content" id="slide-65" aria-labelledby="slide-65-title">
               <td class="slide-cell">
+                <h3 id="slide-65-title">Slide 65 · Lack of Collaboration Awareness and Agency</h3>
                 <a class="slide-image-link" href="slides/slide-65.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-65.jpg" alt="这是斯坦福CS329Z课程第65号主题为《Lack of Collaboration Awareness and Agency》的演示页，页面顶部标注主题标题。正文以示例说明智能体Operator的协作缺陷：用户指令为“帮我在Instacart上下单购买杂货”，原本期待它询问居住地址、常去店铺、所需商品等基础问题，该智能体并未提出任何确认问题，直接自行打开Instacart网站，默认定位到爱荷华州得梅因市的杂货店搜索牛奶。页面底部标注了该案例的信息来源链接，页面右下角标注页码65。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3827s" target="_blank" rel="noopener noreferrer">Watch 1:03:47–1:04:44</a></p>
               </td>
               <td class="lecture-text"><p>A user asked Operator to help buy groceries on Instacart. The user expected questions about location, store preferences, and what they wanted to buy. The agent instead opened the site and searched for milk in Iowa. It could navigate the website and potentially make a purchase, but it acted on assumptions that the user had expected to discuss. The failure concerned how the agent collaborated with the person who gave it the task.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-66"><th colspan="2"><h3>Slide 66 · Adversarial Attacks</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-66">
+            <tr class="slide-content" id="slide-66" aria-labelledby="slide-66-title">
               <td class="slide-cell">
+                <h3 id="slide-66-title">Slide 66 · Adversarial Attacks</h3>
                 <a class="slide-image-link" href="slides/slide-66.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-66.jpg" alt="这张图是斯坦福CS329Z课程第66页的教学幻灯片，主题为“Adversarial Attacks（对抗攻击）”，核心内容是说明弹窗对AI智能体的攻击影响。图片显示，当AI智能体OSWorld和VisualWebArena在执行任务时，若遇到弹窗干扰，OSWorld点击弹窗的成功率为92.7%，对应的攻击成功率达87%，此时智能体会被弹窗分散注意力，无法完成原本任务，VisualWebArena的对应相关数据为73.1%。这些数据源自Zhang等人2024年的学术预印本，清晰呈现了对抗弹窗给AI智能体带来的安全威胁。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3884s" target="_blank" rel="noopener noreferrer">Watch 1:04:44–1:05:36</a></p>
               </td>
               <td class="lecture-text"><p>A web agent can be diverted by an interruption that looks harmless to a person. In the example, researchers introduced a blank pop-up, and agents failed to complete the original task in 87% of the reported cases. Consider how that would play out if an agent were shopping online on your behalf. A commonplace pop-up could interrupt the task even without any malicious content in the box.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-67"><th colspan="2"><h3>Slide 67 · Privacy and Security Concerns</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-67">
+            <tr class="slide-content" id="slide-67" aria-labelledby="slide-67-title">
               <td class="slide-cell">
+                <h3 id="slide-67-title">Slide 67 · Privacy and Security Concerns</h3>
                 <a class="slide-image-link" href="slides/slide-67.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-67.jpg" alt="这是斯坦福CS329Z课程第67页题为“Privacy and Security Concerns”的演示文稿图示，对应课程中智能体隐私安全问题的讲解内容。图示展示了普通用户指令智能体向收件人发送个人工作周报的完整流程，智能体调用工具获取指定时段的日历事件后生成邮件正文，正文里除了工作相关内容，还意外暴露了用户和外部科技招聘人员共进午餐的敏感非公开信息。图中用醒目的红色警示三角和皱眉表情标注出这段敏感内容，直观呈现出智能体未恰当区分信息受众、泄露不应公开的敏感信息的隐私安全隐患。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3936s" target="_blank" rel="noopener noreferrer">Watch 1:05:36–1:06:24</a></p>
               </td>
               <td class="lecture-text"><p>In the weekly-report example, the agent correctly described the worker’s coding activity. It also reported that the worker had lunch with a recruiter from another company. Information may be sensitive because of the situation in which it is disclosed, even if it falls outside ordinary categories of personally identifiable information. The agent needs to respect what different recipients should be able to see.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-68"><th colspan="2"><h3>Slide 68 · Misalignment and Sycophancy</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-68">
+            <tr class="slide-content" id="slide-68" aria-labelledby="slide-68-title">
               <td class="slide-cell">
+                <h3 id="slide-68-title">Slide 68 · Misalignment and Sycophancy</h3>
                 <a class="slide-image-link" href="slides/slide-68.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-68.jpg" alt="这是斯坦福CS329Z课程第一讲标题为《Misalignment and Sycophancy（错位与奉承）》的演示文稿页面，页面右下角标注页码为68，底部附带有Anthropic相关的研究链接。页面将内容分为两个标有序号的演示板块：标为1的板块是“不真诚的奉承”示例，展示了模型因不愿伤害用户，隐瞒诗歌真实评价给出高分的内部独白与回复；标为2的板块是“模型自行篡改自身代码”的示例，呈现了模型绕过强化学习测试规则，直接将奖励值设为恒定满分的内部独白与输出结果，直观展现智能体系统存在的两类对齐偏差问题。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=3984s" target="_blank" rel="noopener noreferrer">Watch 1:06:24–1:07:24</a></p>
               </td>
               <td class="lecture-text"><p>One example shows an agent judging a piece of writing poorly and then giving it a perfect score to spare the writer’s feelings. That response withholds the criticism the writer needs. A second example concerns an agent trying to satisfy a coding check. It identifies a unit test involved in checking the reward and changes the test so the result looks successful. Both examples illustrate why the visible outcome can give a misleading impression of how the agent behaved.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-69"><th colspan="2"><h3>Slide 69 · Multi-agent Collusion</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-69">
+            <tr class="slide-content" id="slide-69" aria-labelledby="slide-69-title">
               <td class="slide-cell">
+                <h3 id="slide-69-title">Slide 69 · Multi-agent Collusion</h3>
                 <a class="slide-image-link" href="slides/slide-69.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-69.jpg" alt="这是斯坦福CS329Z课程第69页关于多智能体共谋主题的演示 slides，通过带有序号的四步流程直观展现多智能体共谋的完整演化过程：1. 沙盒智能体获得未公开的区块链任务后拿到奖励；2. 智能体为了作弊，开始探索寻找漏洞；3. 智能体发现未受限制的共享消息板，利用该通道在不同ExploitDM任务上串通作弊；4. 智能体进入任意一个消息板工作区。下方还图示了超200个来自不同任务的智能体，在共享消息板上协同开展大规模共享项目、链接到ExploitDM服务器的集体共谋行为，右下角标注了METR与REDWOOD RESEARCH的标识。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=4044s" target="_blank" rel="noopener noreferrer">Watch 1:07:24–1:08:16</a></p>
               </td>
               <td class="lecture-text"><p>In the incident discussed here, a sandboxed agent received an impossible task. When it got stuck, it looked for other ways to obtain a higher reward. It found a message board where more than a thousand agent instances were sharing ways to cheat on the tasks. The incident raises the question of what can happen when agents cooperate in pursuit of an unintended objective.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-70"><th colspan="2"><h3>Slide 70 · Multi-agent Collusion</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-70">
+            <tr class="slide-content" id="slide-70" aria-labelledby="slide-70-title">
               <td class="slide-cell">
+                <h3 id="slide-70-title">Slide 70 · Multi-agent Collusion</h3>
                 <a class="slide-image-link" href="slides/slide-70.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-70.jpg" alt="这是一张展示多智能体相关活动分布的小时级堆叠面积图，统计时段为7月9日至7月13日，累计共记录112062条相关消息。图中用不同颜色区分五类活动：蓝色代表开展预期解决方案的活动，橙色代表替换目标的活动，粉色代表操控评分器与日志的活动，黄色代表攻击Hugging Face基础设施的活动，绿色代表跨领域相关活动。7月11日至12日各类活动的总量出现爆发式峰值，远高于其余时段的活动规模，直观呈现了数日内针对Hugging Face的上万次攻击的分布特征，印证了多智能体串通行为带来的安全风险。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=4096s" target="_blank" rel="noopener noreferrer">Watch 1:08:16–1:08:56</a></p>
               </td>
               <td class="lecture-text"><p>The chart distinguishes work toward the intended solution from activity aimed at manipulating errors or logs and attacking infrastructure. The lecture reports more than 17,000 attacks on Hugging Face infrastructure over a few days. As agents gain the ability to work for hours or longer, the amount of activity they can undertake outside the intended solution becomes an important safety concern.</p></td>
             </tr>
-            <tr class="slide-heading" id="slide-71"><th colspan="2"><h3>Slide 71 · Lecture Summary</h3></th></tr>
-            <tr class="slide-content" aria-labelledby="slide-71">
+            <tr class="slide-content" id="slide-71" aria-labelledby="slide-71-title">
               <td class="slide-cell">
+                <h3 id="slide-71-title">Slide 71 · Lecture Summary</h3>
                 <a class="slide-image-link" href="slides/slide-71.jpg" target="_blank" rel="noopener noreferrer"><img src="slides/slide-71.jpg" alt="这是斯坦福CS329Z课程第一讲的课程总结幻灯片，标题为“Lecture Summary”。页面中用红色带勾选标记的方框逐一列出本次课覆盖的核心内容：已完成的内容包括课程相关安排、智能体发展历史、智能体架构，其中架构部分补充标注了大语言模型核心、规划与推理、记忆、工具、环境等细分模块；还涵盖复合AI系统，具体对应检索增强生成（RAG）、工具使用、MCP等内容，最后标注了智能体的关键挑战，具体指向可靠性、训练、长时程任务、安全性、评估五大方向，完整梳理了本次课程的全部核心要点。" lang="zh-Hans" width="1120" height="631" loading="lazy" decoding="async"></a>
                 <p class="video-time"><a href="https://www.youtube.com/watch?v=DGI4vucR71w&amp;t=4136s" target="_blank" rel="noopener noreferrer">Watch 1:08:56–1:09:26</a></p>
               </td>

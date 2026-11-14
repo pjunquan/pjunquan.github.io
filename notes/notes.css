@@ -33,13 +33,11 @@
 .slide-table thead th { color: var(--muted); padding-bottom: 14px; border-bottom: 1px solid var(--line); }
 .slide-table thead th:first-child { width: 45%; }
 .slide-table thead th:last-child { padding-left: 32px; }
-.slide-heading { scroll-margin-top: 28px; }
-.slide-heading th { padding: 27px 0 12px; border: 0; color: var(--text); }
-.slide-table td { border-bottom: 1px solid var(--line); padding: 0 0 27px; vertical-align: top; overflow-wrap: anywhere; }
-.slide-content td { border-top: 0; }
-.slide-table h3 { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.65; }
-.slide-heading h3 { width: 45%; text-align: center; }
-.slide-table .lecture-text { padding-left: 32px; vertical-align: middle; }
+.slide-content { scroll-margin-top: 28px; }
+.slide-table td { border-bottom: 1px solid var(--line); padding: 27px 0; vertical-align: middle; overflow-wrap: anywhere; }
+.slide-table .slide-cell { text-align: center; }
+.slide-table h3 { margin: 0 0 12px; font-size: 14px; font-weight: 500; line-height: 1.65; text-align: center; }
+.slide-table .lecture-text { padding-left: 32px; text-align: left; }
 .lecture-text p { font-size: 15px; line-height: 1.85; letter-spacing: 0; }
 .lecture-text p + p { margin-top: 15px; }
 .slide-image-link { display: block; border: 1px solid var(--line); background: #fff; }
@@ -63,13 +61,10 @@
   .topic-header h2 { font-size: 21px; }
   .slide-table, .slide-table tbody, .slide-table tr, .slide-table td { display: block; width: 100%; }
   .slide-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  .slide-table .slide-heading { padding: 26px 0 12px; border-top: 1px solid var(--line); }
-  .slide-heading th { display: block; width: 100%; padding: 0; }
-  .slide-table .slide-content { padding: 0 0 26px; }
+  .slide-table .slide-content { padding: 26px 0; border-top: 1px solid var(--line); }
   .slide-table td { border: 0; padding: 0; }
   .slide-table .lecture-text { padding: 18px 0 0; }
   .slide-table h3 { font-size: 15px; }
-  .slide-heading h3 { width: 100%; }
   .lecture-text p { font-size: 16px; line-height: 1.85; }
   .slide-table tbody tr:last-child { border-bottom: 1px solid var(--line); }
 }
