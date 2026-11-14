@@ -1,486 +1,148 @@
 <!doctype html>
-<html lang="zh-Hans">
-
+<html lang="zh-Hans" data-theme="light">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Junquan Pan</title>
-    <meta name="description" content="Junquan Pan - AI workflow skill builder and learning designer">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-a: #7fb9e3;
-            --bg-b: #9ad0f3;
-            --panel: #f7f7f8;
-            --ink: #171b22;
-            --muted: #4f5967;
-            --line: rgba(23, 27, 34, 0.12);
-            --accent: #84cfe9;
-            --accent-2: #eb9dad;
-            --chip: #e8f4ff;
-            --chip-2: #ebf9ef;
-            --window-border: rgba(255, 255, 255, 0.5);
-            --topbar-a: #f2f2f4;
-            --topbar-b: #ececef;
-            --dot-color: #c8ccd2;
-            --lang-bg: #fff;
-            --lang-text: #4e5561;
-            --card-bg: #fff;
-            --repo: #173f62;
-            --repo-border: rgba(23, 63, 98, 0.35);
-            --card-text: #354154;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            min-height: 100vh;
-            font-family: "IBM Plex Sans", sans-serif;
-            color: var(--ink);
-            background:
-                radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.26), transparent 42%),
-                radial-gradient(circle at 82% 88%, rgba(255, 255, 255, 0.2), transparent 38%),
-                linear-gradient(150deg, var(--bg-a), var(--bg-b));
-            padding: 2rem 1rem;
-            display: grid;
-            place-items: center;
-            overflow-x: hidden;
-        }
-
-        .window {
-            width: min(1080px, 100%);
-            border-radius: 14px;
-            background: var(--panel);
-            border: 1px solid var(--window-border);
-            box-shadow: 0 26px 60px rgba(10, 36, 63, 0.25);
-            overflow: hidden;
-            transition: transform 0.35s ease, box-shadow 0.35s ease;
-        }
-
-        .topbar {
-            height: 42px;
-            border-bottom: 1px solid var(--line);
-            background: linear-gradient(180deg, var(--topbar-a), var(--topbar-b));
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 0.95rem;
-        }
-
-        .traffic {
-            display: flex;
-            gap: 0.42rem;
-        }
-
-        .dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 999px;
-            background: var(--dot-color);
-        }
-
-        .dot:nth-child(1) {
-            background: #ff5f57;
-        }
-
-        .dot:nth-child(2) {
-            background: #ffbd2e;
-        }
-
-        .dot:nth-child(3) {
-            background: #28c840;
-        }
-
-        .tools {
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            color: var(--muted);
-            font-size: 0.76rem;
-        }
-
-        .lang {
-            display: inline-flex;
-            border: 1px solid var(--line);
-            border-radius: 999px;
-            padding: 2px;
-            background: var(--lang-bg);
-        }
-
-        .lang-btn {
-            border: 0;
-            background: transparent;
-            border-radius: 999px;
-            color: var(--lang-text);
-            font-size: 0.72rem;
-            font-weight: 600;
-            padding: 0.25rem 0.48rem;
-            cursor: pointer;
-        }
-
-        .lang-btn.active {
-            background: var(--ink);
-            color: #fff;
-        }
-
-        .hero {
-            display: grid;
-            grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-            gap: 1rem;
-            padding: 2rem 2rem 1.45rem;
-        }
-
-        .hero-copy {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding-right: 0.35rem;
-            min-width: 0;
-        }
-
-        .hero-copy>.pitch,
-        .hero-copy>.intro,
-        .hero-copy>.links {
-            width: min(100%, 560px);
-        }
-
-        .hero-visual {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 0.35rem;
-            min-width: 0;
-        }
-
-        .name {
-            font-family: "Space Grotesk", sans-serif;
-            font-size: 1.75rem;
-            letter-spacing: -0.02em;
-            margin-bottom: 1.15rem;
-        }
-
-        .pitch {
-            font-family: "Space Grotesk", sans-serif;
-            font-size: clamp(1.72rem, 2.65vw, 2.42rem);
-            line-height: 1.2;
-            letter-spacing: -0.02em;
-            margin-bottom: 1.6rem;
-            max-width: none;
-            white-space: nowrap;
-            text-align: left;
-        }
-
-        .ring {
-            position: relative;
-            display: inline-block;
-            padding: 0 0.2rem;
-            z-index: 1;
-        }
-
-        .ring::before {
-            content: "";
-            position: absolute;
-            inset: 50% -0.26rem -3% -0.26rem;
-            border: 2px solid var(--accent);
-            border-radius: 999px;
-            transform: rotate(-1.1deg);
-            z-index: -1;
-        }
-
-        .squiggle {
-            text-decoration: underline wavy var(--accent-2) 2px;
-            text-underline-offset: 4px;
-        }
-
-        .intro {
-            max-width: none;
-            width: 100%;
-            color: var(--muted);
-            line-height: 1.75;
-            margin-bottom: 1rem;
-            font-size: 1.04rem;
-            text-align: justify;
-            text-justify: inter-ideograph;
-        }
-
-        html[lang="en"] .intro {
-            text-justify: inter-word;
-            hyphens: auto;
-        }
-
-        .links {
-            display: flex;
-            gap: 0.85rem;
-            justify-content: flex-start;
-            margin-top: 0.3rem;
-        }
-
-        .social-link {
-            width: 42px;
-            height: 42px;
-            border-radius: 999px;
-            border: 1px solid var(--line);
-            background: #fff;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.18s ease, box-shadow 0.18s ease;
-        }
-
-        .social-link:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 10px rgba(10, 36, 63, 0.14);
-        }
-
-        .social-icon {
-            width: 20px;
-            height: 20px;
-            display: block;
-        }
-
-        .art {
-            min-height: 320px;
-            padding: 0;
-            display: grid;
-            place-items: center;
-        }
-
-        .art img {
-            width: min(1020px, 100%);
-            max-height: 1020px;
-            height: auto;
-            object-fit: contain;
-            display: block;
-            transform: scaleX(-1);
-        }
-
-        .section {
-            border-top: 1px solid var(--line);
-            padding: 1.2rem 2rem 1.8rem;
-        }
-
-        .section-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 0.8rem;
-            margin-bottom: 0.85rem;
-        }
-
-        .section-title {
-            font-family: "Space Grotesk", sans-serif;
-            font-size: 1.02rem;
-        }
-
-        .section-note {
-            color: var(--muted);
-            font-size: 0.85rem;
-        }
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 0.72rem;
-        }
-
-        .card {
-            border: 1px solid var(--line);
-            border-radius: 12px;
-            padding: 0.86rem;
-            background: var(--card-bg);
-        }
-
-        .cards.skills .card:nth-child(1) {
-            background: var(--chip);
-        }
-
-        .cards.skills .card:nth-child(2) {
-            background: var(--chip-2);
-        }
-
-        .card h3 {
-            font-family: "Space Grotesk", sans-serif;
-            font-size: 0.96rem;
-            margin-bottom: 0.38rem;
-        }
-
-        .card p {
-            color: var(--card-text);
-            line-height: 1.5;
-            font-size: 0.84rem;
-            margin-bottom: 0.56rem;
-        }
-
-        .repo {
-            text-decoration: none;
-            color: var(--repo);
-            border-bottom: 1px solid var(--repo-border);
-            font-size: 0.82rem;
-            font-weight: 600;
-        }
-
-        @media (max-width: 980px) {
-            body {
-                padding: 1rem 0.85rem;
-            }
-
-            .hero {
-                grid-template-columns: 1fr;
-                gap: 1.15rem;
-                padding: 1.35rem 1.15rem 1.1rem;
-            }
-
-            .hero-copy {
-                justify-content: flex-start;
-            }
-
-            .pitch {
-                max-width: 100%;
-                white-space: normal;
-            }
-
-            .intro {
-                font-size: 0.98rem;
-                line-height: 1.7;
-            }
-
-            .section {
-                padding: 1rem 1.15rem 1.3rem;
-            }
-
-            .cards {
-                grid-template-columns: 1fr;
-            }
-
-            .tools {
-                gap: 0.45rem;
-                font-size: 0.7rem;
-            }
-
-            .lang-btn {
-                padding: 0.22rem 0.42rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Junquan Pan — learning design, content development, data analytics, and AI.">
+  <title>Junquan Pan</title>
+  <script>
+    try {
+      document.documentElement.dataset.theme = localStorage.getItem('junquan-demo-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    } catch (_) {}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="work.css">
+  <script src="app.js" defer></script>
+  <script src="work.js" defer></script>
 </head>
-
 <body>
-    <main class="window" id="window">
-        <header class="topbar">
-            <div class="traffic" aria-hidden="true">
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </div>
-            <div class="tools">
-                <div class="lang">
-                    <button class="lang-btn active" data-lang="zh">简</button>
-                    <button class="lang-btn" data-lang="zh-tw">繁</button>
-                    <button class="lang-btn" data-lang="en">EN</button>
-                </div>
-            </div>
-        </header>
+  <div class="site">
+    <header class="header">
+      <nav aria-label="主导航" id="navigation">
+        <a href="#about" data-page="about" aria-current="page">关于</a>
+        <a href="#work" data-page="work">作品</a>
+        <a href="#learnings" data-page="learnings">学习</a>
+      </nav>
+      <div class="preferences">
+        <button class="language-control" id="language-toggle" aria-label="Switch to English"><span id="zh-label" class="selected-language">中</span><span class="language-divider" aria-hidden="true">/</span><span id="en-label">EN</span></button>
+        <button class="theme-control" id="theme-toggle" aria-label="切换至夜间模式">
+          <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="3.6"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42"/></svg>
+          <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 13.1A8.9 8.9 0 0 1 10.9 3.2 9 9 0 1 0 20.8 13.1Z"/></svg>
+        </button>
+      </div>
+    </header>
 
-        <section class="hero">
-            <div class="hero-copy">
-                <p class="pitch" data-zh="Hi there, 欢迎欢迎👏👏" data-zh-tw="Hi there, 歡迎歡迎👏👏" data-en="Hi there, welcome👏👏">
-                    Hi there, 欢迎欢迎👏👏
-                </p>
-                <p class="intro" data-zh="我叫俊权，长期关注AI+教育实践，目前热衷于学习和运用AI来提高工作效率和内容生产。过去在VIPKid、字节跳动、LeetCode等公司从事课程与产品的设计和研发，擅长学习的体验设计以及数据分析。最近的爱好是「尽可能将重复的工作任务沉淀为可复用的skill」。<br><br>最后，欢迎通过以下的方式联系我：）" data-zh-tw="我叫俊權，長期關注AI+教育實踐，目前熱衷於學習和運用AI來提高工作效率和內容生產。過去在VIPKid、字節跳動、LeetCode等公司從事課程與產品的設計和研發，擅長學習的體驗設計以及數據分析。最近的愛好是「盡可能將重複的工作任務沉澱為可復用的skill」。<br><br>最後，歡迎通過以下方式聯繫我：）" data-en="Hi, I’m Junquan. I work in AI + education, and I love using AI to make work faster and smarter. I’ve built learning products at VIPKid, ByteDance, and LeetCode — and lately I’ve been turning repetitive tasks into reusable AI workflows.<br><br>Please feel free to reach out :)">
-                    我叫俊权，长期关注AI+教育实践，目前热衷于学习和运用AI来提高工作效率和内容生产。过去在VIPKid、字节跳动、LeetCode等公司从事课程与产品的设计和研发，擅长学习的体验设计以及数据分析。最近的爱好是「尽可能将重复的工作任务沉淀为可复用的skill」。<br><br>最后，欢迎通过以下的方式联系我：）
-                </p>
-                <div class="links">
-                    <a class="social-link" href="https://github.com/pjunquan" target="_blank" rel="noreferrer" aria-label="GitHub">
-                        <img class="social-icon" src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/github.svg" alt="GitHub">
-                    </a>
-                    <a class="social-link" href="https://www.linkedin.com/in/philipjp" target="_blank" rel="noreferrer" aria-label="LinkedIn">
-                        <img class="social-icon" src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn">
-                    </a>
-                    <a class="social-link" href="mailto:junquanpan2016@gmail.com" aria-label="Email">
-                        <img class="social-icon" src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Email">
-                    </a>
-                </div>
-            </div>
+    <main id="main">
+      <section id="about" class="page" aria-labelledby="about-heading">
+        <div class="intro" id="intro">
+          <h1 class="type-line" id="about-heading"><span class="type-measure" aria-hidden="true">你好，我是俊权。</span><span class="type-content" aria-hidden="true">你好，我是俊权。</span><span class="sr-only">你好，我是俊权。</span></h1>
+          <p class="intro-lead type-line" id="about-lead"><span class="type-measure" aria-hidden="true">我的工作主要围绕学习设计、内容开发、数据分析和 AI 展开。我喜欢把复杂的事情理清楚，也喜欢琢磨更高效的工作方式。</span><span class="type-content" aria-hidden="true">我的工作主要围绕学习设计、内容开发、数据分析和 AI 展开。我喜欢把复杂的事情理清楚，也喜欢琢磨更高效的工作方式。</span><span class="sr-only">我的工作主要围绕学习设计、内容开发、数据分析和 AI 展开。我喜欢把复杂的事情理清楚，也喜欢琢磨更高效的工作方式。</span></p>
+        </div>
+        <p class="bio" data-copy="bio">此前，我曾在 VIPKid、字节跳动和 LeetCode 设计学习体验、开发学习内容。最近，我花了很多时间在工作和个人项目中探索 AI 智能体工作流的设计与开发。</p>
+        <details class="current-note">
+          <summary><span data-copy="currently">最近在做</span><span class="journal-arrow" aria-hidden="true">→</span><span class="journal-status" data-copy="journalSoon">内容准备中</span></summary>
+          <p data-copy="currentText">留一个地方，记录日常的想法与片段。第一篇日志还在准备中。</p>
+        </details>
+        <div class="social-links" aria-label="联系我">
+          <a href="https://github.com/pjunquan" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="mailto:junquanpan2016@gmail.com">Email <span aria-hidden="true">↗</span></a>
+          <a href="https://www.linkedin.com/in/philipjp" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+        </div>
+      </section>
 
-            <div class="hero-visual">
-                <div class="art">
-                    <img src="./images/frontpage/avatar-cutout.png" alt="Portrait illustration">
-                </div>
-            </div>
-        </section>
+      <section id="work" class="page" aria-label="Work" hidden>
+        <div class="work-view" data-work-view="index">
+          <h1 data-workcopy="heading">精选作品。</h1>
+          <p class="page-description" data-workcopy="description">关于学习、表达，以及把事情做得更简单。</p>
+          <div class="portfolio-list">
+            <article class="portfolio-entry">
+              <a href="#work/algorithms" class="portfolio-art algorithm-art" data-worklabel="algorithmsTitle"><img id="algorithm-thumbnail" src="assets/algorithm-preview-zh.png" alt="二分查找动画预览" width="1920" height="1080"><span class="preview-play" aria-hidden="true">▷</span></a>
+              <div class="portfolio-copy">
+                <span class="eyebrow" data-workcopy="algorithmsCategory">01 / 可视化与学习设计</span>
+                <h2><a href="#work/algorithms" data-workcopy="algorithmsTitle">算法与数据结构可视化</a></h2>
+                <p data-workcopy="algorithmsDescription">用故事与动态画面，解释抽象的计算过程。为初学者制作的九个中英文短片。</p>
+                <a class="project-link" href="#work/algorithms"><span data-workcopy="viewSeries">观看系列</span> <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+            <article class="portfolio-entry">
+              <a href="#work/k12" class="portfolio-art course-art" data-worklabel="k12Title">
+                <div class="paper-mock" aria-hidden="true"><span class="paper-caption">LEARNING BY DESIGN</span><span class="paper-title">K12</span><span class="paper-rule"></span><span class="paper-rule short"></span><span class="paper-dots">○ &nbsp; △ &nbsp; □</span></div>
+                <span class="placeholder-label" data-workcopy="placeholderCover">示意封面</span>
+              </a>
+              <div class="portfolio-copy">
+                <span class="eyebrow" data-workcopy="k12Category">02 / 课程与内容设计</span>
+                <h2><a href="#work/k12" data-workcopy="k12Title">K12 课程内容</a></h2>
+                <p data-workcopy="k12Description">过往课程与教学材料，正在整理中。这里预留给具体的课程项目与内容样例。</p>
+                <a class="project-link" href="#work/k12"><span data-workcopy="preparing">内容准备中</span> <span aria-hidden="true">→</span></a>
+              </div>
+            </article>
+            <article class="portfolio-entry">
+              <a href="#work/workflows" class="portfolio-art workflow-art" data-worklabel="workflowsTitle"><div class="flow-preview" aria-hidden="true"><span>01 <b data-workcopy="input">输入</b></span><i>↓</i><span>02 <b data-workcopy="organize">整理</b></span><i>↓</i><span>03 <b data-workcopy="output">输出</b></span></div><span class="workflow-caption">SMALL TOOLS, LESS FRICTION.</span></a>
+              <div class="portfolio-copy">
+                <span class="eyebrow" data-workcopy="workflowsCategory">03 / 工具与工作流</span>
+                <h2><a href="#work/workflows" data-workcopy="workflowsTitle">用 AI，把工作做得更好</a></h2>
+                <p data-workcopy="workflowsDescription">整理和分享我在实际工作中用过的 AI Skills，以及它们的使用场景和方法。</p>
+                <a class="project-link" href="#work/workflows"><span data-workcopy="viewProject">查看项目</span> <span aria-hidden="true">↗</span></a>
+              </div>
+            </article>
+          </div>
+        </div>
 
-        <section class="section">
-            <div class="section-head">
-                <h2 class="section-title" data-zh="Agent Skills" data-zh-tw="Agent Skills" data-en="Agent Skills">Agent Skills</h2>
-                <span class="section-note" data-zh="当前可用版本" data-zh-tw="當前可用版本" data-en="Current production-ready versions">当前可用版本</span>
-            </div>
-            <div class="cards skills">
-                <article class="card">
-                    <h3>invoice_skill</h3>
-                    <p data-zh="把发票图片批量整理为标准报销 PPT/PDF，支持数量核对与项目化输入目录。" data-zh-tw="把發票圖片批量整理為標準報銷 PPT/PDF，支持數量核對與項目化輸入目錄。" data-en="Batch-convert invoice images into reimbursement PPT/PDF with count checks and project-based input folders.">
-                        把发票图片批量整理为标准报销 PPT/PDF，支持数量核对与项目化输入目录。
-                    </p>
-                    <a class="repo" href="https://github.com/pjunquan/invoice_skill" target="_blank" rel="noreferrer">View Repository</a>
-                </article>
-                <article class="card">
-                    <h3>payment_screenshots_skill</h3>
-                    <p data-zh="将支付截图按规则拼接到目标文档，提供流程化处理与可追溯校验。" data-zh-tw="將支付截圖按規則拼接到目標文檔，提供流程化處理與可追溯校驗。" data-en="Assemble payment screenshots into target documents with repeatable workflow handling and traceable verification.">
-                        将支付截图按规则拼接到目标文档，提供流程化处理与可追溯校验。
-                    </p>
-                    <a class="repo" href="https://github.com/pjunquan/payment_screenshots_skill" target="_blank" rel="noreferrer">View Repository</a>
-                </article>
-            </div>
-        </section>
+        <div class="work-view" data-work-view="algorithms" hidden>
+          <a class="back-link" href="#work" data-workcopy="back">← 全部作品</a>
+          <span class="eyebrow" data-workcopy="algorithmsCategory">01 / 可视化与学习设计</span>
+          <h1 class="detail-title" data-workcopy="algorithmsTitle">算法与数据结构可视化</h1>
+          <p class="detail-intro" data-workcopy="seriesIntro">从具体的故事出发，看清操作、关系和变化。九个主题，每个都有中文与英文版本。</p>
+          <video id="algorithm-player" controls playsinline preload="metadata" aria-label="算法动画播放器"></video>
+          <div class="video-caption"><h2 id="video-title"></h2><span id="video-duration"></span></div>
+          <p id="video-description" class="video-description"></p>
+          <div id="topic-list" class="topic-list" aria-label="选择动画主题"></div>
+          <div class="project-context"><h2 data-workcopy="designIdea">设计思路</h2><p data-workcopy="designBody">先呈现一个具体问题，再让操作和变化发生在眼前，最后引入术语。用颜色、位置和停顿帮助初学者跟上过程。</p><p class="context-note" data-workcopy="designLimit">这是持续探索的可视化作品系列，学习效果尚未经过观众测试。</p></div>
+        </div>
 
+        <div class="work-view" data-work-view="k12" hidden>
+          <a class="back-link" href="#work" data-workcopy="back">← 全部作品</a>
+          <span class="eyebrow" data-workcopy="k12Category">02 / 课程与内容设计</span>
+          <h1 class="detail-title" data-workcopy="k12Title">K12 课程内容</h1>
+          <p class="detail-intro" data-workcopy="k12Pending">正在整理过往的课程内容。具体项目、课程结构和代表性材料会陆续放在这里。</p>
+          <div class="coming-soon"><span class="coming-soon-mark" aria-hidden="true">…</span><h2 data-workcopy="comingSoon">Coming Soon</h2><p data-workcopy="k12DemoNote">当前为作品集位置预览，尚未加入真实课程材料。</p></div>
+        </div>
+
+        <div class="work-view" data-work-view="workflows" hidden>
+          <a class="back-link" href="#work" data-workcopy="back">← 全部作品</a>
+          <span class="eyebrow" data-workcopy="workflowsCategory">03 / 工具与工作流</span>
+          <h1 class="detail-title" data-workcopy="workflowsTitle">用 AI，把工作做得更好</h1>
+          <p class="detail-intro" data-workcopy="workflowsDescription">整理和分享我在实际工作中用过的 AI Skills，以及它们的使用场景和方法。</p>
+          <div class="project-list">
+            <article class="project"><div class="project-number" aria-hidden="true">01</div><div class="project-body"><h2><a href="https://github.com/pjunquan/invoice_skill" target="_blank" rel="noopener noreferrer"><span data-copy="invoiceTitle">发票整理工作流</span><span aria-hidden="true">↗</span></a></h2><p data-copy="invoiceDescription">把零散的发票图片，批量整理为标准报销 PPT / PDF，支持数量核对与项目化输入目录。</p><div class="project-meta">invoice_skill</div></div></article>
+            <article class="project"><div class="project-number" aria-hidden="true">02</div><div class="project-body"><h2><a href="https://github.com/pjunquan/payment_screenshots_skill" target="_blank" rel="noopener noreferrer"><span data-copy="paymentTitle">支付截图整理工作流</span><span aria-hidden="true">↗</span></a></h2><p data-copy="paymentDescription">将支付截图按规则拼接到目标文档，用可重复的流程处理材料，并保留可追溯的校验。</p><div class="project-meta">payment_screenshots_skill</div></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section id="learnings" class="page" aria-labelledby="learnings-heading" hidden>
+        <h1 id="learnings-heading" data-copy="learningsHeading">学习</h1>
+        <table class="learnings-table" aria-labelledby="learnings-heading">
+          <thead><tr><th scope="col" data-copy="resourcesHeading">学习资源</th><th scope="col" data-copy="notesHeading">我的笔记</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <a class="learning-link resource-title" href="https://cs329z.stanford.edu/" target="_blank" rel="noopener noreferrer">Stanford CS329Z · Engineering AI Agents <span aria-hidden="true">↗</span></a>
+                <p class="learning-description" data-copy="cs329zDescription">斯坦福的 AI 智能体工程课程，介绍如何构建、评估和优化智能体系统，涵盖 RAG、工具调用与工作流设计。</p>
+              </td>
+              <td>
+                <a class="learning-link" href="https://nxt93cbruq7.feishu.cn/wiki/KwRWwwB5Zi6gsVkI9KucNBLfnrf" target="_blank" rel="noopener noreferrer"><span data-copy="courseNotesLink">笔记</span> <span aria-hidden="true">↗</span></a>
+                <p class="learning-description" data-copy="courseNotesDescription">课程内容的文字整理</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+      <noscript><p class="no-script">请启用 JavaScript，体验栏目、语言和明暗模式切换。</p></noscript>
     </main>
 
-    <script>
-        (function () {
-            const html = document.documentElement;
-            const langButtons = document.querySelectorAll(".lang-btn");
-            const i18nNodes = document.querySelectorAll("[data-zh], [data-zh-tw], [data-en]");
-            let currentLang = "zh";
-
-            function langCodeForHtml(lang) {
-                if (lang === "zh-tw") return "zh-Hant";
-                if (lang === "en") return "en";
-                return "zh-Hans";
-            }
-
-            function setLanguage(lang) {
-                currentLang = lang;
-                i18nNodes.forEach((node) => {
-                    const value = node.getAttribute(`data-${lang}`) || node.getAttribute("data-zh") || node.getAttribute("data-en");
-                    if (!value) return;
-                    if (value.includes("<")) {
-                        node.innerHTML = value;
-                    } else {
-                        node.textContent = value;
-                    }
-                });
-                html.lang = langCodeForHtml(lang);
-                langButtons.forEach((btn) => {
-                    btn.classList.toggle("active", btn.getAttribute("data-lang") === lang);
-                });
-            }
-
-            langButtons.forEach((btn) => {
-                btn.addEventListener("click", function () {
-                    setLanguage(this.getAttribute("data-lang"));
-                });
-            });
-
-            setLanguage(currentLang);
-        })();
-    </script>
+    <footer class="footer"><span>© 2026 Junquan Pan</span><span data-copy="footer">保持好奇，慢慢积累。</span></footer>
+  </div>
 </body>
-
 </html>

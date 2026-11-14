@@ -1,100 +1,61 @@
 # pjunquan.github.io
 
-Junquan Pan 的个人网站仓库（GitHub Pages）。
+俊权 / Junquan Pan 的个人网站，使用纯 HTML、CSS 和 JavaScript，通过 GitHub Pages 发布，无需安装依赖或构建。
 
-- 在线地址：<https://pjunquan.github.io/>
-- 仓库地址：<https://github.com/pjunquan/pjunquan.github.io>
+- 网站：https://pjunquan.github.io/
+- 仓库：https://github.com/pjunquan/pjunquan.github.io
+- 发布来源：`main` 分支的仓库根目录；`.nojekyll` 让 Pages 直接发布静态文件。
 
----
+## 当前内容
 
-## 当前版本特点（2026）
+- **About / 关于**：中英文自我介绍、缓慢打字与持续闪烁的光标、GitHub / Email / LinkedIn。These Days 暂为 Coming Soon。
+- **Work / 作品**：九个主题的中英文算法动画、待补充的 K12 课程内容、实际工作中用过的 AI Skills。
+- **Learnings / 学习**：学习资源与个人笔记两列；当前包含 Stanford CS329Z 和对应飞书笔记。
+- 中英文切换、日间 / 夜间模式、手机布局；语言与主题偏好保存在浏览器本地。减少动态效果模式下直接显示全文，光标静止。
 
-这是一个轻量、可直接部署的单页个人站，重点放在「信息清晰 + 维护简单 + 可快速迭代」。
+## 内容修改位置
 
-- **单页静态站**（`index.html`）
-- **三语切换**：简体中文 / 繁體中文 / English
-- **个人介绍 + 联系方式** 一屏可达
-- **项目展示区**（当前包含）：
-  - `invoice_skill`
-  - `payment_screenshots_skill`
-- **形象照素材管理**：统一放在 `images/`（新增 `images/profile-photo.png`）
+| 要修改的内容 | 文件与位置 |
+| --- | --- |
+| 自我介绍、About 和学习页的中英文文案 | `app.js` 中的 `copy.zh` / `copy.en`；介绍使用 `greeting`、`lead`、`bio` |
+| 中文静态回退内容、联系方式、学习资源及笔记链接 | `index.html`；修改文案时同步对应的 `data-copy` 内容 |
+| 新增学习资源 | 在 `index.html` 的 `.learnings-table` 中增加一行；资源名称链接到原材料，右列放笔记链接；需要双语说明时在 `app.js` 的两种语言中增加对应键 |
+| Work 的中英文标题、描述、动画主题 | `work.js` 中的 `text.zh` / `text.en` 与 `topics` |
+| Work 项目结构、Skills 链接 | `index.html` 中的 `#work` |
+| 通用排版与打字光标样式 | `styles.css` |
+| 作品列表与详情排版 | `work.css` |
+| 视频、海报及作品预览 | `assets/`；视频为 `<主题>-zh.mp4` / `<主题>-en.mp4`，海报为 `<主题>-poster-zh.png` / `<主题>-poster-en.png` |
 
----
+`images/` 保留旧版网站素材，目前新版页面未引用。`.qa/` 用于本地检查截图，不提交到仓库。当前静态文件约 99 MB，主要是算法动画视频。
 
-## 仓库结构
-
-```text
-pjunquan.github.io/
-├── index.html
-├── images/
-│   ├── frontpage/
-│   │   └── avatar-cutout.png
-│   └── profile-photo.png
-├── README.md
-└── .gitignore
-```
-
----
+后续更新以本仓库为正式来源。Sites Demo 是设计预览副本，不会自动与本仓库同步；更新内容时直接修改本仓库，避免从旧 Demo 整包覆盖。
 
 ## 本地预览
 
+在仓库目录运行：
+
 ```bash
-cd ~/Desktop/pjunquan.github.io
 python3 -m http.server 8000 --bind 127.0.0.1
-open http://127.0.0.1:8000/index.html
 ```
 
----
+打开 http://127.0.0.1:8000/，检查 About、Work、Learnings；详情页采用 `#work/algorithms` 等 hash 路由，无需服务器路由配置。
 
-## 更新流程（必须遵循）
+## 更新与发布
 
-为确保网站内容始终与最新版本一致，后续每次更新请按以下流程执行：
-
-1. **先改代码，再写说明**
-   - 先在 `index.html` 和 `images/` 完成真实改动
-   - README 只记录“当前可验证功能”，禁止写计划中/历史功能
-
-2. **逐项核验功能清单（发布前）**
-   - 语言切换是否正常（简 / 繁 / EN）
-   - 页面文案与链接是否可用
-   - Skills 区项目名与仓库链接是否一致
-   - 图片路径是否有效（无 404）
-
-3. **本地预览确认**
-   - 使用本 README 的本地预览命令打开页面
-   - 至少在桌面浏览器手动检查一遍首屏和链接
-
-4. **README 同步更新规则**
-   - 删除已下线功能
-   - 新增已上线功能
-   - 目录结构保持与仓库一致
-
-5. **再提交与推送**
-   - `git add .` → `git commit` → `git push origin main`
-
----
-
-## 发布流程（GitHub Pages）
-
-本仓库使用 `main` 分支直接发布到 GitHub Pages。
+1. 开始前拉取远端最新内容：`git pull --ff-only`。
+2. 修改实际页面及相关素材，同时更新中英文；只在功能或维护方式改变时更新本 README。
+3. 按 [发布检查清单](RELEASE_CHECKLIST.md) 做与本次改动有关的检查，再通过 `git diff` 确认提交范围。
+4. 提交并推送至 `main`，GitHub Pages 会自动发布。
 
 ```bash
-git add .
-git commit -m "update site"
+git add index.html app.js
+git commit -m "Update About introduction"
 git push origin main
 ```
 
-推送后通常几分钟内生效。
+上例只适用于介绍修改；按实际改动选择文件，新增视频时也要提交对应素材。提交后检查仓库 Actions 中的 `pages-build-deployment` 状态，并打开正式网站复查。源码提交成功不等于部署已完成。
 
----
-
-## 内容更新建议
-
-- 头像/视觉素材：放在 `images/`，文件名保持稳定（如 `profile-photo.png`）
-- 文案更新：直接修改 `index.html` 中对应多语言 `data-*` 字段
-- 新项目展示：在 Skills 区新增卡片，并附上 GitHub 链接
-
----
+Git 历史保留此前版本。需要回退时，对相关提交使用 `git revert <commit>` 并正常推送，避免强制覆盖历史。
 
 ## License
 
