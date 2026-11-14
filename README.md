@@ -26,6 +26,7 @@
 | Work 的中英文标题、描述、动画主题 | `work.js` 中的 `text.zh` / `text.en` 与 `topics` |
 | Work 项目结构、Skills 链接 | `index.html` 中的 `#work` |
 | 通用排版与打字光标样式 | `styles.css` |
+| 浏览器标签页头像图标 | 根目录 `favicon.ico`（16/32/48/64px）与 `favicon.png`（64px）；替换后同步所有 HTML 的图标链接版本（对应文件 SHA-256 前 12 位），新页面沿用根路径引用 |
 | 作品列表与详情排版 | `work.css` |
 | 视频、海报及作品预览 | `assets/`；视频为 `<主题>-zh.mp4` / `<主题>-en.mp4`，海报为 `<主题>-poster-zh.png` / `<主题>-poster-en.png` |
 
