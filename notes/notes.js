@@ -9,7 +9,7 @@
       about: '关于', work: '作品', learnings: '学习', navigation: '主导航',
       backLearnings: '← 全部学习', backCourse: '← 课程笔记', courseNotes: '课程笔记',
       courseIntro: '按课次整理的学习笔记，包含课件、英文讲解与视频时间链接。',
-      lessonMeta: '71 张幻灯片 · 英文讲解 · 视频时间链接',
+      lessonMeta: '67 张幻灯片 · 英文讲解 · 视频时间链接',
       courseWebsite: '课程官网 ↗', contents: '本课目录', top: '回到目录 ↑',
       footer: '保持好奇，慢慢积累。', skip: '跳至正文',
       day: '切换至日间模式', night: '切换至夜间模式'
@@ -18,7 +18,7 @@
       about: 'About', work: 'Work', learnings: 'Learnings', navigation: 'Main navigation',
       backLearnings: '← All learnings', backCourse: '← Course notes', courseNotes: 'Course notes',
       courseIntro: 'Notes organized by lecture, with slides, edited English lecture text, and video timestamps.',
-      lessonMeta: '71 slides · English lecture text · Video timestamps',
+      lessonMeta: '67 slides · English lecture text · Video timestamps',
       courseWebsite: 'Course website ↗', contents: 'In this lecture', top: 'Contents ↑',
       footer: 'Stay curious. Keep collecting.', skip: 'Skip to content',
       day: 'Switch to light mode', night: 'Switch to dark mode'
