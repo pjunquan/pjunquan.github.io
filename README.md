@@ -8,7 +8,7 @@
 
 ## 当前内容
 
-- **About / 关于**：中英文自我介绍、缓慢打字与持续闪烁的光标、GitHub / Email / LinkedIn。These Days 暂为 Coming Soon。
+- **About / 关于**：中英文自我介绍、缓慢打字与持续闪烁的光标、GitHub / Email / LinkedIn。
 - **Work / 作品**：九个主题的中英文算法动画、待补充的 K12 课程内容、实际工作中用过的 AI Skills。
 - **Learnings / 学习**：学习资源与个人笔记两列；当前包含 Stanford CS329Z 和对应飞书笔记。
 - 中英文切换、日间 / 夜间模式、手机布局；语言与主题偏好保存在浏览器本地。减少动态效果模式下直接显示全文，光标静止。
