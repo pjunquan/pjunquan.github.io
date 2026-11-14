@@ -11,6 +11,8 @@
       workEnd: '一些小工具，也是一点点改进工作方式的尝试。',
       learningsHeading: '学习', resourcesHeading: '学习资源', notesHeading: '我的笔记',
       cs329zDescription: '斯坦福的 AI 智能体工程课程，介绍如何构建、评估和优化智能体系统，涵盖 RAG、工具调用与工作流设计。',
+      cs193tDescription: '斯坦福的 AI 实践课程，涵盖提示词设计、智能体工作流、模型评估，以及 AI 使用中的批判性思考。',
+      cs193tPlan: '计划在学完 Engineering AI Agents 后学习。',
       courseNotesLink: '笔记', courseNotesDescription: '课程内容的文字整理',
       footer: '保持好奇，慢慢积累。', day: '切换至日间模式', night: '切换至夜间模式', contact: '联系我'
     },
@@ -24,6 +26,8 @@
       workEnd: 'Small tools. A few steps toward better ways of working.',
       learningsHeading: 'Learnings', resourcesHeading: 'Learning resources', notesHeading: 'My notes',
       cs329zDescription: 'A Stanford course on building, evaluating, and optimizing AI agent systems, covering RAG, tool use, and agent workflows.',
+      cs193tDescription: 'A hands-on Stanford course on prompting, agentic workflows, model evaluation, and critical thinking about AI use.',
+      cs193tPlan: 'I plan to take this after finishing Engineering AI Agents.',
       courseNotesLink: 'Notes', courseNotesDescription: 'Course content organized into written notes',
       footer: 'Stay curious. Keep collecting.', day: 'Switch to light mode', night: 'Switch to dark mode', contact: 'Get in touch'
     }
