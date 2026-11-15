@@ -58,6 +58,7 @@ p { font-size: 16px; line-height: 1.95; letter-spacing: .05px; }
 .type-measure { visibility: hidden; }
 .cursor { display: inline-block; vertical-align: -.08em; height: .95em; width: 1.5px; background: var(--accent); margin-left: 3px; animation: blink .85s steps(1) infinite; }
 .bio { color: var(--secondary); margin-top: 26px; }
+#about .bio { text-wrap: balance; }
 .social-links { display: flex; flex-wrap: wrap; align-items: center; gap: 26px; margin-top: 40px; }
 .social-links a { font-size: 13px; padding: 5px 0; color: var(--secondary); }
 .social-links a:hover { color: var(--accent); }
@@ -106,6 +107,10 @@ p { font-size: 16px; line-height: 1.95; letter-spacing: .05px; }
   .project { gap: 15px; }
   .project-list { margin-top: 32px; }
   .footer { padding-bottom: 24px; font-size: 10px; }
+}
+/* Keep the ending together when narrow English copy exceeds balanced wrapping's line limit. */
+@media (max-width: 380px) {
+  #about .bio:lang(en) { text-wrap: pretty; }
 }
 @media (pointer: coarse) {
   .learning-link { min-height: 44px; }
