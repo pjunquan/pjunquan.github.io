@@ -14,9 +14,9 @@
     } catch (_) {}
   </script>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="work.css">
+  <link rel="stylesheet" href="work.css?v=0571652c5269">
   <script src="app.js" defer></script>
-  <script src="work.js" defer></script>
+  <script src="work.js?v=f7913d2b487c" defer></script>
 </head>
 <body>
   <div class="site">
@@ -95,7 +95,16 @@
           <video id="algorithm-player" controls playsinline preload="metadata" aria-label="算法动画播放器"></video>
           <div class="video-caption"><h2 id="video-title"></h2><span id="video-duration"></span></div>
           <p id="video-description" class="video-description"></p>
-          <div id="topic-list" class="topic-list" aria-label="选择动画主题"></div>
+          <div id="topic-list" class="topic-list" role="group" aria-label="选择动画主题">
+            <div class="topic-group" role="group" aria-labelledby="algorithm-group-label">
+              <span id="algorithm-group-label" class="topic-group-label" data-workcopy="algorithmGroup">算法</span>
+              <div class="topic-options" data-topic-group="algorithms"></div>
+            </div>
+            <div class="topic-group" role="group" aria-labelledby="structure-group-label">
+              <span id="structure-group-label" class="topic-group-label" data-workcopy="structureGroup">数据结构</span>
+              <div class="topic-options" data-topic-group="structures"></div>
+            </div>
+          </div>
         </div>
 
         <div class="work-view" data-work-view="k12" hidden>
