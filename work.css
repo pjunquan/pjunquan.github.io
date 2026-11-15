@@ -48,10 +48,6 @@
 .topic-button { padding: 10px 0; border: 0; background: none; font-size: 12px; color: var(--muted); line-height: 1.4; }
 .topic-button[aria-pressed="true"] { color: var(--accent); text-decoration: underline; text-underline-offset: 5px; }
 .topic-button:hover { color: var(--text); }
-.project-context { margin-top: 36px; max-width: 620px; }
-.project-context h2 { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
-.project-context p { font-size: 14px; color: var(--secondary); }
-.project-context .context-note { color: var(--muted); font-size: 12px; margin-top: 16px; }
 .coming-soon { margin-top: 42px; padding: 48px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .coming-soon-mark { font-size: 28px; letter-spacing: 4px; color: var(--accent); }
 .coming-soon h2 { font-size: 18px; font-weight: 400; margin: 12px 0; }

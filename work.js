@@ -11,8 +11,6 @@
       workflowsDescription: '整理和分享我在实际工作中用过的 AI Skills，以及它们的使用场景和方法。', viewProject: '查看项目',
       input: '输入', organize: '整理', output: '输出', back: '← 全部作品',
       seriesIntro: '从具体的故事出发，看清操作、关系和变化。九个主题，每个都有中文与英文版本。',
-      designIdea: '设计思路', designBody: '先呈现一个具体问题，再让操作和变化发生在眼前，最后引入术语。用颜色、位置和停顿帮助初学者跟上过程。',
-      designLimit: '这是持续探索的可视化作品系列，学习效果尚未经过观众测试。',
       k12Pending: '正在整理过往的课程内容。具体项目、课程结构和代表性材料会陆续放在这里。',
       comingSoon: 'Coming Soon', k12DemoNote: '当前为作品集位置预览，尚未加入真实课程材料。',
       previewAlt: '二分查找动画预览', playerLabel: '算法动画播放器', topicsLabel: '选择动画主题', languageLabel: '中文'
@@ -27,8 +25,6 @@
       workflowsDescription: 'A collection of AI Skills I’ve used in my day-to-day work, with notes on when and how I use them.', viewProject: 'View project',
       input: 'Input', organize: 'Organize', output: 'Output', back: '← All work',
       seriesIntro: 'Start with a concrete story. See the steps, relationships, and changes. Nine topics, each in Chinese and English.',
-      designIdea: 'The design idea', designBody: 'Introduce a concrete problem, make the actions and changes visible, then introduce the terminology. Color, position, and pauses help beginners follow the process.',
-      designLimit: 'An ongoing exploration in visual explanation. Learning outcomes have not yet been tested with viewers.',
       k12Pending: 'I’m gathering material from past courses. Individual projects, course structures, and selected samples will live here.',
       comingSoon: 'Coming Soon', k12DemoNote: 'This is a portfolio layout placeholder. Actual course materials have not been added yet.',
       previewAlt: 'A frame from the binary search animation', playerLabel: 'Algorithm animation player', topicsLabel: 'Choose an animation', languageLabel: 'English'
