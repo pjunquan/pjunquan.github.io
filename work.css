@@ -1,4 +1,6 @@
 #work { max-width: 740px; }
+#main:has(#work:not([hidden]) [data-work-view="algorithms"]:not([hidden])) { flex: none; padding-bottom: 0; }
+#main:has(#work:not([hidden]) [data-work-view="algorithms"]:not([hidden])) + .footer { border-top: 0; }
 .portfolio-list { margin-top: 46px; }
 .portfolio-entry { display: grid; grid-template-columns: 228px minmax(0, 1fr); gap: 32px; padding: 30px 0; border-top: 1px solid var(--line); }
 .portfolio-art { position: relative; display: flex; align-items: center; justify-content: center; align-self: start; aspect-ratio: 1.5; overflow: hidden; border-radius: 3px; }
