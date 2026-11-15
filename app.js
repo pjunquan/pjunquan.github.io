@@ -4,7 +4,7 @@
     zh: {
       nav: ['关于', '作品', '学习'], navigation: '主导航', greeting: '你好，我是俊权。',
       lead: '我的工作主要围绕学习设计、内容开发、数据分析和 AI 展开。我喜欢把复杂的事情理清楚，也喜欢琢磨更高效的工作方式。',
-      bio: '此前，我在 VIPKid、字节跳动和 LeetCode 设计学习体验、开发学习内容。最近，我花了很多时间探索如何设计和开发基于 AI 智能体的工作流，并在工作和个人项目中实践。',
+      bio: '此前，我曾在 VIPKid、字节跳动和 LeetCode 设计学习体验、开发学习内容。最近，我花了很多时间在工作和个人项目中探索 AI 智能体的工作流设计与开发。',
       workHeading: '做过的一些东西。', workDescription: '从实际问题出发，把想法变成可以使用的工具。',
       invoiceTitle: '发票整理工作流', invoiceDescription: '把零散的发票图片，批量整理为标准报销 PPT / PDF，支持数量核对与项目化输入目录。',
       paymentTitle: '支付截图整理工作流', paymentDescription: '将支付截图按规则拼接到目标文档，用可重复的流程处理材料，并保留可追溯的校验。',
@@ -19,7 +19,7 @@
     en: {
       nav: ['About', 'Work', 'Learnings'], navigation: 'Main navigation', greeting: "Hi, I'm J.",
       lead: 'I work at the intersection of learning design, content development, data analytics, and AI. I like making complex things clearer and finding more efficient ways to work.',
-      bio: 'Previously, I designed learning experiences and developed learning content at VIPKid, ByteDance, and LeetCode. These days, I’m spending much of my time exploring how to design and build agentic workflows and applying what I learn to my work and side projects.',
+      bio: 'Previously, I designed learning experiences and developed learning content at VIPKid, ByteDance, and LeetCode. These days, I’m spending much of my time exploring how to design and build agentic workflows in my work and side projects.',
       workHeading: 'A few things I’ve made.', workDescription: 'Small, useful tools that started with real problems.',
       invoiceTitle: 'An invoice-to-report workflow', invoiceDescription: 'Turn batches of invoice images into reimbursement-ready PPT and PDF files, with count checks and project-based input folders.',
       paymentTitle: 'A payment screenshot workflow', paymentDescription: 'Arrange payment screenshots into documents with a repeatable process and traceable checks.',
