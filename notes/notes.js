@@ -13,7 +13,8 @@
       lesson2Meta: '170 张幻灯片 · 英文讲解 · 视频时间链接',
       courseWebsite: '课程官网 ↗', contents: '本课目录', top: '回到目录 ↑',
       footer: '保持好奇，慢慢积累。', skip: '跳至正文',
-      day: '切换至日间模式', night: '切换至夜间模式'
+      day: '切换至日间模式', night: '切换至夜间模式',
+      enlargeSlide: '放大课件', closeSlide: '关闭课件预览'
     },
     en: {
       about: 'About', work: 'Work', learnings: 'Learnings', navigation: 'Main navigation',
@@ -23,13 +24,16 @@
       lesson2Meta: '170 slides · English lecture text · Video timestamps',
       courseWebsite: 'Course website ↗', contents: 'In this lecture', top: 'Contents ↑',
       footer: 'Stay curious. Keep collecting.', skip: 'Skip to content',
-      day: 'Switch to light mode', night: 'Switch to dark mode'
+      day: 'Switch to light mode', night: 'Switch to dark mode',
+      enlargeSlide: 'Enlarge slide', closeSlide: 'Close slide preview'
     }
   };
   function read(key) { try { return localStorage.getItem('junquan-demo-' + key); } catch (_) { return null; } }
   function save(key, value) { try { localStorage.setItem('junquan-demo-' + key, value); } catch (_) {} }
   let language = read('language') === 'en' ? 'en' : 'zh';
   let manualTheme = read('theme');
+  const slideLinks = [...document.querySelectorAll('.slide-image-link')];
+  let slideCloseButton = null;
   function updateTheme(theme) {
     root.dataset.theme = theme === 'dark' ? 'dark' : 'light';
     const label = copy[language][root.dataset.theme === 'dark' ? 'day' : 'night'];
@@ -44,7 +48,53 @@
     document.getElementById('en-label').classList.toggle('selected-language', language === 'en');
     languageButton.setAttribute('aria-label', language === 'zh' ? 'Switch to English' : '切换至中文');
     languageButton.title = languageButton.getAttribute('aria-label');
+    slideLinks.forEach(link => {
+      const title = link.closest('.slide-cell').querySelector('h3').textContent;
+      link.setAttribute('aria-label', copy[language].enlargeSlide + ': ' + title);
+    });
+    if (slideCloseButton) slideCloseButton.setAttribute('aria-label', copy[language].closeSlide);
     updateTheme(root.dataset.theme);
+  }
+  if (slideLinks.length && typeof HTMLDialogElement !== 'undefined' && 'showModal' in HTMLDialogElement.prototype) {
+    const viewer = document.createElement('dialog');
+    viewer.id = 'slide-viewer';
+    viewer.className = 'slide-viewer';
+    viewer.setAttribute('aria-labelledby', 'slide-viewer-title');
+    viewer.innerHTML = '<div class="slide-viewer-header"><p id="slide-viewer-title" lang="en"></p><button type="button" class="slide-viewer-close" autofocus><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><img class="slide-viewer-image" alt="">';
+    document.body.append(viewer);
+    const viewerTitle = viewer.querySelector('#slide-viewer-title');
+    const viewerImage = viewer.querySelector('img');
+    slideCloseButton = viewer.querySelector('button');
+    let opener = null;
+    slideLinks.forEach(link => {
+      link.setAttribute('aria-haspopup', 'dialog');
+      link.setAttribute('aria-controls', viewer.id);
+      link.addEventListener('click', event => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        const thumbnail = link.querySelector('img');
+        opener = link;
+        viewerTitle.textContent = link.closest('.slide-cell').querySelector('h3').textContent;
+        viewerImage.src = link.href;
+        viewerImage.alt = thumbnail.alt;
+        viewerImage.lang = thumbnail.lang || 'en';
+        viewerImage.width = Number(thumbnail.getAttribute('width'));
+        viewerImage.height = Number(thumbnail.getAttribute('height'));
+        viewer.showModal();
+        root.classList.add('slide-viewer-open');
+        slideCloseButton.focus({ preventScroll: true });
+      });
+    });
+    slideCloseButton.addEventListener('click', () => viewer.close());
+    viewer.addEventListener('click', event => {
+      if (event.target !== viewer) return;
+      const bounds = viewer.getBoundingClientRect();
+      if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) viewer.close();
+    });
+    viewer.addEventListener('close', () => {
+      root.classList.remove('slide-viewer-open');
+      if (opener) opener.focus({ preventScroll: true });
+    });
   }
   themeButton.addEventListener('click', () => {
     manualTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
